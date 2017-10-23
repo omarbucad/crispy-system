@@ -8,7 +8,12 @@ class MY_Controller extends CI_Controller {
     public function __construct() {
        parent::__construct();
 
-       $this->data['website_title'] = "HAHA SAME TITLE";
+       $this->data['website_title'] = "Accounts Package";
+       $this->data['application_name'] = "Accounts Package";
+       $this->data['version'] = "1.0";
+       $this->data['year'] = date("Y");
+       $this->data['csrf_token_name'] = $this->security->get_csrf_token_name();
+       $this->data['csrf_hash'] = $this->security->get_csrf_hash();
 
     }
 

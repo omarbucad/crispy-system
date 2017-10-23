@@ -23,17 +23,12 @@
 
 </head>
 
-<body class="flat-blue">
-    <div class="app-container">
-        <div class="row content-container">
-            <?php $this->load->view("common/header"); ?>
-            <?php $this->load->view("common/side"); ?>
-            <!-- Main Content -->
-
-            <?php $this->load->view($main_page); ?>
-        </div>
-        <?php $this->load->view("common/footer"); ?>
-    <div>
+<body class="flat-blue landing-page">
+    <?php $this->load->view("frontend/common/header"); ?>
+    <?php $this->load->view($main_page); ?>
+    <!-- /END THE FEATURETTES -->
+    <!-- FOOTER -->
+    <?php $this->load->view("frontend/common/footer"); ?>
     <!-- Javascript Libs -->
 
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/jquery.min.js') ?>"></script>

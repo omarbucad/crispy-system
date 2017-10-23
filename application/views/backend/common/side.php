@@ -4,7 +4,7 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">
                     <div class="icon fa fa-paper-plane"></div>
-                    <div class="title">Flat Admin V.2</div>
+                    <div class="title"><?php echo $application_name; ?></div>
                 </a>
                 <button type="button" class="navbar-expand-toggle pull-right visible-xs">
                     <i class="fa fa-times icon"></i>
