@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Welcome extends MY_Controller {
+class Welcome extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -18,9 +18,8 @@ class Welcome extends MY_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function index(){
-		$this->data['main_page'] = "page/dashboard/dashboard";
-		$this->load->view('master' , $this->data);
+	public function index()
+	{
+		$this->load->view('welcome_message');
 	}
-
 }
