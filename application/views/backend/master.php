@@ -13,17 +13,15 @@
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/bootstrap.min.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/font-awesome.min.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/animate.min.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/bootstrap-switch.min.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/checkbox3.min.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/select2.min.css') ?>">
 
     <!-- CSS App -->
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/style.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/themes/flat-blue.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/my-style.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/themes/flat-green.css') ?>">
 
 </head>
 
-<body class="flat-blue">
+<body class="flat-green">
     <div class="app-container">
         <div class="row content-container">
             <?php $this->load->view("backend/common/header"); ?>
@@ -38,14 +36,9 @@
 
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap.min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo site_url('public/lib/js/Chart.min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap-switch.min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo site_url('public/lib/js/jquery.matchHeight-min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo site_url('public/lib/js/select2.full.min.js') ?>"></script>
 
     <!-- Javascript -->
     <script type="text/javascript" src="<?php echo site_url('public/js/app.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo site_url('public/js/index.js') ?>"></script>
 
 </body>
 

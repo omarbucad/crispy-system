@@ -1,0 +1,59 @@
+h1 , h2 , h3 , h4 , h5 ,h6 , a{
+	color: #353535;
+}
+.margin-top-50{
+	margin-top:40px;
+}
+.dl-horizontal dt{
+	text-align: left !important;
+	line-height: 30px !important;
+}
+
+.line-left{
+	border-left: 1px solid rgba(0,0,0,0.2);
+    padding-left: 5px;
+}
+.margin-bottom{
+	margin-bottom: 30px;
+}
+.no-padding-left{
+	padding-left: 0px !important;
+}
+.no-padding-right{
+	padding-right: 0px !important;
+}
+.account_container_btn{
+	padding: 10px 0px;
+}
+.account_container_btn > a{
+	font-weight: bold;
+	font-size: 20px;
+	text-decoration: none;
+	padding-bottom: 10px;
+	border-bottom: 4px solid transparent;
+}
+.account_container_btn > a:first-child{
+	margin-right: 30px;
+}
+
+.account_container_btn > a.active , .account_container_btn > a:hover{
+	color: #1ABC9C !important;
+	border-bottom-color: #1ABC9C !important;
+}
+.grey-bg{
+	background-color: #efefef;
+	width: 100%;
+    margin-top: 10px;
+    padding: 20px 0px;
+}
+.text-underline{
+	text-decoration: underline;
+}
+
+.active-text{
+	color: #1ABC9C !important;
+}
+nav > ul{
+	list-style-type: none;
+	padding: 0px !important;
+}
