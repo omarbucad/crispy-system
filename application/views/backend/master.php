@@ -13,12 +13,21 @@
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/bootstrap.min.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/font-awesome.min.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/animate.min.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/sweetalert2.min.css') ?>">
 
     <!-- CSS App -->
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/style.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/my-style.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/themes/flat-green.css') ?>">
 
+    <!-- Javascript Libs -->
+
+    <script type="text/javascript" src="<?php echo site_url('public/lib/js/jquery.min.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap.min.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo site_url('public/lib/js/sweetalert2.all.min.js') ?>"></script>
+
+    <!-- Javascript -->
+    <script type="text/javascript" src="<?php echo site_url('public/js/app.js') ?>"></script>
 </head>
 
 <body class="flat-green">
@@ -32,14 +41,7 @@
         </div>
         <?php $this->load->view("backend/common/footer"); ?>
     <div>
-    <!-- Javascript Libs -->
-
-    <script type="text/javascript" src="<?php echo site_url('public/lib/js/jquery.min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap.min.js') ?>"></script>
-
-    <!-- Javascript -->
-    <script type="text/javascript" src="<?php echo site_url('public/js/app.js') ?>"></script>
-
+    
 </body>
 
 </html>

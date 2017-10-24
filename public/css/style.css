@@ -36,7 +36,7 @@ body {
   clear: both; }
 
 .no-margin-bottom {
-  margin-bottom: 0; }
+  margin-bottom: 0 !important; }
 
 .no-margin {
   margin-top: 0;

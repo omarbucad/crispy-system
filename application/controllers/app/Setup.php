@@ -25,4 +25,25 @@ class Setup extends MY_Controller {
 		$this->data['setup_page'] = $type; 
 		$this->load->view('backend/master' , $this->data);
 	}
+
+	public function users(){
+		$this->data['website_title'] = "Setup - Users | Accounts Package";
+		$this->data['page_name'] = "Users";
+		$this->data['main_page'] = "backend/page/setup/users";
+		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function roles(){
+		$this->data['website_title'] = "Setup - Users | Accounts Package";
+		$this->data['page_name'] = "Users";
+		$this->data['main_page'] = "backend/page/setup/roles";
+		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function sales_tax(){
+		$this->data['website_title'] = "Setup - Sales Tax | Accounts Package";
+		$this->data['page_name'] = "Sales Tax";
+		$this->data['main_page'] = "backend/page/setup/sales_tax";
+		$this->load->view('backend/master' , $this->data);
+	}
 }

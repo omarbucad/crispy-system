@@ -8,8 +8,8 @@ class MY_Controller extends CI_Controller {
     public function __construct() {
        parent::__construct();
 
-       $this->data['website_title'] = "Accounts Package";
-       $this->data['application_name'] = "Accounts Package";
+       $this->data['website_title'] = "Accounts Software";
+       $this->data['application_name'] = "Accounts Software";
        $this->data['version'] = "1.0";
        $this->data['year'] = date("Y");
        $this->data['csrf_token_name'] = $this->security->get_csrf_token_name();
@@ -174,7 +174,7 @@ class MY_Controller extends CI_Controller {
 
             $pretty_offset = "UTC${offset_prefix}${offset_formatted}";
 
-            $timezone_list[$pretty_offset][$timezone] = "(${pretty_offset}) $timezone";
+            $timezone_list["(${pretty_offset})"][$timezone] = "(${pretty_offset}) $timezone";
         }
 
         return $timezone_list;

@@ -26,14 +26,13 @@ h1 , h2 , h3 , h4 , h5 ,h6 , a{
 	padding: 10px 0px;
 }
 .account_container_btn > a{
-	font-weight: bold;
 	font-size: 20px;
 	text-decoration: none;
 	padding-bottom: 10px;
 	border-bottom: 4px solid transparent;
 }
 .account_container_btn > a:first-child{
-	margin-right: 30px;
+	margin-right: 10px;
 }
 
 .account_container_btn > a.active , .account_container_btn > a:hover{
@@ -43,8 +42,10 @@ h1 , h2 , h3 , h4 , h5 ,h6 , a{
 .grey-bg{
 	background-color: #efefef;
 	width: 100%;
-    margin-top: 10px;
-    padding: 20px 0px;
+    padding: 10px 0px;
+}
+.grey-bg span{
+	line-height: 40px !important;
 }
 .text-underline{
 	text-decoration: underline;
@@ -56,4 +57,26 @@ h1 , h2 , h3 , h4 , h5 ,h6 , a{
 nav > ul{
 	list-style-type: none;
 	padding: 0px !important;
+}
+.text-danger {
+    color: #a94442 !important;
+}
+
+.no-padding-left{
+	padding-left: 0px !important;
+}
+
+.no-padding-right{
+	padding-right: 0px !important;
+}
+
+.btn-vertical-center{
+	position: relative;
+	top:17px;
+}
+.btn-same-size{
+	padding: 5px 18px !important;
+}
+.my-table td > span{
+	line-height: 35px;
 }

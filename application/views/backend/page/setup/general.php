@@ -209,7 +209,7 @@
 	    				</div>
 	    				<div class="col-xs-12 col-lg-6">
 	    					<dl class="dl-horizontal">
-	    						<dt>Postal Address</dt><dd><a href="javascript:void(0);" style="position: relative;top: 7px;">Same as Physical Address</a><br><br><br></dd>
+	    						<dt>Postal Address</dt><dd><a href="javascript:void(0);" class="text-underline" style="position: relative;top: 7px;">Same as Physical Address</a><br><br><br></dd>
 	    						<dt>Street 1</dt>
 	    						<dd>
 	    							<div class="form-group">
