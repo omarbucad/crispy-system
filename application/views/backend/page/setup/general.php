@@ -28,8 +28,12 @@
 	    						<dd>
 	    							<div class="form-group">
 	    								<select class="form-control">
-	    									<?php foreach($world_currency as $currency => $name) : ?>
-	    										<option value="<?php echo $currency; ?>"><?php echo $name; ?></option>
+	    									<?php foreach($world_currency as $type => $c) : ?>
+	    										<optgroup label="<?php echo $type; ?>">
+	    											<?php foreach($c as $code => $currency) : ?>
+	    												<option value="<?php echo $code; ?>"><?php echo $currency; ?></option>
+	    											<?php endforeach; ?>
+	    										</optgroup>
 	    									<?php endforeach; ?>
 	    								</select>
 	    							</div>

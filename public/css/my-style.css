@@ -80,3 +80,69 @@ nav > ul{
 .my-table td > span{
 	line-height: 35px;
 }
+.app-footer nav{
+	margin: 10px 0px;
+}
+.app-footer nav > ul{
+	padding: 0px !important;
+	list-style-type: none;
+}
+.app-footer nav > ul > li.strong{
+	font-weight: bold;
+	padding-bottom: 2px;
+	color: #929191;
+}
+.app-footer nav > ul > li > a{
+	color: white;
+}
+.app-footer nav > ul > li:hover > a{
+	text-decoration: underline;
+	color: white !important;
+}
+.footer-bg{
+	background-color: #332c29;
+}
+.retailer-container{
+	width: 70%;
+	margin: 40px auto;
+}
+.retailer-container > div > div{
+	border:2px solid rgba(0,0,0,0.2);
+	margin: 2px 0px;
+	height: 150px;
+	cursor: pointer;
+	background-color: white;
+}
+.retailer-container > div > div:hover , .retailer-container > div > div.active{
+	border-color: #65d074;
+	border-width: 2px;
+}
+.retailer-container .title-img > img{
+	width: 80px;
+}
+.retailer-container .store-number > span{
+	font-weight: bold;
+	color: rgba(0,0,0,0.7);
+	font-size: 50px;
+	position: relative;
+	top: 35px;
+}
+.retailer-container .title-desc > span{
+	font-weight: bold;
+	color: rgba(0,0,0,0.7);
+	font-size: 20px;
+}
+.margin-top-bottom{
+	margin-top: 30px !important;
+	margin-bottom: 50px !important;
+}
+.form-container{
+	width: 40%;
+	margin: 30px auto;
+}
+.agree_terms > p{
+	font-size: 16px;
+}
+.agree_terms > p > a{
+	color: #65d074;
+}

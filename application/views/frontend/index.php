@@ -1,40 +1,93 @@
-<div class="jumbotron app-header">
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><?php echo $website_title; ?></title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Favicon-->
+    <link rel="icon" href="<?php echo site_url('public/img/favicon.png') ?>" type="image/x-icon">
+    <!-- Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
+    <!-- CSS Libs -->
+
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/bootstrap.min.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/font-awesome.min.css') ?>">
+
+    <!-- CSS App -->
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/style.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/my-style.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/themes/flat-green.css') ?>">
+
+</head>
+
+<body class="flat-green landing-page">
+    
+    <nav class="navbar navbar-inverse navbar-fixed-top  navbar-affix" role="navigation" data-spy="affix" data-offset-top="60">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="<?php echo site_url("welcome"); ?>">
+                    <div class="icon fa fa-paper-plane"></div>
+                    <div class="title"><?php echo $application_name; ?></div>
+                </a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse " aria-expanded="true">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href="#">Help</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="<?php echo site_url("login"); ?>">Login</a></li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </nav>
+
+    <div class="jumbotron app-header">
         <div class="container">
             <h2 class="text-center"><i class="app-logo fa fa-connectdevelop fa-5x color-white"></i><div class="color-white"><?php echo $application_name; ?></div></h2>
             <p class="text-center color-white app-description">This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-            <p class="text-center"><a class="btn btn-primary btn-lg app-btn" href="#" role="button">TRY ACCOUNTS PACKAGE FOR FREE</a></p>
+            <p class="text-center"><a class="btn btn-primary btn-lg app-btn text-uppercase" href="<?php echo site_url("welcome/register"); ?>" role="button">TRY <?php echo $application_name; ?> FOR FREE</a></p>
         </div>
     </div>
     <div class="container-fluid app-content-a">
-        <div class="container">        <div class="row text-center">
-            <div class="col-md-4 col-sm-6">
-                <span class="fa-stack fa-lg fa-5x">
-                  <i class="fa fa-circle-thin fa-stack-2x"></i>
-                  <i class="fa fa-twitter fa-stack-1x"></i>
-                </span>
-                <h2>Heading</h2>
-                <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
+        <div class="container">        
+            <div class="row text-center">
+                <div class="col-md-4 col-sm-6">
+                    <span class="fa-stack fa-lg fa-5x">
+                      <i class="fa fa-circle-thin fa-stack-2x"></i>
+                      <i class="fa fa-twitter fa-stack-1x"></i>
+                    </span>
+                    <h2>Heading</h2>
+                    <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
+                </div>
+                <!-- /.col-lg-4 -->
+                <div class="col-md-4 col-sm-6">
+                    <span class="fa-stack fa-lg fa-5x">
+                      <i class="fa fa-circle-thin fa-stack-2x"></i>
+                      <i class="fa fa-inbox fa-stack-1x"></i>
+                    </span>
+                    <h2>Heading</h2>
+                    <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
+                </div>
+                <!-- /.col-lg-4 -->
+                <div class="col-md-4 col-sm-6">
+                    <span class="fa-stack fa-lg fa-5x">
+                      <i class="fa fa-circle-thin fa-stack-2x"></i>
+                      <i class="fa fa-comments-o fa-stack-1x"></i>
+                    </span>
+                    <h2>Heading</h2>
+                    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                </div>
+                <!-- /.col-lg-4 -->
             </div>
-            <!-- /.col-lg-4 -->
-            <div class="col-md-4 col-sm-6">
-                <span class="fa-stack fa-lg fa-5x">
-                  <i class="fa fa-circle-thin fa-stack-2x"></i>
-                  <i class="fa fa-inbox fa-stack-1x"></i>
-                </span>
-                <h2>Heading</h2>
-                <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
-            </div>
-            <!-- /.col-lg-4 -->
-            <div class="col-md-4 col-sm-6">
-                <span class="fa-stack fa-lg fa-5x">
-                  <i class="fa fa-circle-thin fa-stack-2x"></i>
-                  <i class="fa fa-comments-o fa-stack-1x"></i>
-                </span>
-                <h2>Heading</h2>
-                <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            </div>
-            <!-- /.col-lg-4 -->
-        </div>
         </div>
     </div>
     <div class="container-fluid app-content-b feature-1">
@@ -172,3 +225,14 @@
             </div>
         </div>
     </div>
+    <!-- /END THE FEATURETTES -->
+    <!-- FOOTER -->
+    <?php $this->load->view("frontend/common/footer"); ?>
+    <!-- Javascript Libs -->
+
+    <script type="text/javascript" src="<?php echo site_url('public/lib/js/jquery.min.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap.min.js') ?>"></script>
+
+</body>
+
+</html>

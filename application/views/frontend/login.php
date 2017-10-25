@@ -5,6 +5,8 @@
     <title><?php echo $website_title; ?></title>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Favicon-->
+    <link rel="icon" href="<?php echo site_url('public/img/favicon.png') ?>" type="image/x-icon">
     <!-- Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
