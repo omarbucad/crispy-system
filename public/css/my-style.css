@@ -119,6 +119,7 @@ nav > ul{
 }
 .retailer-container .title-img > img{
 	width: 80px;
+	margin: 15px 0px 5px 0px;
 }
 .retailer-container .store-number > span{
 	font-weight: bold;
@@ -131,6 +132,7 @@ nav > ul{
 	font-weight: bold;
 	color: rgba(0,0,0,0.7);
 	font-size: 20px;
+	line-height: 20px;
 }
 .margin-top-bottom{
 	margin-top: 30px !important;
@@ -145,4 +147,22 @@ nav > ul{
 }
 .agree_terms > p > a{
 	color: #65d074;
+}
+.billed_container{
+	width: 100%;
+}
+.billed_container > div{
+	cursor: pointer;
+	float: left;
+	padding: 10px;
+	width: 50%;
+	border: 2px solid rgba(0,0,0,0.2);
+	height: 150px;
+}
+.billed_container > div.active{
+	border-color: #1ABC9C;
+}
+.billed_container > div h4{
+	padding-bottom: 10px;
+	border-bottom: 1px solid rgba(0,0,0,0.2);
 }

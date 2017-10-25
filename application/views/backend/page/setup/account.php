@@ -161,6 +161,26 @@
                     <h3>You've selected the Starter plan.</h3>
                     <span class="help-block">How do you want to be billed?</span>
                     <hr>
+                    <div class="billed_container">
+                        <div class="annually active">
+                            <h4 class="text-center">Annual Billing</h4>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    Get your bill once a year.
+                                </div>
+                                <div class="col-xs-6"></div>
+                            </div>
+                        </div>
+                        <div class="monthly">
+                            <h4 class="text-center">Monthly Billing</h4>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    Get your bill once a month.
+                                </div>
+                                <div class="col-xs-6"></div>
+                            </div>
+                        </div>
+                    </div>
                     <a href="javascript:void(0);" class="btn btn-success btn-lg">Switch Plan</a>
                 </div>
             </div>

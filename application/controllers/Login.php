@@ -13,6 +13,6 @@ class Login extends MY_Controller {
 		echo "FORGOT PASSWORD";
 	}
 	public function do_login(){
-		print_r_die($this->input->post());
+		print_r_die($this->input->post("username"));
 	}
 }

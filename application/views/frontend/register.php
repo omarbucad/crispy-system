@@ -90,7 +90,7 @@
                     <div class="col-xs-12 col-lg-3 col-md-4 col-sm-4">
                         <div class="click-me" data-value="Home , Lifestyle & Gifts">
                             <div class="title-img">
-                                <img src="<?php echo site_url("public/img/retailer/clothing.png"); ?>">
+                                <img src="<?php echo site_url("public/img/retailer/lifestyle.png"); ?>">
                             </div>
                             <div class="title-desc">
                                 <span>Home , Lifestyle & Gifts</span>
@@ -100,7 +100,7 @@
                     <div class="col-xs-12 col-lg-3 col-md-4 col-sm-4">
                         <div class="click-me" data-value="Sports, Hobbies & Toys">
                             <div class="title-img">
-                                <img src="<?php echo site_url("public/img/retailer/clothing.png"); ?>">
+                                <img src="<?php echo site_url("public/img/retailer/sports.png"); ?>">
                             </div>
                             <div class="title-desc">
                                 <span>Sports, Hobbies & Toys</span>
@@ -110,7 +110,7 @@
                     <div class="col-xs-12 col-lg-3 col-md-4 col-sm-4">
                        <div class="click-me" data-value="Health & Beauty Retail">
                             <div class="title-img">
-                                <img src="<?php echo site_url("public/img/retailer/clothing.png"); ?>">
+                                <img src="<?php echo site_url("public/img/retailer/healthcare.png"); ?>">
                             </div>
                             <div class="title-desc">
                                 <span>Health & Beauty Retail</span>
@@ -120,7 +120,7 @@
                     <div class="col-xs-12 col-lg-3 col-md-4 col-sm-4">
                        <div class="click-me" data-value="Food & Drink Retail">
                             <div class="title-img">
-                                <img src="<?php echo site_url("public/img/retailer/clothing.png"); ?>">
+                                <img src="<?php echo site_url("public/img/retailer/food.png"); ?>">
                             </div>
                             <div class="title-desc">
                                 <span>Food & Drink Retail</span>
@@ -130,7 +130,7 @@
                     <div class="col-xs-12 col-lg-3 col-md-4 col-sm-4">
                        <div class="click-me" data-value="Cafe & Restaurants">
                             <div class="title-img">
-                                <img src="<?php echo site_url("public/img/retailer/clothing.png"); ?>">
+                                <img src="<?php echo site_url("public/img/retailer/coffee.png"); ?>">
                             </div>
                             <div class="title-desc">
                                 <span>Cafe & Restaurants</span>
@@ -140,7 +140,7 @@
                     <div class="col-xs-12 col-lg-3 col-md-4 col-sm-4">
                         <div class="click-me" data-value="Other">
                             <div class="title-img">
-                                <img src="<?php echo site_url("public/img/retailer/clothing.png"); ?>">
+                                <img src="<?php echo site_url("public/img/retailer/other.png"); ?>">
                             </div>
                             <div class="title-desc">
                                 <span>Other</span>
@@ -279,6 +279,7 @@
             $(this).addClass("active");
             $("#step_2").removeClass("hide");
             $('#_retail_type').val($(this).data("value"));
+            window.location.hash = '#step_2';
         });
 
         $(document).on('click' , '#step_2 .click-me' , function(){
@@ -286,6 +287,7 @@
             $(this).addClass("active");
             $("#step_3").removeClass("hide");
             $('#_store_quantity').val($(this).data("value"));
+            window.location.hash = '#step_3';
         });
     </script>
 </body>

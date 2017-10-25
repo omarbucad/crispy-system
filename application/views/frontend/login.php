@@ -21,6 +21,7 @@
 
     <!-- CSS App -->
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/style.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/login.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/themes/flat-blue.css') ?>">
     <style type="text/css">
         body.login-page {
@@ -30,42 +31,41 @@
             -o-background-size: cover;
             background-size: cover;
         }
+        .login-body > div > a{
+            position: relative;
+            top: 40px;
+        }
     </style>
-
 </head>
 
 <body class="flat-blue login-page">
     <div class="container">
         <div class="login-box">
-            <div>
-                <div class="login-form row">
-                    <div class="col-sm-12 text-center login-header">
-                        <i class="login-logo fa fa-connectdevelop fa-5x"></i>
-                        <h4 class="login-title"><?php echo $application_name; ?></h4>
+            <div class="login-form ">
+                <div class="login-body row">
+                    <div class="col-xs-12 col-lg-4 no-margin-bottom">
+                        <a href="#"><img src="<?php echo site_url("public/img/favicon.png"); ?>" class="img img-responsive"></a>
                     </div>
-                    <div class="col-sm-12">
-                        <div class="login-body">
-                            <div class="progress" id="login-progress">
-                                <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                                    Log In...
-                                </div>
+                    <div class="col-xs-12 col-lg-8 no-margin-bottom">
+                        <div class="text-center">
+                            <h4>Accounting Software <br><small>This is a small Description for loggin in</small></h4>
+                        </div>
+                        <form action="<?php echo site_url("login/do_login"); ?>" method="POST">
+                            <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
+                            <div class="form-group">
+                                <input type="text" name="username" class="form-control" placeholder="username">
                             </div>
-                            <form action="<?php echo site_url("login/do_login"); ?>" method="POST">
-                                <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
-                                <div class="control">
-                                    <input type="text" name="username" class="form-control" value="admin@gmail.com" />
-                                </div>
-                                <div class="control">
-                                    <input type="password" name="password" class="form-control" value="123456" />
-                                </div>
-                                <div class="login-button text-center">
-                                    <input type="submit" class="btn btn-primary" value="Login">
-                                </div>
-                            </form>
+                            <div class="form-group">
+                                <input type="password" name="password" class="form-control" placeholder="password">
+                            </div>
+                            <input type="submit" class="btn btn-primary btn-block" value="Login">
+                        </form>
+                        <div class="pull-right">
+                            <a href="#">Having trouble signing in?</a>
                         </div>
-                        <div class="login-footer">
+                    </div>
+                    <div class="login-footer">
                             <span class="text-right"><a href="<?php echo site_url("login/forgot-password"); ?>" class="color-white">Forgot password?</a></span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -75,13 +75,6 @@
 
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap.min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo site_url('public/lib/js/Chart.min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap-switch.min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo site_url('public/lib/js/jquery.matchHeight-min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo site_url('public/lib/js/select2.full.min.js') ?>"></script>
-
-    <!-- Javascript -->
-    <script type="text/javascript" src="<?php echo site_url('public/js/app.js') ?>"></script>
 
 </body>
 
