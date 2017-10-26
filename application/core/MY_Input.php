@@ -7,7 +7,7 @@ class MY_Input extends CI_Input {
         parent::__construct();
     }
 
-    public function post($index = '', $xss_clean = TRUE){
+    public function post($index = NULL, $xss_clean = TRUE){
         return parent::post($index, $xss_clean);
     }
 }

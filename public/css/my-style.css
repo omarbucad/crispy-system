@@ -166,3 +166,84 @@ nav > ul{
 	padding-bottom: 10px;
 	border-bottom: 1px solid rgba(0,0,0,0.2);
 }
+
+
+.customer-table{
+	width: 100%;
+	margin-bottom: 40px;
+}
+.customer-table thead{
+	border-top:1px solid rgba(0,0,0,0.2);
+	border-bottom:1px solid rgba(0,0,0,0.2);
+}
+.customer-table thead  th{
+	padding: 20px 5px !important;
+}
+.customer-table thead  th > a:hover{
+	color : #1ABC9C;
+}
+.customer-table tr.customer-row{
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+	cursor: pointer;
+}
+.customer-table tr.customer-row > td{
+	padding: 15px 5px !important;
+}
+.customer-table tr.customer-row:hover{
+	background-color: white;
+}
+.customer-table tr.customer-row > td small{
+	color: rgba(0,0,0,0.5);
+}
+.customer-table-showing{
+	padding: 10px 0px;
+}
+.customer-table-showing small{
+	color:rgba(0,0,0,0.5);
+	position: relative;
+	top: 15px;
+}
+.customer-table tr.customer-info{
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+.customer-table tr{
+	border-left : 2px solid transparent;
+}
+.customer-table tr.customer-info , .customer-table tr.active{
+	background-color: white;
+	border-left : 2px solid green;
+}
+.customer-table tr.customer-info > td >  div.row {
+	width: 95% !important;
+	margin: 20px 0px 20px 5%;
+}
+.customer-table tr.customer-info > td >  div legend{
+	font-size: 15px;
+	padding: 10px 0px;
+	font-weight: bold;
+}
+.customer-table dd{
+	padding-top: 7px;
+}
+.customer-table tr.customer-info > td .btn-edit-container > a,
+.customer-table tr.customer-info > td > div > div.last > a{
+ 	position: relative;
+    top: 42px;
+    padding: 10px 70px;
+    display: block;
+    width: 100%;
+    color: black;
+    font-weight: bold;
+    border:1px solid transparent;
+ }
+ .customer-table tr.customer-info > td .btn-edit-container > a:hover,
+.customer-table tr.customer-info > td > div > div.last > a:hover{
+    background-color: #1ABC9C;
+    color: white;
+    border:1px solid rgba(0,0,0,0.2);
+}
+
+.btn-edit-container{
+	position: absolute;
+	top: -178px;
+}
