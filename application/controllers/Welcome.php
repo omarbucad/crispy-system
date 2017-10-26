@@ -28,6 +28,7 @@ class Welcome extends MY_Controller {
 		if ($this->form_validation->run() == FALSE){
 			$this->data['website_title'] = "Sign up for free trial | ".$this->data['application_name'];
 			$this->data['world_currency'] = $this->world_currency();
+			$this->data['countries_list'] = $this->countries_list();
 		}else{
 			print_r_die($this->input->post());
 		}

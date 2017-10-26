@@ -238,12 +238,20 @@
                             <input type="password" name="password" id="_password" class="form-control" >
                         </div>
                         <div class="form-group">
+                            <label for="_phone">Phone</label>
+                            <input type="text" name="phone" id="_phone" class="form-control" value="<?php echo set_value('phone'); ?>">
+                        </div>
+                        <div class="form-group">
                             <label for="_city">City</label>
                             <input type="text" name="city" id="_city" class="form-control" value="<?php echo set_value('city'); ?>">
                         </div>
                         <div class="form-group">
-                            <label for="_phone">Phone</label>
-                            <input type="text" name="phone" id="_phone" class="form-control" value="<?php echo set_value('phone'); ?>">
+                            <label for="_country">Country</label>
+                            <select class="form-control" name="country" id="_country">
+                                <?php foreach($countries_list as $code =>  $country) : ?>
+                                    <option value="<?php echo $code; ?>" <?php echo ($code == $this->input->post("country")) ? "selected" : "" ; ?>><?php echo $country?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="_currency">Currency</label>

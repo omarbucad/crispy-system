@@ -247,3 +247,6 @@ nav > ul{
 	position: absolute;
 	top: -178px;
 }
+.dropzone-container{
+	margin: 70px;
+}

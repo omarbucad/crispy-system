@@ -15,3 +15,11 @@ $(function() {
     return $(".side-menu .nav .dropdown .collapse").collapse('hide');
   });
 });
+
+$(function() {
+  return tinymce.init({ selector:'.textarea' });
+});
+
+$(function() {
+  return $('input.daterange').daterangepicker();
+});

@@ -56,3 +56,6 @@ $route['translate_uri_dashes'] = FALSE;
 $route['login/forgot-password'] = 'login/forgot_password';
 
 $route['app/setup/sales-taxes'] = 'app/setup/sales_tax';
+
+$route['app/customer/add-customer'] = 'app/customer/add';
+$route['app/customer/import-customer'] = 'app/customer/import';

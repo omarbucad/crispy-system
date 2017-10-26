@@ -25,8 +25,8 @@
                         <span>Manage your customers and their balances, or segment them by demographics and spending habits. <a href="#" class="text-underline">need help?</a></span>
                     </div>
                     <div class="col-xs-12 col-lg-4 text-right no-margin-bottom">
-                        <a href="javascript:void(0);" class="btn btn-info ">Import Customers</a>
-                        <a href="javascript:void(0);" class="btn btn-success ">Add Customers</a>
+                        <a href="<?php echo site_url('app/customer/import-customer'); ?>" class="btn btn-info ">Import Customers</a>
+                        <a href="<?php echo site_url('app/customer/add-customer'); ?>" class="btn btn-success ">Add Customers</a>
                     </div>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                             <div class="col-xs-12 col-lg-3">
                                 <div class="form-group">
                                     <label for="s_city">Date Created</label>
-                                    <input type="text" name="date_created" placeholder="Date Created" class="form-control">
+                                    <input type="text" name="date_created" placeholder="Date Created" class="form-control daterange">
                                 </div>
                             </div>
                         </div>
