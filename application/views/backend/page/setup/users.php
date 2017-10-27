@@ -15,7 +15,7 @@
                         <span>Manage users and their sales targets. <a href="#" class="text-underline">need help?</a></span>
                     </div>
                     <div class="col-xs-4 col-lg-6 text-right no-margin-bottom">
-                        <a href="javascript:void(0);" class="btn btn-success ">Add User</a>
+                        <a href="<?php echo site_url("app/setup/users/add"); ?>" class="btn btn-success ">Add User</a>
                     </div>
                 </div>
             </div>

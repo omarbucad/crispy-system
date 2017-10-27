@@ -47,6 +47,16 @@
             <?php $this->load->view("backend/common/header"); ?>
             <?php $this->load->view("backend/common/side"); ?>
             <!-- Main Content -->
+            <?php if(validation_errors()) : ?>
+                <div class="container-fluid" id="alert_container_remove">
+                    <div class="side-body padding-top">
+                        <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="closed_alert"><span aria-hidden="true">×</span></button>
+                            <?php echo validation_errors(); ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
 
             <?php $this->load->view($main_page); ?>
         </div>

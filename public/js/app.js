@@ -23,3 +23,15 @@ $(function() {
 $(function() {
   return $('input.daterange').daterangepicker();
 });
+
+
+$(document).ready(function(){
+    $(document).on('click' , '.submit-form' , function(){
+        var form = $($(this).data('form'));
+        form.submit();
+    });
+
+    $(document).on('close.bs.alert', function () {
+        $('#alert_container_remove').remove();
+    });
+});

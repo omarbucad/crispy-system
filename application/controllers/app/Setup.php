@@ -26,6 +26,13 @@ class Setup extends MY_Controller {
 		$this->load->view('backend/master' , $this->data);
 	}
 
+	public function add_users(){
+		$this->data['website_title'] = "Setup - Add Users | Accounts Package";
+		$this->data['page_name'] = "Users";
+		$this->data['main_page'] = "backend/page/setup/add_users";
+		$this->load->view('backend/master' , $this->data);
+	}
+
 	public function users(){
 		$this->data['website_title'] = "Setup - Users | Accounts Package";
 		$this->data['page_name'] = "Users";

@@ -10,6 +10,22 @@
             $(this).next().addClass("open");
         }
     });
+
+    $(document).on('click' , '.more-filter' , function(){
+        var val = $(this).data('value');
+
+        if(val == "hidden"){
+            $(this).data("value" , "show");
+            $('#view_advance_search').removeClass("hide");
+            $(this).text("Less Filter");
+            $('#_advance_search_value').val("true");
+        }else{
+            $(this).data("value" , "hidden");
+            $('#view_advance_search').addClass("hide");
+            $(this).text("More Filter");
+             $('#_advance_search_value').val("false");
+        }
+    });
 </script>
 
 <div class="container-fluid">
@@ -35,6 +51,8 @@
             <div class="container">
                 <div class="card-body no-padding-left no-padding-right">
                     <form action="#" method="POST">
+                        <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
+                        <input type="hidden" name="_advance_search_value" id="_advance_search_value" value="false">
                         <div class="row">
                             <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                 <div class="form-group">
@@ -51,11 +69,11 @@
                                 </div>
                             </div>
                             <div class="col-xs-12 col-lg-3 text-right no-margin-bottom">
-                                <button type="button" class="btn btn-link btn-vertical-center btn-same-size">More filter</button>
+                                <button type="button" class="btn btn-link btn-vertical-center btn-same-size more-filter" data-value="hidden">More filter</button>
                                 <input type="submit" name="submit" value="Apply Filter" class="btn btn-primary btn-vertical-center btn-same-size">
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row hide" id="view_advance_search">
                             <div class="col-xs-12 col-lg-3">
                                 <div class="form-group">
                                     <label for="s_city">City</label>
@@ -308,7 +326,43 @@
                         </td>
                     </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2" width="65%">
+                            All Customers(2)
+                        </th>
+                        <th width="15%" class="text-right">0.00</th>
+                        <th width="15%" class="text-right">0.00</th>
+                        <th width="5%"></th>
+                    </tr>
+                </tfoot>
             </table>
+            <div class="customer-table-showing margin-bottom">
+                <span class="pull-left">
+                    <small>Displaying 1 – 2 of 2</small>
+                </span>
+                <div class="pull-right">
+                    <nav aria-label="Page navigation">
+                      <ul class="pagination">
+                        <li>
+                          <a href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                          </a>
+                        </li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li>
+                          <a href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
     </div>
 </div>

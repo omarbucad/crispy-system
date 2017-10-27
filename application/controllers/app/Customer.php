@@ -32,6 +32,14 @@ class Customer extends MY_Controller {
 	}
 
 	public function groups(){
+		$this->form_validation->set_rules('group_name'		, 'Group Name'	, 'trim|required');
+
+		if ($this->form_validation->run() != FALSE){
+
+			print_r_die($this->input->post());
+			
+		}
+
 		$this->data['website_title'] = "Customers Group| ".$this->data['application_name'];
 		$this->data['page_name'] = "Customers";
 		$this->data['main_page'] = "backend/page/customer/group";

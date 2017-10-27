@@ -62,14 +62,6 @@ nav > ul{
     color: #a94442 !important;
 }
 
-.no-padding-left{
-	padding-left: 0px !important;
-}
-
-.no-padding-right{
-	padding-right: 0px !important;
-}
-
 .btn-vertical-center{
 	position: relative;
 	top:17px;
@@ -170,13 +162,13 @@ nav > ul{
 
 .customer-table{
 	width: 100%;
-	margin-bottom: 40px;
+	margin-bottom: 10px;
 }
-.customer-table thead{
+.customer-table thead , .customer-table tfoot{
 	border-top:1px solid rgba(0,0,0,0.2);
 	border-bottom:1px solid rgba(0,0,0,0.2);
 }
-.customer-table thead  th{
+.customer-table thead  th , .customer-table tfoot th{
 	padding: 20px 5px !important;
 }
 .customer-table thead  th > a:hover{
@@ -195,9 +187,10 @@ nav > ul{
 .customer-table tr.customer-row > td small{
 	color: rgba(0,0,0,0.5);
 }
-.customer-table-showing{
+.customer-table-showing:first-child{
 	padding: 10px 0px;
 }
+
 .customer-table-showing small{
 	color:rgba(0,0,0,0.5);
 	position: relative;
@@ -249,4 +242,18 @@ nav > ul{
 }
 .dropzone-container{
 	margin: 70px;
+}
+
+section.sec_border_bottom:not(:last-child){
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+	padding-bottom: 20px;
+}
+.image-preview{
+	border-radius: 5px;
+	width: 150px;
+	height: 150px;
+	border:1px solid rgba(0,0,0,0.1);
+	background-image : url('../img/person-placeholder.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
 }
