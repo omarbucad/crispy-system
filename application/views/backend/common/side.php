@@ -79,7 +79,7 @@
                 <!-- Dropdown-->
                 <li class="panel panel-default dropdown <?php echo ($this->uri->segment(2) == 'customer') ? "active" : "" ;?>">
                     <a data-toggle="collapse" href="#component-element-customer">
-                        <span class="icon fa fa-user"></span><span class="title">Customer</span>
+                        <span class="icon fa fa-users"></span><span class="title">Customer</span>
                     </a>
                     <!-- Dropdown level 1 -->
                     <div id="component-element-customer" class="panel-collapse collapse">

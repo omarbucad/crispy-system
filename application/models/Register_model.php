@@ -47,7 +47,8 @@ class Register_model extends CI_Model {
             "retailer_type" => $this->input->post("retail_type") ,
             "default_currency" => $this->input->post("currency") ,
             "user_id" => $user_id,
-            "created" => time()
+            "created" => time(),
+            "main_outlet" => 1
         );
         $this->db->insert("store" , $store_data);
         $store_id = $this->db->insert_id();
@@ -78,6 +79,12 @@ class Register_model extends CI_Model {
     }
 
     public function signin($user_id){
-        
+        $this->db->select("u.user_id , u.first_name , u.last_name , CONCAT(u.first_name , ' ' ,u.last_name) as full_name , u.email_address , u.role");
+        $this->db->select("up.plan_type , s.store_id as main_outlet , s.retailer_type");
+        $this->db->join("user_plan up" , "up.user_id = u.user_id");
+        $this->db->join("store s" , "s.user_id = u.user_id");
+        $result = $this->db->where("u.user_id" , $user_id)->where("up.active" , 1)->where("s.main_outlet" , 1)->get("user u")->row();
+
+        $this->session->set_userdata("user" , $result);
     }
 }

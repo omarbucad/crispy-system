@@ -2,16 +2,38 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Setup extends MY_Controller {
+	public function __construct() {
+       parent::__construct();
+
+       $this->load->model("Store_model" , "store");
+    }
+
 
 	public function general(){
+
 		$this->data['website_title'] = "Setup - General Information | Accounts Package";
 		$this->data['page_name'] = "General Setup";
 		$this->data['main_page'] = "backend/page/setup/general";
 		$this->data['world_currency'] = $this->world_currency();
 		$this->data['timezone_list'] = $this->timezone_list();
 		$this->data['countries_list'] = $this->countries_list();
+		$this->data['general_information'] = $this->store->get_general_setup();
 
 		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function general_update(){
+		if($this->input->post()){
+			print_r_die($this->input->post());
+			if($this->store->update_general()){
+				$this->session->set_flashdata('status' , 'success');	
+			}else{
+				$this->session->set_flashdata('status' , 'failed');
+			}
+
+		}
+
+		redirect("app/setup/general" , 'refresh');
 	}
 
 	public function account($type){

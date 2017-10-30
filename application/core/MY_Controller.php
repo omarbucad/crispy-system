@@ -8,6 +8,10 @@ class MY_Controller extends CI_Controller {
     public function __construct() {
        parent::__construct();
 
+       if($this->uri->segment(1) == "app" AND !$this->session->userdata("user")){
+            redirect("/" , "refresh");
+       }
+       $this->data['session_data'] = $this->session->userdata("user");
        $this->data['website_title'] = "Accounts Software";
        $this->data['application_name'] = "Accounts Software";
        $this->data['company_name'] = "Accounts Software Inc.";
@@ -15,7 +19,6 @@ class MY_Controller extends CI_Controller {
        $this->data['year'] = date("Y");
        $this->data['csrf_token_name'] = $this->security->get_csrf_token_name();
        $this->data['csrf_hash'] = $this->security->get_csrf_hash();
-
     }
 
 
