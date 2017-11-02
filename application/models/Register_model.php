@@ -78,13 +78,39 @@ class Register_model extends CI_Model {
         }
     }
 
-    public function signin($user_id){
+    public function signin($user){
         $this->db->select("u.user_id , u.first_name , u.last_name , CONCAT(u.first_name , ' ' ,u.last_name) as full_name , u.email_address , u.role");
         $this->db->select("up.plan_type , s.store_id as main_outlet , s.retailer_type");
         $this->db->join("user_plan up" , "up.user_id = u.user_id");
         $this->db->join("store s" , "s.user_id = u.user_id");
-        $result = $this->db->where("u.user_id" , $user_id)->where("up.active" , 1)->where("s.main_outlet" , 1)->get("user u")->row();
 
-        $this->session->set_userdata("user" , $result);
+        if(is_array($user)){
+            $this->db->where("u.username" , $user['username']);
+            $this->db->where("u.password" , md5($user['password']));
+        }else{
+            $this->db->where("u.user_id" , $user);
+        }
+
+        $result = $this->db->where("up.active" , 1)->where("s.main_outlet" , 1)->get("user u")->row();
+
+        if($result){
+            $this->session->set_userdata("user" , $result);
+        }
+
+        return $result;
+    }
+
+    public function checkStoreName($storeName){
+        $this->db->select("store_id , store_name");
+        $this->db->where("store_name" , $storeName);
+        $result = $this->db->get("store")->row();
+
+        if($result){
+            return ["store_id" => $this->encryption->encrypt($result->store_id) , "store_name" => $result->store_name];
+        }
+
+        return false;
+
+        
     }
 }
