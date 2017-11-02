@@ -10,7 +10,6 @@ class Setup extends MY_Controller {
 
 
 	public function general(){
-
 		$this->data['website_title'] = "Setup - General Information | Accounts Package";
 		$this->data['page_name'] = "General Setup";
 		$this->data['main_page'] = "backend/page/setup/general";
@@ -24,13 +23,14 @@ class Setup extends MY_Controller {
 
 	public function general_update(){
 		if($this->input->post()){
-			print_r_die($this->input->post());
+
 			if($this->store->update_general()){
 				$this->session->set_flashdata('status' , 'success');	
+				$this->session->set_flashdata('message' , 'Successfully Updated');	
 			}else{
-				$this->session->set_flashdata('status' , 'failed');
+				$this->session->set_flashdata('status' , 'error');
+				$this->session->set_flashdata('message' , 'Server Timeout');	
 			}
-
 		}
 
 		redirect("app/setup/general" , 'refresh');

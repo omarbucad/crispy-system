@@ -16,7 +16,7 @@
                 <i class="fa fa-times icon"></i>
             </button>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-comments-o"></i></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Switch Outlet</a>
                 <ul class="dropdown-menu animated fadeInDown">
                     <li class="title">
                         Notification <span class="badge pull-right">0</span>
@@ -27,7 +27,7 @@
                 </ul>
             </li>
             <li class="dropdown danger">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-star-half-o"></i> 4</a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-bell"></i> 4</a>
                 <ul class="dropdown-menu danger  animated fadeInDown">
                     <li class="title">
                         Notification <span class="badge pull-right">4</span>

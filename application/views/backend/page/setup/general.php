@@ -28,11 +28,11 @@
 	    						<dt>Default Currency</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<select class="form-control">
+	    								<select class="form-control" name="default_currency">
 	    									<?php foreach($world_currency as $type => $c) : ?>
 	    										<optgroup label="<?php echo $type; ?>">
 	    											<?php foreach($c as $code => $currency) : ?>
-	    												<option value="<?php echo $code; ?>"><?php echo $currency; ?></option>
+	    												<option value="<?php echo $code; ?>" <?php echo ($general_information->default_currency == $code) ? "selected" : "" ; ?> ><?php echo $currency; ?></option>
 	    											<?php endforeach; ?>
 	    										</optgroup>
 	    									<?php endforeach; ?>
@@ -42,11 +42,11 @@
 	    						<dt>Timezone</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<select class="form-control">
+	    								<select class="form-control" name="timezone">
 	    									<?php foreach($timezone_list as $k => $v) : ?>
 	    										<optgroup label="<?php echo $k; ?>">
 	    											<?php foreach($v as $timezone => $offset) : ?>
-	    												<option value="<?php echo $timezone; ?>"><?php echo $offset; ?></option>
+	    												<option value="<?php echo $timezone; ?>" <?php echo ($general_information->timezone == $timezone) ? "selected" : "" ; ?>><?php echo $offset; ?></option>
 	    											<?php endforeach; ?>
 	    										</optgroup>
 	    									<?php endforeach; ?>
@@ -61,24 +61,24 @@
 	    						<dt>SKU Generation</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<select class="form-control">
-	    									<option>Generate By Sequence Number</option>
-	    									<option>Generate By Name</option>
+	    								<select name="sku_generation_type" class="form-control">
+	    									<option value="GENERATE_BY_SEQUENCE_NUMBER" <?php echo ($general_information->sku_generation_type == "GENERATE_BY_SEQUENCE_NUMBER") ? "selected" : "" ; ?>>Generate By Sequence Number</option>
+	    									<option value="GENERATE_BY_NAME" <?php echo ($general_information->sku_generation_type == "GENERATE_BY_NAME") ? "selected" : "" ; ?>>Generate By Name</option>
 	    								</select>
 	    							</div>
 	    						</dd>
 	    						<dt>Current Sequence No.</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="store_name" class="form-control" value="<?php echo $general_information->current_sequence_sku; ?>">
+	    								<input type="text" name="current_sequence_sku" class="form-control" value="<?php echo $general_information->current_sequence_sku; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Display Prices</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<select class="form-control">
-	    									<option>Tax Exclusive</option>
-	    									<option>Tax Inclusive</option>
+	    								<select class="form-control" name="display_price_settings">
+	    									<option value="WOT" <?php echo ($general_information->display_price_settings == "WOT") ? "selected" : "" ; ?>>Tax Exclusive</option>
+	    									<option value="WT" <?php echo ($general_information->display_price_settings == "WT") ? "selected" : "" ; ?>>Tax Inclusive</option>
 	    								</select>
 	    							</div>
 	    						</dd>
@@ -98,29 +98,30 @@
 	    		<div class="card-body">
 	  
 	    			<div class="row no-margin-bottom">
+	    				<input type="hidden" name="contact_id" value="<?php echo $general_information->contact_id; ?>">
 	    				<div class="col-xs-12 col-lg-6">
 	    					<dl class="dl-horizontal text-left">
 	    						<dt>Contact Name</dt>
 	    						<dd class="form-horizontale">
 	    							<div class="form-group">
 	    								<div class="col-xs-6 no-padding-left">
-	    									<input type="text" name="first_name" class="form-control">
+	    									<input type="text" name="contact_first_name" class="form-control" placeholder="First Name" value="<?php echo $general_information->contact_first_name; ?>">
 	    								</div>
 	    								<div class="col-xs-6 no-padding-right">
-	    									<input type="text" name="last_name" class="form-control">
+	    									<input type="text" name="contact_last_name" class="form-control" placeholder="Last Name" value="<?php echo $general_information->contact_last_name; ?>">
 	    								</div>
 	    							</div>
 	    						</dd>
 	    						<dt>Email</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="email" name="email" class="form-control">
+	    								<input type="email" name="contact_email" class="form-control" value="<?php echo $general_information->contact_email; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Phone</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="phone" name="phone_number" class="form-control">
+	    								<input type="phone" name="contact_phone_number" class="form-control" value="<?php echo $general_information->contact_phone; ?>">
 	    							</div>
 	    						</dd>
 	    					</dl>
@@ -130,19 +131,19 @@
 	    						<dt>Website</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="website" class="form-control">
+	    								<input type="text" name="contact_website" class="form-control" value="<?php echo $general_information->contact_website; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Facebook</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="facebook" class="form-control">
+	    								<input type="text" name="contact_field_1" class="form-control" value="<?php echo $general_information->field_1; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Twitter</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="twitter" class="form-control">
+	    								<input type="text" name="contact_field_2" class="form-control" value="<?php echo $general_information->field_2; ?>">
 	    							</div>
 	    						</dd>
 	    					</dl>
@@ -162,42 +163,43 @@
 	  
 	    			<div class="row no-margin-bottom">
 	    				<div class="col-xs-12 col-lg-6">
+	    					<input type="hidden" name="physical_address_id" value="<?php echo $general_information->physical_address; ?>">
 	    					<dl class="dl-horizontal text-left">
 	    						<dt>Physical Address</dt><dd><br><br><br></dd>
 	    						<dt>Street 1</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="physical[street1]" class="form-control">
+	    								<input type="text" name="physical[street1]" class="form-control" value="<?php echo $general_information->physical_street1; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Street 2</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="physical[street2]" class="form-control">
+	    								<input type="text" name="physical[street2]" class="form-control" value="<?php echo $general_information->physical_street2; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Suburb</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="physical[suburb]" class="form-control">
+	    								<input type="text" name="physical[suburb]" class="form-control" value="<?php echo $general_information->physical_suburb; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>City</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="physical[city]" class="form-control">
+	    								<input type="text" name="physical[city]" class="form-control" value="<?php echo $general_information->physical_city; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Postcode</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="physical[postcode]" class="form-control">
+	    								<input type="text" name="physical[postcode]" class="form-control" value="<?php echo $general_information->physical_postcode; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>State</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="physical[state]" class="form-control">
+	    								<input type="text" name="physical[state]" class="form-control" value="<?php echo $general_information->physical_state; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Country</dt>
@@ -205,7 +207,7 @@
 	    							<div class="form-group">
 	    								<select class="form-control" name="physical[country]">
 	    									<?php foreach($countries_list as $code =>  $country) : ?>
-	    										<option value="<?php echo $code; ?>"><?php echo $country?></option>
+	    										<option value="<?php echo $code; ?>" <?php echo ($general_information->physical_country == $code) ? "selected" : "" ; ?> ><?php echo $country?></option>
 	    									<?php endforeach; ?>
 	    								</select>
 	    							</div>
@@ -213,42 +215,43 @@
 	    					</dl>
 	    				</div>
 	    				<div class="col-xs-12 col-lg-6">
+	    					<input type="hidden" name="postal_address_id" value="<?php echo $general_information->default_address; ?>">
 	    					<dl class="dl-horizontal">
 	    						<dt>Postal Address</dt><dd><a href="javascript:void(0);" class="text-underline" style="position: relative;top: 7px;">Same as Physical Address</a><br><br><br></dd>
 	    						<dt>Street 1</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="postal[street1]" class="form-control">
+	    								<input type="text" name="postal[street1]" class="form-control" value="<?php echo $general_information->postal_street1; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Street 2</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="postal[street2]" class="form-control">
+	    								<input type="text" name="postal[street2]" class="form-control" value="<?php echo $general_information->postal_street2; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Suburb</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="postal[suburb]" class="form-control">
+	    								<input type="text" name="postal[suburb]" class="form-control" value="<?php echo $general_information->postal_suburb; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>City</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="postal[city]" class="form-control">
+	    								<input type="text" name="postal[city]" class="form-control" value="<?php echo $general_information->postal_city; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Postcode</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="postal[postcode]" class="form-control">
+	    								<input type="text" name="postal[postcode]" class="form-control" value="<?php echo $general_information->postal_postcode; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>State</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="postal[state]" class="form-control">
+	    								<input type="text" name="postal[state]" class="form-control" value="<?php echo $general_information->postal_state; ?>">
 	    							</div>
 	    						</dd>
 	    						<dt>Country</dt>
@@ -256,7 +259,7 @@
 	    							<div class="form-group">
 	    								<select class="form-control" name="postal[country]">
 	    									<?php foreach($countries_list as $code =>  $country) : ?>
-	    										<option value="<?php echo $code; ?>"><?php echo $country?></option>
+	    										<option value="<?php echo $code; ?>" <?php echo ($general_information->postal_country == $code) ? "selected" : "" ; ?> ><?php echo $country?></option>
 	    									<?php endforeach; ?>
 	    								</select>
 	    							</div>

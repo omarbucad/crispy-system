@@ -257,3 +257,6 @@ section.sec_border_bottom:not(:last-child){
 	background-size: cover;
 	background-repeat: no-repeat;
 }
+.notifyjs-corner{
+	z-index: 10002 !important;
+}

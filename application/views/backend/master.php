@@ -39,9 +39,18 @@
 
     <!-- Javascript -->
     <script type="text/javascript" src="<?php echo site_url('public/js/app.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo site_url('public/js/notify.min.js') ?>"></script>
 </head>
 
 <body class="flat-green">
+    <?php if($this->session->flashdata("status")) : ?>
+        <script type="text/javascript">
+
+            $(document).ready(function(){
+                $.notify("<?php echo $this->session->flashdata("message"); ?>" , { className:  "<?php echo $this->session->flashdata("status"); ?>" , position : "top center"});
+            });
+        </script>
+    <?php endif; ?>
     <div class="app-container">
         <div class="row content-container">
             <?php $this->load->view("backend/common/header"); ?>

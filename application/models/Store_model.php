@@ -20,5 +20,34 @@ class Store_model extends CI_Model {
     
     public function update_general(){
         $store_id = $this->encryption->decrypt($this->input->post("store_id"));
+
+        $this->db->trans_start();
+
+        $this->db->where("store_address_id" , $this->input->post("physical_address_id"))->update("store_address" , $this->input->post("physical"));
+        $this->db->where("store_address_id" , $this->input->post("postal_address_id"))->update("store_address" , $this->input->post("postal"));
+        $this->db->where("store_contact_id" , $this->input->post("contact_id"))->update("store_contact" , [
+            "first_name"    => $this->input->post("contact_first_name") , 
+            "last_name"     => $this->input->post("contact_last_name") , 
+            "email"         => $this->input->post("contact_email") , 
+            "phone"         => $this->input->post("contact_phone_number") , 
+            "website"       => $this->input->post("contact_website") , 
+            "field_1"       => $this->input->post("contact_field_1") , 
+            "field_2"       => $this->input->post("contact_field_2") 
+        ]);
+        $this->db->where("store_id" , $store_id)->update("store" , [
+            "store_name"            => $this->input->post("store_name") ,
+            "default_currency"      => $this->input->post("default_currency") ,
+            "timezone"              => $this->input->post("timezone") ,
+            "sku_generation_type"   => $this->input->post("sku_generation_type") ,
+            "current_sequence_sku"  => $this->input->post("current_sequence_sku") ,
+            "display_price_settings"=> $this->input->post("display_price_settings")
+        ]);
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return true;
+        }
     }
 }

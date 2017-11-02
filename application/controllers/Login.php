@@ -10,7 +10,17 @@ class Login extends MY_Controller {
     }
 	public function index(){
 
-		$this->data['cookie_outlet'] = $this->input->cookie("store_id");
+		if($this->input->get("store") == "change"){
+			delete_cookie('store_id');
+			delete_cookie('store_name');
+			
+			$this->data['cookie_outlet'] = false;
+
+		}else{
+			$this->data['cookie_outlet'] = ($this->input->cookie("store_id")) ? $this->input->cookie() : false;
+		}
+
+		
 		$this->load->view('frontend/login' , $this->data);
 	}
 	public function forgot_password(){
@@ -32,10 +42,9 @@ class Login extends MY_Controller {
 	public function set_store_name(){
 		if($store_data = $this->register->checkStoreName($this->input->post("store_name"))){
 
-			$this->input->set_cookie("store_id" , $store_data['store_id']);
-			$this->input->set_cookie("store_name" , $store_data['store_name']);
+			$this->input->set_cookie("store_id" , $store_data['store_id'] , COOKIE_EXPIRE , DOMAIN_IP);
+			$this->input->set_cookie("store_name" , $store_data['store_name'] , COOKIE_EXPIRE , DOMAIN_IP);
 
-			$this->session->set_flashdata('status' , 'success');
 			redirect('/login', 'refresh');
 
 		}else{

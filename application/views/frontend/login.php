@@ -70,7 +70,7 @@
                         <div class="row">
                             <div class="container-fluid">
                                 <h2 class="text-center">Sign in</h2>
-                                <span><h4 class="pull-left" style="margin: 0px !important;font-weight: bolder;color:#3a3a3a;">Chillax</h4> <a href="<?php echo site_url("login/?store=change"); ?>" class="pull-right">Not your store?</a></span>
+                                <span><h4 class="pull-left" style="margin: 0px !important;font-weight: bolder;color:#3a3a3a;"><?php echo $cookie_outlet['store_name']; ?></h4> <a href="<?php echo site_url("login/?store=change"); ?>" class="pull-right">Not your store?</a></span>
                             </div>
                         </div>
                         <?php else : ?>
