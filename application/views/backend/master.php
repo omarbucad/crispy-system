@@ -17,6 +17,8 @@
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/animate.min.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/sweetalert2.min.css') ?>">
 
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/multi-select.css') ?>">
+
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
     
@@ -38,8 +40,10 @@
     <script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
 
     <!-- Javascript -->
-    <script type="text/javascript" src="<?php echo site_url('public/js/app.js') ?>"></script>
+   
     <script type="text/javascript" src="<?php echo site_url('public/js/notify.min.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo site_url('public/js/jquery.multi-select.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo site_url('public/js/app.js') ?>"></script>
 </head>
 
 <body class="flat-green">

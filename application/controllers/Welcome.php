@@ -33,12 +33,18 @@ class Welcome extends MY_Controller {
 			$this->data['countries_list'] = $this->countries_list();
 		}else{
 
-			if($user_id = $this->register->signup()){
+			if($data = $this->register->signup()){
 				$this->session->set_flashdata('status' , 'success');
-				$this->register->signin($user_id);
+				$this->session->set_flashdata('message' , 'Welcome to '.$this->data['application_name']);
+				
+				$this->input->set_cookie("store_id" , $data['store_id'] , COOKIE_EXPIRE , DOMAIN_IP);
+				$this->input->set_cookie("store_name" , $data['store_name'] , COOKIE_EXPIRE , DOMAIN_IP);
+
+				$this->register->signin($data['user_id']);
+
 				redirect('/app/welcome', 'refresh');
 			}else{
-				$this->session->set_flashdata('status' , 'failed');
+				$this->session->set_flashdata('status' , 'error');
 				redirect('/welcome/register', 'refresh');
 			}
 

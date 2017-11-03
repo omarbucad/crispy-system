@@ -24,6 +24,10 @@ $(function() {
   return $('input.daterange').daterangepicker();
 });
 
+$(function() {
+  return $('.multi-select').multiSelect();
+});
+
 
 $(document).ready(function(){
     $(document).on('click' , '.submit-form' , function(){

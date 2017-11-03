@@ -7,7 +7,7 @@
     	<h3>General Setup</h3>
     	<form class="form-horizontal" action="<?php echo site_url("app/setup/general_update"); ?>" method="POST">
     		<input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
-    		<input type="hidden" name="store_id" value="<?php echo $this->encryption->encrypt($session_data->main_outlet); ?>">
+    		<input type="hidden" name="store_id" value="<?php echo $this->encryption->encrypt($session_data->store_id); ?>">
     		<!-- STORE SETTINGS -->
     		<div class="card margin-bottom">
 	    		<div class="card-header">
@@ -215,7 +215,7 @@
 	    					</dl>
 	    				</div>
 	    				<div class="col-xs-12 col-lg-6">
-	    					<input type="hidden" name="postal_address_id" value="<?php echo $general_information->default_address; ?>">
+	    					<input type="hidden" name="postal_address_id" value="<?php echo $general_information->postal_address; ?>">
 	    					<dl class="dl-horizontal">
 	    						<dt>Postal Address</dt><dd><a href="javascript:void(0);" class="text-underline" style="position: relative;top: 7px;">Same as Physical Address</a><br><br><br></dd>
 	    						<dt>Street 1</dt>

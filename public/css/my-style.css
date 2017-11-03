@@ -260,3 +260,10 @@ section.sec_border_bottom:not(:last-child){
 .notifyjs-corner{
 	z-index: 10002 !important;
 }
+.table-odd{
+	background-color: #fbfbfb;
+}
+.table-header-dark > thead > tr{
+	background-color: #50bc9c;
+    color: white;
+}
