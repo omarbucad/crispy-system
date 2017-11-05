@@ -39,3 +39,20 @@ $(document).ready(function(){
         $('#alert_container_remove').remove();
     });
 });
+
+function readURL(input , element , location) {
+
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      if(location == "src"){
+        $(element).attr('src', e.target.result);
+      }else{
+        $(element).css('background-image', "url("+e.target.result+")");
+      }
+    }
+
+    reader.readAsDataURL(input.files[0]);
+  }
+}

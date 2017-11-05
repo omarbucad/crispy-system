@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
 
         <div class="container">

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container margin-bottom">
     <div class="side-body padding-top">
     	<ol class="breadcrumb">
     		<li><a href="<?php echo site_url('app/setup/general'); ?>">Setup</a></li>
@@ -7,7 +7,7 @@
     	<div class="card">
     		<div class="card-body">
     			<section>
-		    		<h3>Sales Tax</h3>
+		    		<h3 class="no-margin">Sales Tax</h3>
 			    	<div class="text-left">
 			        	<a href="#" data-toggle="modal" data-target="#modalDefault" class="btn btn-primary" >Add Sales Tax</a>
 			        	<a href="#" data-toggle="modal" data-target="#group_tax" class="btn btn-default <?php echo (count($sales_tax_list) > 2) ? "" : "disabled"; ?>" >Combine Taxed into a Group</a>
@@ -65,11 +65,11 @@
 			        				<?php if($k == 0) : ?>
 			        					<td rowspan="<?php echo $row->sales_tax_count; ?>"></td>
 			        					<td><?php echo $tax->tax_name; ?></td>
-			        					<td class="text-right"><?php echo $tax->tax_rate; ?></td>
+			        					<td class="text-right"><?php echo $tax->tax_rate; ?>%</td>
 			        					<td rowspan="<?php echo $row->sales_tax_count; ?>"></td>
 			        				<?php else : ?>
 			        					<td><?php echo $tax->tax_name; ?></td>
-			        					<td class="text-right"><?php echo $tax->tax_rate; ?></td>
+			        					<td class="text-right"><?php echo $tax->tax_rate; ?>%</td>
 			        				<?php endif; ?>
 			        				</tr>
 
@@ -93,7 +93,7 @@
 			        	<tbody>
 			        		<?php foreach($outlet_list as $row) : ?>
 			        			<tr>
-			        				<td><a href="<?php echo site_url("app/setup/outlet/?id=$row->outlet_id"); ?>"><?php echo $row->outlet_name; ?></a></td>
+			        				<td><a href="<?php echo site_url("app/setup/outlet/?id=$row->outlet_id"); ?>" class="link-style"><?php echo $row->outlet_name; ?></a></td>
 			        				<td><?php echo $row->tax_name; ?></td>
 			        				<td>
 				        				<a href="<?php echo site_url("app/setup/edit-outlet/?id=$row->outlet_id"); ?>" class="text-underline text-info">Edit Outlet</a>
@@ -157,7 +157,7 @@
                 		<select class="multi-select form-control" id="mselect" name="sales_tax_id[]" multiple="multiple">
                 			<?php foreach($sales_tax_list as $row) : ?>
                 				<?php if($row->deletable == "YES") : ?>
-                					<option value="<?php echo $this->encryption->decrypt(urldecode($row->sales_tax_id)); ?>"><?php echo $row->tax_name." ($row->tax_rate%)"; ?></option>
+                					<option value="<?php echo $this->hash->decrypt(urldecode($row->sales_tax_id)); ?>"><?php echo $row->tax_name." ($row->tax_rate%)"; ?></option>
                 				<?php endif; ?>	
                 			<?php endforeach; ?>
                 		</select>

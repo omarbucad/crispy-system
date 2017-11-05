@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container margin-bottom">
     <div class="side-body padding-top">
     	<ol class="breadcrumb">
     		<li><a href="<?php echo site_url('app/setup/general'); ?>">Setup</a></li>
@@ -7,7 +7,6 @@
     	<h3>General Setup</h3>
     	<form class="form-horizontal" action="<?php echo site_url("app/setup/general_update"); ?>" method="POST">
     		<input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
-    		<input type="hidden" name="store_id" value="<?php echo $this->encryption->encrypt($session_data->store_id); ?>">
     		<!-- STORE SETTINGS -->
     		<div class="card margin-bottom">
 	    		<div class="card-header">

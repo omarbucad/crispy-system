@@ -57,6 +57,10 @@ $route['login/forgot-password'] = 'login/forgot_password';
 
 $route['app/setup/sales-taxes'] = 'app/setup/sales_tax';
 $route['app/setup/users/add'] = 'app/setup/add_users';
+$route['app/setup/users/view'] = 'app/setup/view_users';
+$route['app/setup/outlets-and-registers'] = 'app/setup/outlets_and_registers';
+$route['app/setup/add-outlet'] = 'app/setup/add_outlet';
+$route['app/setup/add-register'] = 'app/setup/add_register';
 
 $route['app/customer/add-customer'] = 'app/customer/add';
 $route['app/customer/import-customer'] = 'app/customer/import';

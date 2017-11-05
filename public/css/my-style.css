@@ -256,6 +256,7 @@ section.sec_border_bottom:not(:last-child){
 	background-image : url('../img/person-placeholder.jpg');
 	background-size: cover;
 	background-repeat: no-repeat;
+	background-position: top center;
 }
 .notifyjs-corner{
 	z-index: 10002 !important;
@@ -266,4 +267,21 @@ section.sec_border_bottom:not(:last-child){
 .table-header-dark > thead > tr{
 	background-color: #50bc9c;
     color: white;
+}
+.input_loader {    
+    background-color: #ffffff;
+    background-image: url("http://loadinggif.com/images/image-selection/3.gif");
+    background-size: 25px 25px;
+    background-position:right center;
+    background-repeat: no-repeat;
+}
+.register_details_ul{
+	padding: 0px 15px !important;
+}
+.register_details_ul > li:last-child {
+	list-style-type: none;
+}
+
+a.link-style{
+	color: #06c !important;
 }

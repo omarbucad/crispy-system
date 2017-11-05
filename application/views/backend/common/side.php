@@ -65,13 +65,13 @@
                     <div id="dropdown-element-products" class="panel-collapse collapse">
                         <div class="panel-body">
                             <ul class="nav navbar-nav">
-                                <li><a href="<?php echo site_url("app/products"); ?>">Products</a></li>
-                                <li><a href="<?php echo site_url("app/products/stock-control"); ?>">Stock Control</a></li>
-                                <li><a href="<?php echo site_url("app/products/price-books"); ?>">Price Books</a></li>
-                                <li><a href="<?php echo site_url("app/products/types"); ?>">Product Types</a></li>
-                                <li><a href="<?php echo site_url("app/products/supplier"); ?>">Supplier</a></li>
-                                <li><a href="<?php echo site_url("app/products/brands"); ?>">Brands</a></li>
-                                <li><a href="<?php echo site_url("app/products/tags"); ?>">Product Tags</a></li>
+                                <li><a href="<?php echo site_url("app/product"); ?>">Products</a></li>
+                                <li><a href="<?php echo site_url("app/product/stock-control"); ?>">Stock Control</a></li>
+                                <li><a href="<?php echo site_url("app/product/price-books"); ?>">Price Books</a></li>
+                                <li><a href="<?php echo site_url("app/product/types"); ?>">Product Types</a></li>
+                                <li><a href="<?php echo site_url("app/product/supplier"); ?>">Supplier</a></li>
+                                <li><a href="<?php echo site_url("app/product/brands"); ?>">Brands</a></li>
+                                <li><a href="<?php echo site_url("app/product/tags"); ?>">Product Tags</a></li>
                             </ul>
                         </div>
                     </div>

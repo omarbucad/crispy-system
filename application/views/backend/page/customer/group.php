@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
         <div class="container" >
         	<h1>Customer Groups</h1>
@@ -26,11 +26,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>All Customers</td>
-                        <td>15 Oct 2017</td>
-                        <td><a href="#" class="text-underline">View Customers</a></td>
-                    </tr>
+                    <?php foreach($customer_group_list as $row) : ?>
+                        <tr>
+                            <td><?php echo $row->group_name; ?></td>
+                            <td><?php echo $row->created; ?></td>
+                            <td><a href="<?php echo site_url("app/customer/?customer_group=$row->group_id&submit=submit"); ?>" class="text-underline">View Customers</a></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>

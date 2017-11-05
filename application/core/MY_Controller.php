@@ -11,6 +11,7 @@ class MY_Controller extends CI_Controller {
        if($this->uri->segment(1) == "app" AND !$this->session->userdata("user")){
             redirect("/" , "refresh");
        }
+
        $this->data['session_data'] = $this->session->userdata("user");
        $this->data['website_title'] = "Accounts Software";
        $this->data['application_name'] = "Accounts Software";
@@ -19,6 +20,29 @@ class MY_Controller extends CI_Controller {
        $this->data['year'] = date("Y");
        $this->data['csrf_token_name'] = $this->security->get_csrf_token_name();
        $this->data['csrf_hash'] = $this->security->get_csrf_hash();
+
+       $config["per_page"] =  ($this->input->get("limit")) ? $this->input->get("limit") : 10;
+       $config['reuse_query_string'] = true;
+       $config["page_query_string"] = true;
+       $config['full_tag_open'] = "<ul class='pagination'>";
+       $config['full_tag_close'] ="</ul>";
+       $config['num_tag_open'] = '<li>';
+       $config['num_tag_close'] = '</li>';
+       $config['cur_tag_open'] = "<li class='disabled'><li class='active'><a href='#'>";
+       $config['cur_tag_close'] = "<span class='sr-only'></span></a></li>";
+       $config['next_tag_open'] = "<li>";
+       $config['next_tagl_close'] = "</li>";
+       $config['prev_tag_open'] = "<li>";
+       $config['prev_tagl_close'] = "</li>";
+       $config['first_tag_open'] = "<li>";
+       $config['first_tagl_close'] = "</li>";
+       $config['last_tag_open'] = "<li>";
+       $config['last_tagl_close'] = "</li>";
+       $config['num_links'] = 3;
+       $config['prev_link'] = "Previous";
+       $config['next_link'] = "Next";
+
+       $this->data['config'] = $config;
     }
 
 
@@ -191,8 +215,9 @@ class MY_Controller extends CI_Controller {
         return $timezone_list;
     }
 
-    public function countries_list(){
-        return array(
+    public function countries_list($country = false){
+
+        $countries = array(
                 "AF" => "Afghanistan",
                 "AL" => "Albania",
                 "DZ" => "Algeria",
@@ -432,6 +457,12 @@ class MY_Controller extends CI_Controller {
                 "YE" => "Yemen",
                 "ZM" => "Zambia",
                 "ZW" => "Zimbabwe"
-          );
+        );
+
+        if($country){
+            return $countries[$country];
+        }else{
+            return $countries;
+        }
     }
 }

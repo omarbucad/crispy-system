@@ -1,4 +1,9 @@
-<div class="container-fluid">
+<script type="text/javascript">
+    $(document).on('change' , '#profile_image' , function(){
+        readURL(this , ".image-preview" , 'background');
+    });
+</script>
+<div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
 
         <div class="container" >
@@ -11,14 +16,15 @@
                         <span>Create a new user and select what the user has access to. <a href="#" class="text-underline">need help?</a></span>
                     </div>
                     <div class="col-xs-12 col-lg-4 text-right no-margin-bottom">
-                        <a href="javascript:void(0);" class="btn btn-success btn-same-size">Save</a>
+                        <a href="javascript:void(0);" class="btn btn-success btn-same-size submit-form" data-form="#form_users">Save</a>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="container ">
-            <form action="<?php echo site_url("app/setup/users/add");?>">
+            <form action="<?php echo site_url("app/setup/users/add");?>" method="post" enctype="multipart/form-data" id="form_users">
+                <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
                 <section class="sec_border_bottom">
                     <h3>Profile</h3>
                     <div class="row">
@@ -45,7 +51,7 @@
                                 <div class="image-preview">
                                     
                                 </div>
-                                <input type="file" name="profile_image" class="btn btn-default">
+                                <input type="file" name="file" id="profile_image" class="btn btn-default">
                             </div>
                         </div>
                     </div>
@@ -59,9 +65,9 @@
                         <div class="col-xs-12 col-lg-4">
                             <div class="form-group">
                                 <label for="outlets">Outlets</label>
-                                <select class="form-control" id="outlets">
-                                    <option>All Outlets</option>
-                                    <option>Main Outlets</option>
+                                <select class="form-control" id="outlets" name="outlet_id">
+                                    <option value="0">All Outlets</option>
+                                    <option value="1">Main Outlets</option>
                                 </select>
                             </div>
                             
@@ -78,10 +84,10 @@
                         <div class="col-xs-12 col-lg-4">
                             <div class="form-group">
                                 <label for="role">Role</label>
-                                <select class="form-control">
-                                    <option>Cashier</option>
-                                    <option>Manager</option>
-                                    <option>Admin</option>
+                                <select class="form-control" name="role">
+                                    <option value="CASHIER">Cashier</option>
+                                    <option value="MANAGER">Manager</option>
+                                    <option value="ADMIN">Admin</option>
                                 </select>
                             </div>
                             
@@ -115,9 +121,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-right">
-                    <input type="submit" name="submit" value="Save" class="btn btn-success btn-same-size">
-                </div>
+                    <div class="text-right margin-bottom">
+                        <a href="javascript:void(0);" class="btn btn-success btn-same-size submit-form" data-form="#form_users">Save</a>
+                    </div>
                 </section>
                 
             </form>

@@ -9,16 +9,18 @@ class Thumbs extends CI_Controller {
         $this->load->library('image_lib');
     }
  
-    public function products($width, $height, $img){
+    public function users($year , $month , $width, $height, $img){
+        $path = $year.'/'.$month;
 
         // Checking if the file exists, otherwise we use a default image
-        $img = is_file('public/upload/images/products/'.$img) ? $img : 'public/img/person-placeholder.jpg';
- 
+        $img = is_file('public/upload/user/'.$path.'/'.$img) ? $img : false;
+      
         // If the thumbnail already exists, we just read it
         // No need to use the GD library again
-        if( !is_file('public/upload/images/products/thumbnail/'.$width.'x'.$height.'_'.$img) ){
-            $config['source_image'] = 'public/upload/images/products/'.$img;
-            $config['new_image'] = 'public/upload/images/products/thumbnail/'.$width.'x'.$height.'_'.$img;
+        if( !is_file('public/upload/user/'.$path.'/thumbnail/'.$width.'x'.$height.'_'.$img) ){
+           
+            $config['source_image'] = 'public/upload/user/'.$path.'/'.$img;
+            $config['new_image'] = 'public/upload/user/'.$path.'/thumbnail/'.$width.'x'.$height.'_'.$img;
             $config['width'] = $width;
             $config['height'] = $height;
             
@@ -27,6 +29,11 @@ class Thumbs extends CI_Controller {
             $this->image_lib->resize();
         }
         header('Content-Type: image/jpg');
-        readfile('public/upload/images/products/thumbnail/'.$width.'x'.$height.'_'.$img);
+        if($img){
+            readfile('public/upload/user/'.$path.'/thumbnail/'.$width.'x'.$height.'_'.$img);
+        }else{
+            readfile('public/img/person-placeholder.jpg');
+        }
+        
     }
 }

@@ -62,7 +62,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><?php echo $session_data->display_name; ?> <span class="caret"></span></a>
                 <ul class="dropdown-menu animated fadeInDown">
                     <li class="profile-img">
-                        <img src="<?php echo site_url("public/img/profile/picjumbo.com_HNCK4153_resize.jpg"); ?>" class="profile-img">
+                        <img src="<?php echo site_url("thumbs/users/".$session_data->image_path.'/300/300/'.$session_data->image_name); ?>" alt="<?php echo $session_data->image_name; ?>" class="profile-img">
                     </li>
                     <li>
                         <div class="profile-info">

@@ -1,11 +1,12 @@
-<div class="container">
+
+<div class="container margin-bottom">
     <div class="side-body padding-top">
     	<ol class="breadcrumb">
     		<li><a href="<?php echo site_url('app/customer'); ?>">Customer</a></li>
     		<li class="active">New Customer</li>
     	</ol>	
     	<h3>New Customer</h3>
-    	<form class="form-horizontal">
+    	<form class="form-horizontal" action="<?php echo site_url("app/customer/add-customer"); ?>" method="POST">
     		<input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
     		<!-- STORE SETTINGS -->
     		<div class="card margin-bottom">
@@ -22,30 +23,32 @@
 	    						<dd class="form-horizontale">
 	    							<div class="form-group">
 	    								<div class="col-xs-6 no-padding-left">
-	    									<input type="text" name="first_name" class="form-control" placeholder="First Name">
+	    									<input type="text" name="first_name" class="form-control" value="<?php echo set_value("first_name"); ?>" placeholder="First Name">
 	    								</div>
 	    								<div class="col-xs-6 no-padding-right">
-	    									<input type="text" name="last_name" class="form-control" placeholder="Last Name">
+	    									<input type="text" name="last_name" class="form-control" value="<?php echo set_value("last_name"); ?>" placeholder="Last Name">
 	    								</div>
 	    							</div>
 	    						</dd>
 	    						<dt>Company</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="company" class="form-control">
+	    								<input type="text" name="company" value="<?php echo set_value("company"); ?>" class="form-control">
 	    							</div>
 	    						</dd>
 	    						<dt>Customer code</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="customer_code" class="form-control">
+	    								<input type="text" name="customer_code" value="<?php echo set_value("customer_code"); ?>" class="form-control">
 	    							</div>
 	    						</dd>
 	    						<dt>Customer Group</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<select class="form-control">
-	    									<option>All Customers</option>
+	    								<select class="form-control" name="customer_group">
+	    									<?php foreach($customer_group_list as $row) : ?>
+	    										<option value="<?php echo $row->group_id; ?>"><?php echo $row->group_name; ?></option>
+	    									<?php endforeach; ?>
 	    								</select>
 	    							</div>
 	    						</dd>
@@ -57,13 +60,13 @@
 	    						<dd class="form-horizontale">
 	    							<div class="form-group">
 	    								<div class="col-xs-4 no-padding-left">
-	    									<input type="text" name="date_of_birth[dd]" class="form-control" placeholder="DD">
+	    									<input type="text" name="date_of_birth[dd]"  value="<?php echo set_value("date_of_birth[dd]"); ?>" class="form-control" placeholder="DD">
 	    								</div>
 	    								<div class="col-xs-4 no-padding-right">
-	    									<input type="text" name="date_of_birth[mm]" class="form-control" placeholder="MM">
+	    									<input type="text" name="date_of_birth[mm]"  value="<?php echo set_value("date_of_birth[mm]"); ?>" class="form-control" placeholder="MM">
 	    								</div>
 	    								<div class="col-xs-4 no-padding-right">
-	    									<input type="text" name="date_of_birth[yy]" class="form-control" placeholder="YYYY">
+	    									<input type="text" name="date_of_birth[yy]"  value="<?php echo set_value("date_of_birth[yy]"); ?>" class="form-control" placeholder="YYYY">
 	    								</div>
 	    							</div>
 	    						</dd>
@@ -71,7 +74,7 @@
 	    						<dd class="form-horizontale">
 	    							<div class="form-group">
 	    								<div class="radio">
-	    									<label class="radio-inline"><input type="radio" name="gender" value="FEMALE">Female</label>
+	    									<label class="radio-inline"><input type="radio" name="gender" value="FEMALE" >Female</label>
 										  	<label class="radio-inline"><input type="radio" name="gender" value="MALE" >Male</label>
 										</div>
 	    							</div>
@@ -98,19 +101,19 @@
 	    						<dt>Email</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="email" name="email" class="form-control">
+	    								<input type="email" name="email" value="<?php echo set_value("email"); ?>"  class="form-control">
 	    							</div>
 	    						</dd>
 	    						<dt>Phone</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="phone" name="phone_number" class="form-control">
+	    								<input type="phone" name="phone_number" value="<?php echo set_value("phone_number"); ?>"  class="form-control">
 	    							</div>
 	    						</dd>
 	    						<dt>Fax</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="fax" class="form-control">
+	    								<input type="text" name="fax" value="<?php echo set_value("fax"); ?>"  class="form-control">
 	    							</div>
 	    						</dd>
 	    					</dl>
@@ -120,26 +123,26 @@
 	    						<dt>Website</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="website" class="form-control">
+	    								<input type="text" name="website" value="<?php echo set_value("website"); ?>"  class="form-control">
 	    							</div>
 	    						</dd>
 	    						<dt>Facebook</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="facebook" class="form-control">
+	    								<input type="text" name="field1" value="<?php echo set_value("field1"); ?>"  class="form-control">
 	    							</div>
 	    						</dd>
 	    						<dt>Twitter</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="twitter" class="form-control">
+	    								<input type="text" name="field2" value="<?php echo set_value("field2"); ?>"  class="form-control">
 	    							</div>
 	    						</dd>
 	    						<dt></dt>
 	    						<dd>
 	    							<div class="checkbox">
 									  <label>
-									    <input type="checkbox" value="">
+									    <input type="checkbox" value="1" name="direct_email">
 									    This customer has opted out of direct mail communications.
 									  </label>
 									</div>
@@ -307,7 +310,7 @@
 	    					</dl>
 	    				</div>
 	    				<div class="col-xs-12 col-lg-6">
-	    					<textarea class="textarea"></textarea>
+	    					<textarea class="textarea" name="note"></textarea>
 	    				</div>
 	    			</div>
 	    		</div>
@@ -315,7 +318,7 @@
 
 	    	<div class="text-right margin-bottom">
 	    		<a href="javascript:void(0);" class="btn btn-default">Cancel</a>
-	    		<a href="javascript:void(0);" class="btn btn-success">Save</a>
+	    		<input type="submit" name="submit" class="btn btn-success" value="Save">
 	    	</div>
     	</form>
     </div>
