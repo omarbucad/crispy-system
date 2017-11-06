@@ -62,5 +62,13 @@ $route['app/setup/outlets-and-registers'] = 'app/setup/outlets_and_registers';
 $route['app/setup/add-outlet'] = 'app/setup/add_outlet';
 $route['app/setup/add-register'] = 'app/setup/add_register';
 
+
+
+
+$route['app/product/supplier/add'] = 'app/product/add_supplier';
+
+
+
+
 $route['app/customer/add-customer'] = 'app/customer/add';
 $route['app/customer/import-customer'] = 'app/customer/import';

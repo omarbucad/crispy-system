@@ -14,7 +14,7 @@ class Product extends MY_Controller {
 		$this->data['main_page'] = "backend/page/dashboard/dashboard";
 		$this->load->view('backend/master' , $this->data);
 	}
-
+	// PRODUCT TAGS
 	public function tags(){
 		$this->data['website_title'] = "Product - Tags | Accounts Package";
 		$this->data['page_name'] = "Product Tags";
@@ -40,6 +40,7 @@ class Product extends MY_Controller {
 		redirect("app/product/tags" , 'refresh');
 	}
 
+	// PRODUCT BRANDS
 	public function brands(){
 		$this->data['website_title'] = "Product - Brands | Accounts Package";
 		$this->data['page_name'] = "Brands";
@@ -63,4 +64,23 @@ class Product extends MY_Controller {
 
 		redirect("app/product/brands" , 'refresh');
 	}
+
+	// SUPPLIERS
+	public function supplier(){
+		$this->data['website_title'] = "Product - Supplier | Accounts Package";
+		$this->data['page_name'] = "Product Supplier";
+		$this->data['main_page'] = "backend/page/product/supplier";
+
+		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function add_supplier(){
+		$this->data['website_title'] = "Product - Add Supplier | Accounts Package";
+		$this->data['page_name'] = "Product Supplier";
+		$this->data['main_page'] = "backend/page/product/add_supplier";
+		$this->data['countries_list'] = $this->countries_list();
+
+		$this->load->view('backend/master' , $this->data);
+	}
+
 }

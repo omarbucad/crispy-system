@@ -66,7 +66,7 @@
                       <i class="fa fa-twitter fa-stack-1x"></i>
                     </span>
                     <h2>Heading</h2>
-                    <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
+                    <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
                 </div>
                 <!-- /.col-lg-4 -->
                 <div class="col-md-4 col-sm-6">
@@ -75,7 +75,7 @@
                       <i class="fa fa-inbox fa-stack-1x"></i>
                     </span>
                     <h2>Heading</h2>
-                    <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
+                    <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
                 </div>
                 <!-- /.col-lg-4 -->
                 <div class="col-md-4 col-sm-6">
@@ -84,7 +84,7 @@
                       <i class="fa fa-comments-o fa-stack-1x"></i>
                     </span>
                     <h2>Heading</h2>
-                    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                    <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
                 </div>
                 <!-- /.col-lg-4 -->
             </div>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="col-md-5 col-sm-6 text-right color-white">
                     <h2 class="featurette-heading">First featurette heading. It'll blow your mind.</h2>
-                    <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+                    <p class="lead">This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
                 </div>
             </div>
         </div>
@@ -107,7 +107,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <h2 class="text-center app-content-header">Pricing</h2>
-                    <p class="text-center app-content-description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
+                    <p class="text-center app-content-description">This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
                 </div>
             </div>
             <div class="row">
@@ -206,7 +206,7 @@
         <div class="container">
             <div class="row featurette">
                 <div class="col-md-6"><h2 class="color-white contact-us-header">Contact Us</h2>
-                <p class="color-white contact-us-description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut </p></div>
+                <p class="color-white contact-us-description">This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p></div>
                 <div class="col-md-6">
                     <form>
 
