@@ -64,7 +64,9 @@
                                 <div class="form-group">
                                     <label for="s_roles">Customer Group</label>
                                     <select class="form-control" id="s_roles">
-                                        <option>All Customer</option>
+                                        <?php foreach($customer_group_list as $row) : ?>
+                                            <option value="<?php echo $row->group_id; ?>"><?php echo $row->group_name; ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>

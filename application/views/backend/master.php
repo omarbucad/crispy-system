@@ -8,8 +8,8 @@
     <!-- Favicon-->
     <link rel="icon" href="<?php echo site_url('public/img/favicon.png') ?>" type="image/x-icon">
     <!-- Fonts -->
-    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
     <!-- CSS Libs -->
 
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/bootstrap.min.css?version='.$version) ?>">
@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/animate.min.css?version='.$version) ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/sweetalert2.min.css?version='.$version) ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/bootstrap-switch.min.css?version='.$version) ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/select2.min.css?version='.$version) ?>">
 
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/multi-select.css?version='.$version) ?>">
 
@@ -36,10 +37,11 @@
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap.min.js?version='.$version) ?>"></script>
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/sweetalert2.all.min.js?version='.$version) ?>"></script>
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap-switch.min.js?version='.$version) ?>"></script>
+    <script type="text/javascript" src="<?php echo site_url('public/lib/js/select2.full.min.js?version='.$version) ?>"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
     
-    <script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
+     <script type="text/javascript" src="<?php echo site_url('public/lib/tinymce/tinymce.min.js?version='.$version) ?>"></script>
 
     <!-- Javascript -->
    

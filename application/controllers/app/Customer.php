@@ -14,6 +14,7 @@ class Customer extends MY_Controller {
 		$this->data['page_name'] = "Customers";
 		$this->data['main_page'] = "backend/page/customer/customer";
 		$this->data['countries_list'] = $this->countries_list();
+		$this->data['customer_group_list']	= $this->customer->get_group();
 
 		$this->data['config']["base_url"] = base_url("app/customer/") ;
 		$this->data['config']["total_rows"] = $this->customer->get_customer(true);

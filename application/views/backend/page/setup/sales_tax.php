@@ -138,7 +138,7 @@
 </div>
 
 
-<div class="modal fade" id="group_tax" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="group_tax"  role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -154,7 +154,8 @@
                 	</div>
                 	<div class="form-group">
                 		<label for="tax_rate">Tax Rate (%)</label>
-                		<select class="multi-select form-control" id="mselect" name="sales_tax_id[]" multiple="multiple">
+                		<br>
+                		<select class="select2_modal form-control"  name="sales_tax_id[]" multiple>
                 			<?php foreach($sales_tax_list as $row) : ?>
                 				<?php if($row->deletable == "YES") : ?>
                 					<option value="<?php echo $this->hash->decrypt(urldecode($row->sales_tax_id)); ?>"><?php echo $row->tax_name." ($row->tax_rate%)"; ?></option>

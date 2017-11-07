@@ -7,6 +7,7 @@ class Product extends MY_Controller {
        parent::__construct();
 
        $this->load->model("Product_model" , "product");
+       $this->load->model("Store_model" , "store");
     }
 
 	public function index(){
@@ -25,6 +26,13 @@ class Product extends MY_Controller {
 		$this->data['website_title'] = "Products - Add | Accounts Package";
 		$this->data['page_name'] = "Product";
 		$this->data['main_page'] = "backend/page/product/add_product";
+		$this->data['product_type_list'] = $this->product->get_type();
+		$this->data['product_brand_list'] = $this->product->get_brand();
+		$this->data['supplier_list'] = $this->product->get_supplier();
+		$this->data['sales_tax_list'] = $this->store->get_sales_tax();
+		$this->data['product_tag_list'] = $this->product->get_tag();
+		$this->data['store_settings'] = $this->store->get_general_setup();
+
 
 		$this->load->view('backend/master' , $this->data);
 	}
@@ -88,6 +96,7 @@ class Product extends MY_Controller {
 		$this->data['supplier_list'] = $this->product->get_supplier();
 		$this->load->view('backend/master' , $this->data);
 	}
+
 	public function view_supplier($id){
 		$supplier_id = $this->hash->decrypt($id);
 

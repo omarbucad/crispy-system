@@ -17,20 +17,20 @@
         </div>
 
         <div class="container">
-            <table class="table my-table">
+            <table class="customer-table">
                 <thead>
                     <tr>
-                        <th width="50%">Name</th>
+                        <th width="50%"><a href="#">Name <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></a></th>
                         <th width="20%">Date created</th>
                         <th width="30%"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($customer_group_list as $row) : ?>
-                        <tr>
+                        <tr class="customer-row" style="cursor: default;">
                             <td><?php echo $row->group_name; ?></td>
                             <td><?php echo $row->created; ?></td>
-                            <td><a href="<?php echo site_url("app/customer/?customer_group=$row->group_id&submit=submit"); ?>" class="text-underline">View Customers</a></td>
+                            <td><a href="<?php echo site_url("app/customer/?customer_group=$row->group_id&submit=submit"); ?>" class="text-underline link-style">View Customers</a></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

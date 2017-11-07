@@ -34,7 +34,7 @@
                             <td><span>1</span></td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="...">
-                                    <a href="<?php echo site_url("app/product/tags/?tags=$row->product_tag_id"); ?>" class="btn btn-link">View Products</a>
+                                    <a href="<?php echo site_url("app/product/?tags=$row->product_tag_id"); ?>" class="btn btn-link">View Products</a>
                                     <a href="<?php echo site_url("app/product/tags/edit/$row->product_tag_id"); ?>" class="btn btn-link" title="Edit Tag"><i class="fa fa-pencil" aria-hidden="true"></i></a>
                                     <a href="<?php echo site_url("app/product/tags/delete/$row->product_tag_id"); ?>" class="btn btn-link" title="Remove Tag"><i class="fa fa-trash" aria-hidden="true"></i></a>
                                 </div>

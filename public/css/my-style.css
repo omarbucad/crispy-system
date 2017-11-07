@@ -306,3 +306,7 @@ a.link-style{
 .customer-table .product-variant > td > a{
 	padding-left: 40px;
 }
+.dragdropimg{
+	border:1px solid rgba(0,0,0,0.1);
+	padding: 10px;
+}

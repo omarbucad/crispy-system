@@ -30,6 +30,16 @@ $(function() {
   return $('input.daterange').daterangepicker();
 });
 
+
+$(function() {
+  return $('.select2').select2();
+});
+$(function() {
+  return $('.select2_modal').select2({
+    dropdownParent: $(".modal")
+  });
+});
+
 $(function() {
   return $('.multi-select').multiSelect();
 });

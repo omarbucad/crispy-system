@@ -14,6 +14,21 @@
              $('#_advance_search_value').val("false");
         }
     });
+
+    $(document).on('click' , '.view-variant' , function(){
+        $me = $(this);
+        var className = $(this).data("id");
+
+        if($me.closest("tr").hasClass("active")){
+            $me.closest("tr").removeClass("active");
+            $("."+className).removeClass("open").addClass("hidden");
+            $me.find("i").removeClass("fa-caret-up").addClass("fa-caret-down");
+        }else{
+            $me.closest("tr").addClass("active");
+            $("."+className).removeClass("hidden").addClass("open");
+             $me.find("i").removeClass("fa-caret-down").addClass("fa-caret-up");
+        }
+    });
 </script>
 <div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
@@ -128,7 +143,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="customer-row active" style="cursor: default;">
+                    <tr class="customer-row" style="cursor: default;">
                         <td>
                             <div class="with-img">
                                 <span><a href="#">My Girl Sunglasses</a> <br><small>10001</small></span>
@@ -148,7 +163,7 @@
                             <a href="#" class="link-style"><span>Flo & Frankie</span></a>
                         </td>
                         <td>
-                            <a href="#" class="link-style"><span>3 Variants <i class="fa fa-caret-down" aria-hidden="true"></i></span></a>
+                            <a href="#" class="link-style view-variant" data-id="_1000"><span>3 Variants <i class="fa fa-caret-down" aria-hidden="true"></i></span></a>
                         </td>
                         <td>
                            <span>198.80</span>
@@ -163,7 +178,7 @@
                             <input type="checkbox" class="toggle-checkbox" name="my-checkbox" checked>
                         </td>
                     </tr>
-                    <tr class="customer-info hidden product-variant">
+                    <tr class="customer-info hidden _1000 product-variant">
                         <td colspan="6">
                             <a href="#"><span>LaBoheme Mesh Strap Watch / Rose Gold</span></a>
                         </td>
@@ -171,7 +186,7 @@
                         <td><span>5</span></td>
                         <td colspan="2"></td>
                     </tr>
-                    <tr class="customer-info hidden product-variant">
+                    <tr class="customer-info hidden _1000 product-variant">
                         <td colspan="6">
                             <a href="#"><span>LaBoheme Mesh Strap Watch / Rose Gold</span></a>
                         </td>
@@ -179,7 +194,7 @@
                         <td><span>5</span></td>
                         <td colspan="2"></td>
                     </tr>
-                    <tr class="customer-info hidden product-variant">
+                    <tr class="customer-info hidden _1000 product-variant">
                         <td colspan="6">
                             <a href="#"><span>LaBoheme Mesh Strap Watch / Rose Gold</span></a>
                         </td>
@@ -187,7 +202,7 @@
                         <td><span>5</span></td>
                         <td colspan="2"></td>
                     </tr>
-                    <tr class="customer-row active" style="cursor: default;">
+                    <tr class="customer-row" style="cursor: default;">
                         <td>
                             <div class="with-img">
                                 <span><a href="#">My Girl Sunglasses</a> <br><small>10001</small></span>
@@ -207,7 +222,7 @@
                             <a href="#" class="link-style"><span>Flo & Frankie</span></a>
                         </td>
                         <td>
-                            <a href="#" class="link-style"><span>3 Variants <i class="fa fa-caret-down" aria-hidden="true"></i></span></a>
+                            <a href="#" class="link-style view-variant" data-id="_1001"><span>3 Variants <i class="fa fa-caret-down" aria-hidden="true"></i></span></a>
                         </td>
                         <td>
                            <span>198.80</span>
@@ -221,6 +236,14 @@
                         <td>
                             <input type="checkbox" class="toggle-checkbox" name="my-checkbox" checked>
                         </td>
+                    </tr>
+                    <tr class="customer-info hidden _1001 product-variant">
+                        <td colspan="6">
+                            <a href="#"><span>LaBoheme Mesh Strap Watch / Rose Gold</span></a>
+                        </td>
+                        <td><span>198.90</span></td>
+                        <td><span>5</span></td>
+                        <td colspan="2"></td>
                     </tr>
                 </tbody>
             </table>

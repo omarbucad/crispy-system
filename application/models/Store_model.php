@@ -3,7 +3,7 @@
 class Store_model extends CI_Model {
 
     public function get_general_setup(){
-        $user = $this->session->userdata("user");
+        $store_id = $this->data['session_data']->store_id;
 
         $this->db->select("s.store_name , s.default_currency , s.sku_generation_type , s.current_sequence_sku , s.display_price_settings , s.physical_address , s.postal_address , s.contact_id");
         $this->db->select("tc.first_name as contact_first_name , tc.last_name as contact_last_name , tc.email as contact_email , tc.phone as contact_phone , tc.website as contact_website , tc.field_1 , tc.field_2");
@@ -12,7 +12,7 @@ class Store_model extends CI_Model {
         $this->db->join("store_contact tc" , "tc.store_contact_id = s.contact_id");
         $this->db->join("store_address sa1" , "sa1.store_address_id = s.physical_address");
         $this->db->join("store_address sa2" , "sa2.store_address_id = s.postal_address");
-        $result = $this->db->where("s.store_id" , $user->store_id)->get("store s")->row();
+        $result = $this->db->where("s.store_id" , $store_id)->get("store s")->row();
 
         return $result;
     }
@@ -279,4 +279,5 @@ class Store_model extends CI_Model {
 
         return $result;
     }
+
 }
