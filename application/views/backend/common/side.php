@@ -68,7 +68,7 @@
                                 <li><a href="<?php echo site_url("app/product"); ?>">Products</a></li>
                                 <li><a href="<?php echo site_url("app/product/stock-control"); ?>">Stock Control</a></li>
                                 <li><a href="<?php echo site_url("app/product/price-books"); ?>">Price Books</a></li>
-                                <li><a href="<?php echo site_url("app/product/types"); ?>">Product Types</a></li>
+                                <li><a href="<?php echo site_url("app/product/type"); ?>">Product Types</a></li>
                                 <li><a href="<?php echo site_url("app/product/supplier"); ?>">Supplier</a></li>
                                 <li><a href="<?php echo site_url("app/product/brands"); ?>">Brands</a></li>
                                 <li><a href="<?php echo site_url("app/product/tags"); ?>">Product Tags</a></li>

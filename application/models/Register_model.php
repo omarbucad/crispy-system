@@ -168,9 +168,10 @@ class Register_model extends CI_Model {
     public function signin($user){
         $this->db->select("u.user_id , u.display_name , u.email_address , u.role , u.store_id , u.outlet_id , u.image_path , u.image_name");
         $this->db->select("up.plan_type , s.store_name");
+        $this->db->select("sa1.country");
         $this->db->join("user_plan up" , "up.store_id = u.store_id");
         $this->db->join("store s" , "s.store_id = u.store_id");
-
+        $this->db->join("store_address sa1" , "sa1.store_address_id = s.physical_address");
         if(is_array($user)){
             $this->db->where("u.username" , $user['username']);
             $this->db->where("u.password" , md5($user['password']));

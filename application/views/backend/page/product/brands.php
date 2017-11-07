@@ -17,10 +17,10 @@
         </div>
 
         <div class="container">
-            <table class="table my-table">
+            <table class="customer-table">
                 <thead>
                     <tr>
-                        <th width="30%">Name</th>
+                        <th width="30%"> <a href="#">Name <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></a></th>
                         <th width="30%">Description</th>
                         <th width="20%">Number of Products</th>
                         <th width="20%"></th>
@@ -28,16 +28,15 @@
                 </thead>
                 <tbody>
                     <?php foreach($product_brand_list as $row) : ?>
-                        <tr>
-                            <td><strong><a href="#" class="link-style"><?php echo $row->brand_name; ?></a></strong></td>
-                            <td><?php echo $row->description; ?></td>
-                            <td>0</td>
+                        <tr class="customer-row" style="cursor: default;">
+                            <td><span><strong><a href="<?php echo site_url("app/product/?brands=$row->product_brand_id"); ?>" class="link-style"><?php echo $row->brand_name; ?></a></strong></span></td>
+                            <td><span><?php echo $row->description; ?></span></td>
+                            <td><span>0</span></td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="...">
-                                    <a href="#" class="btn btn-link">View Products</a>
-                                    <a href="#" class="btn btn-link" title="Edit Brand"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                    <a href="#" class="btn btn-link" title="Remove Brand"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                                  
+                                    <a href="<?php echo site_url("app/product/?brands=$row->product_brand_id"); ?>" class="btn btn-link">View Products</a>
+                                    <a href="<?php echo site_url("app/product/brands/edit/$row->product_brand_id"); ?>" class="btn btn-link" title="Edit Brand"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                    <a href="<?php echo site_url("app/product/brands/delete/$row->product_brand_id"); ?>" class="btn btn-link" title="Remove Brand"><i class="fa fa-trash" aria-hidden="true"></i></a>
                                 </div>
                             </td>
                         </tr>

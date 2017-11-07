@@ -283,5 +283,26 @@ section.sec_border_bottom:not(:last-child){
 }
 
 a.link-style{
-	color: #06c !important;
+	color: #19B5FE !important;
+}
+
+.customer-row .with-img {
+	overflow: hidden;
+}
+.customer-row .with-img > span{
+	float: left;
+	width: 70%;
+	padding: 10px 0px 0px 0px;
+}
+.customer-row .with-img > img{
+	float: left;
+	width: 30%;
+}
+
+.customer-table .product-variant > td{
+	padding: 15px 5px !important;
+}
+
+.customer-table .product-variant > td > a{
+	padding-left: 40px;
 }

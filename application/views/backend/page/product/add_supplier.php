@@ -7,7 +7,7 @@
     <div class="side-body padding-top">
 
         <div class="container" >
-        	<a href="<?php echo site_url('app/setup/users'); ?>" style="display:inline-block;position: relative;left: -10px;"><i class="fa fa-arrow-left fa-3x"  aria-hidden="true"></i> </a> <h1 style="display:inline-block;"> Add a Supplier</h1>
+        	<a href="<?php echo site_url('app/product/supplier/add'); ?>" style="display:inline-block;position: relative;left: -10px;"><i class="fa fa-arrow-left fa-3x"  aria-hidden="true"></i> </a> <h1 style="display:inline-block;"> Add a Supplier</h1>
         </div>
         <div class="grey-bg ">
             <div class="container ">
@@ -36,19 +36,19 @@
                                 <div class="col-lg-6 col-xs-12">
                                     <div class="form-group">
                                         <label for="supplier_name">Supplier Name</label>
-                                        <input type="text" name="supplier_name" id="supplier_name" class="form-control" placeholder="Supplier Name">
+                                        <input type="text" name="supplier_name" id="supplier_name" class="form-control" value="<?php echo set_value("supplier_name"); ?>" placeholder="Supplier Name">
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-xs-12">
                                     <div class="form-group">
                                         <label for="default_markup">Default Markup</label>
-                                        <input type="number" step="0" name="default_markup" id="default_markup" class="form-control" placeholder="Default Markup">
+                                        <input type="number" step="0" name="default_markup" id="default_markup" value="<?php echo set_value("default_markup"); ?>" class="form-control" placeholder="Default Markup">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="description">Description</label>
-                                <textarea class="form-control" name="description" rows="5"></textarea>
+                                <textarea class="form-control" name="description" rows="5"><?php echo set_value("description"); ?></textarea>
                             </div>
                         </div>
                         
@@ -65,13 +65,13 @@
                                 <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                     <div class="form-group">
                                         <label for="first_name">First Name</label>
-                                        <input type="text" name="first_name" id="first_name" class="form-control">
+                                        <input type="text" name="first_name" id="first_name" value="<?php echo set_value("first_name"); ?>" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                     <div class="form-group">
                                         <label for="last_name">Last Name</label>
-                                        <input type="text" name="last_name" id="last_name" class="form-control">
+                                        <input type="text" name="last_name" id="last_name" value="<?php echo set_value("first_name"); ?>" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -79,13 +79,13 @@
                                 <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                     <div class="form-group">
                                         <label for="company">Company</label>
-                                        <input type="text" name="company" id="company" class="form-control">
+                                        <input type="text" name="company" id="company" class="form-control" value="<?php echo set_value("first_name"); ?>">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input type="email" name="email" id="email" class="form-control">
+                                        <input type="email" name="email" id="email" class="form-control" value="<?php echo set_value("email"); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -93,13 +93,13 @@
                                 <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                     <div class="form-group">
                                         <label for="phone">Phone</label>
-                                        <input type="text" name="phone" id="phone" class="form-control">
+                                        <input type="text" name="phone" id="phone" class="form-control" value="<?php echo set_value("phone"); ?>">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                     <div class="form-group">
                                         <label for="mobile">Mobile</label>
-                                        <input type="text" name="mobile" id="mobile" class="form-control">
+                                        <input type="text" name="mobile" id="mobile" class="form-control" value="<?php echo set_value("mobile"); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -107,13 +107,13 @@
                                 <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                     <div class="form-group">
                                         <label for="fax">Fax</label>
-                                        <input type="text" name="fax" id="fax" class="form-control">
+                                        <input type="text" name="fax" id="fax" class="form-control" value="<?php echo set_value("fax"); ?>">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                     <div class="form-group">
                                         <label for="website">Website</label>
-                                        <input type="text" name="website" id="website" class="form-control">
+                                        <input type="text" name="website" id="website" class="form-control" value="<?php echo set_value("website"); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -121,13 +121,13 @@
                                 <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                     <div class="form-group">
                                         <label for="field1">Twitter</label>
-                                        <input type="text" name="field1" id="field1" class="form-control">
+                                        <input type="text" name="field1" id="field1" class="form-control" value="<?php echo set_value("field1"); ?>">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-6 no-margin-bottom">
                                     <div class="form-group">
-                                        <label for="field1">Facebook</label>
-                                        <input type="text" name="field2" id="field1" class="form-control">
+                                        <label for="field2">Facebook</label>
+                                        <input type="text" name="field2" id="field2" class="form-control" value="<?php echo set_value("field2"); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -144,37 +144,37 @@
                                 <dt>Street 1</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="physical[street1]" class="form-control" >
+                                        <input type="text" name="physical[street1]" class="form-control" value="<?php echo set_value("physical[street1]"); ?>">
                                     </div>
                                 </dd>
                                 <dt>Street 2</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="physical[street2]" class="form-control" >
+                                        <input type="text" name="physical[street2]" class="form-control" value="<?php echo set_value("physical[street2]"); ?>">
                                     </div>
                                 </dd>
                                 <dt>Suburb</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="physical[suburb]" class="form-control" >
+                                        <input type="text" name="physical[suburb]" class="form-control" value="<?php echo set_value("physical[suburb]"); ?>">
                                     </div>
                                 </dd>
                                 <dt>City</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="physical[city]" class="form-control" >
+                                        <input type="text" name="physical[city]" class="form-control" value="<?php echo set_value("physical[city]"); ?>">
                                     </div>
                                 </dd>
                                 <dt>Postcode</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="physical[postcode]" class="form-control" >
+                                        <input type="text" name="physical[postcode]" class="form-control" value="<?php echo set_value("physical[postcode]"); ?>">
                                     </div>
                                 </dd>
                                 <dt>State</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="physical[state]" class="form-control" >
+                                        <input type="text" name="physical[state]" class="form-control" value="<?php echo set_value("physical[street1]"); ?>">
                                     </div>
                                 </dd>
                                 <dt>Country</dt>
@@ -182,7 +182,7 @@
                                     <div class="form-group">
                                         <select class="form-control" name="physical[country]">
                                             <?php foreach($countries_list as $code =>  $country) : ?>
-                                                <option value="<?php echo $code; ?>" ><?php echo $country?></option>
+                                                <option value="<?php echo $code; ?>" <?php echo ($session_data->country == $code) ? "selected" : "" ; ?> ><?php echo $country?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -190,43 +190,42 @@
                             </dl>
                         </div>
                         <div class="col-xs-12 col-lg-4">
-                            <input type="hidden" name="postal_address_id">
                             <dl class="dl-horizontal">
                                 <dt>Postal Address</dt><dd><a href="javascript:void(0);" class="text-underline" style="position: relative;top: 7px;">Same as Physical Address</a><br><br><br></dd>
                                 <dt>Street 1</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="postal[street1]" class="form-control" >
+                                        <input type="text" name="postal[street1]" class="form-control" value="<?php echo set_value("postal[street1]"); ?>">
                                     </div>
                                 </dd>
                                 <dt>Street 2</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="postal[street2]" class="form-control" >
+                                        <input type="text" name="postal[street2]" class="form-control" value="<?php echo set_value("postal[street2]"); ?>">
                                     </div>
                                 </dd>
                                 <dt>Suburb</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="postal[suburb]" class="form-control" >
+                                        <input type="text" name="postal[suburb]" class="form-control" value="<?php echo set_value("postal[suburb]"); ?>">
                                     </div>
                                 </dd>
                                 <dt>City</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="postal[city]" class="form-control" >
+                                        <input type="text" name="postal[city]" class="form-control" value="<?php echo set_value("postal[city]"); ?>" >
                                     </div>
                                 </dd>
                                 <dt>Postcode</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="postal[postcode]" class="form-control" >
+                                        <input type="text" name="postal[postcode]" class="form-control" value="<?php echo set_value("postal[postcode]"); ?>" >
                                     </div>
                                 </dd>
                                 <dt>State</dt>
                                 <dd>
                                     <div class="form-group">
-                                        <input type="text" name="postal[state]" class="form-control" >
+                                        <input type="text" name="postal[state]" class="form-control" value="<?php echo set_value("postal[state]"); ?>" >
                                     </div>
                                 </dd>
                                 <dt>Country</dt>
@@ -234,7 +233,7 @@
                                     <div class="form-group">
                                         <select class="form-control" name="postal[country]">
                                             <?php foreach($countries_list as $code =>  $country) : ?>
-                                                <option value="<?php echo $code; ?>" ><?php echo $country?></option>
+                                                <option value="<?php echo $code; ?>" <?php echo ($session_data->country == $code) ? "selected" : "" ; ?> ><?php echo $country?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>

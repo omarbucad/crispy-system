@@ -66,6 +66,7 @@ $route['app/setup/add-register'] = 'app/setup/add_register';
 
 
 $route['app/product/supplier/add'] = 'app/product/add_supplier';
+$route['app/product/supplier/view/(:any)'] = 'app/product/view_supplier/$1';
 
 
 

@@ -10,10 +10,25 @@ class Product extends MY_Controller {
     }
 
 	public function index(){
-		$this->data['page_name'] = "Home";
-		$this->data['main_page'] = "backend/page/dashboard/dashboard";
+		$this->data['website_title'] = "Products | Accounts Package";
+		$this->data['page_name'] = "Product";
+		$this->data['main_page'] = "backend/page/product/product";
+		$this->data['product_type_list'] = $this->product->get_type();
+		$this->data['product_brand_list'] = $this->product->get_brand();
+		$this->data['supplier_list'] = $this->product->get_supplier();
+		$this->data['product_tag_list'] = $this->product->get_tag();
+
 		$this->load->view('backend/master' , $this->data);
 	}
+
+	public function add(){
+		$this->data['website_title'] = "Products - Add | Accounts Package";
+		$this->data['page_name'] = "Product";
+		$this->data['main_page'] = "backend/page/product/add_product";
+
+		$this->load->view('backend/master' , $this->data);
+	}
+
 	// PRODUCT TAGS
 	public function tags(){
 		$this->data['website_title'] = "Product - Tags | Accounts Package";
@@ -70,17 +85,78 @@ class Product extends MY_Controller {
 		$this->data['website_title'] = "Product - Supplier | Accounts Package";
 		$this->data['page_name'] = "Product Supplier";
 		$this->data['main_page'] = "backend/page/product/supplier";
+		$this->data['supplier_list'] = $this->product->get_supplier();
+		$this->load->view('backend/master' , $this->data);
+	}
+	public function view_supplier($id){
+		$supplier_id = $this->hash->decrypt($id);
+
+		$this->data['website_title'] = "Product - Supplier | Accounts Package";
+		$this->data['page_name'] = "Product Supplier";
+		$this->data['main_page'] = "backend/page/product/view_supplier";
+		$this->data['supplier_information'] = $this->product->getSupplierById($supplier_id);
+
 
 		$this->load->view('backend/master' , $this->data);
+
 	}
 
 	public function add_supplier(){
-		$this->data['website_title'] = "Product - Add Supplier | Accounts Package";
-		$this->data['page_name'] = "Product Supplier";
-		$this->data['main_page'] = "backend/page/product/add_supplier";
-		$this->data['countries_list'] = $this->countries_list();
 
+		$this->form_validation->set_rules('supplier_name'		, 'Supplier Name'			, 'trim|required');
+		$this->form_validation->set_rules('default_markup'		, 'Default Markup'			, 'trim|required');
+		$this->form_validation->set_rules('first_name'			, 'Contact Name'			, 'trim|required');
+
+		if ($this->form_validation->run() == FALSE){ 
+
+			$this->data['website_title'] = "Product - Add Supplier | Accounts Package";
+			$this->data['page_name'] = "Product Supplier";
+			$this->data['main_page'] = "backend/page/product/add_supplier";
+			$this->data['countries_list'] = $this->countries_list();
+
+			$this->load->view('backend/master' , $this->data);
+		}else{
+
+			if($supplier_id = $this->product->add_supplier()){
+				$this->session->set_flashdata('status' , 'success');	
+				$this->session->set_flashdata('message' , 'Successfully Added a new Supplier');	
+
+				redirect("app/product/supplier" , 'refresh');
+			}else{
+				$this->session->set_flashdata('status' , 'error');
+				$this->session->set_flashdata('message' , 'Something went wrong');	
+
+				redirect("app/product/supplier/add" , 'refresh');
+			}
+
+			
+		}
+
+	}
+
+	// TYPES
+
+	public function type(){
+		$this->data['website_title'] = "Product - Types | Accounts Package";
+		$this->data['page_name'] = "Product Types";
+		$this->data['main_page'] = "backend/page/product/types";
+		$this->data['product_type_list'] = $this->product->get_type();
 		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function add_type(){
+		if($this->input->post()){
+
+			if($this->product->add_product_type()){
+				$this->session->set_flashdata('status' , 'success');	
+				$this->session->set_flashdata('message' , 'Successfully Added a new Product Type');	
+			}else{
+				$this->session->set_flashdata('status' , 'error');
+				$this->session->set_flashdata('message' , 'Something went wrong');	
+			}
+		}
+
+		redirect("app/product/type" , 'refresh');
 	}
 
 }

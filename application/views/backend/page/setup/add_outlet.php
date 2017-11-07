@@ -160,7 +160,7 @@
 	    							<div class="form-group">
 	    								<select class="form-control" name="physical[country]">
 	    									<?php foreach($countries_list as $code =>  $country) : ?>
-	    										<option value="<?php echo $code; ?>"><?php echo $country?></option>
+	    										<option value="<?php echo $code; ?>" <?php echo ($session_data->country == $code) ? "selected" : "" ; ?>><?php echo $country?></option>
 	    									<?php endforeach; ?>
 	    								</select>
 	    							</div>

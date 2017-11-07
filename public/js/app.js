@@ -21,6 +21,12 @@ $(function() {
 });
 
 $(function() {
+  return $('.toggle-checkbox').bootstrapSwitch({
+    size: "mini"
+  });
+});
+
+$(function() {
   return $('input.daterange').daterangepicker();
 });
 
