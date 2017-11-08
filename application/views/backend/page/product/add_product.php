@@ -44,6 +44,7 @@
 
 		$(this).closest("tr").find(".tax_amount").text(tax_amount.toFixed(2));
 		$(this).closest("tr").find(".retail_price").text(retail_price_with_tax);
+		$(this).closest("tr").find(".retail_price").val(retail_price_with_tax);
 
 	});
 
@@ -83,6 +84,7 @@
 
 			$(v).closest("tr").find(".tax_amount").text(tax_amount.toFixed(2));
 			$(v).closest("tr").find(".retail_price").text(retail_price_with_tax);
+			$(v).closest("tr").find(".retail_price").val(retail_price_with_tax);
 		});
 	}
 
@@ -187,7 +189,7 @@
     		<li class="active">Add Product</li>
     	</ol>	
     	<h3>Add Product</h3>
-    	<form class="form-horizontal" action="<?php echo site_url("app/setup/general_update"); ?>" method="POST">
+    	<form class="form-horizontal" action="<?php echo site_url("app/product/add"); ?>" method="POST">
     		<input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
     		<!-- STORE SETTINGS -->
     		<div class="card margin-bottom">
@@ -203,26 +205,26 @@
 	    						<dt>Product Name</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="store_name" class="form-control">
+	    								<input type="text" name="product_name" class="form-control">
 	    							</div>
 	    						</dd>
 	    						<dt>Product handle</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="store_name" class="form-control">
+	    								<input type="text" name="product_handle" class="form-control">
 	    							</div>
 	    						</dd>
 	    						<dt>Description</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<textarea class="textarea" name="note"></textarea>
+	    								<textarea class="textarea" name="description"></textarea>
 	    							</div>
 	    						</dd>
 	    						<dt>Product Tags</dt>
 	    						<dd>
 	    							<div class="form-group">
 	    								<div class="input-group">
-										  <select class="form-control select2" name="tags" id="select_tags" multiple="">
+										  <select class="form-control select2" name="tags[]" id="select_tags" multiple="">
 										  	<?php foreach($product_tag_list as $row) : ?>
 										  		<option value="<?php echo $row->product_tag_id; ?>"><?php echo $row->tag_name; ?></option>
 										  	<?php endforeach; ?>
@@ -241,7 +243,7 @@
 	    								<dt>Product Type</dt>
 	    								<dd>
 			    							<div class="form-group">
-			    								<select class="form-control">
+			    								<select class="form-control" name="type">
 			    									<option value=""></option>
 			    									<?php foreach($product_type_list as $row) : ?>
 			                                            <option value="<?php echo $row->product_type_id; ?>"><?php echo $row->type_name; ?></option>
@@ -252,7 +254,7 @@
 			    						<dt>Supplier</dt>
 	    								<dd>
 			    							<div class="form-group">
-			    								<select class="form-control">
+			    								<select class="form-control" name="supplier">
 			    									<option value=""></option>
 			    									<?php foreach($supplier_list as $row) : ?>
 			                                            <option value="<?php echo $row->supplier_id; ?>"><?php echo $row->supplier_name; ?></option>
@@ -263,7 +265,7 @@
 			    						<dt>Supplier Code</dt>
 	    								<dd>
 			    							<div class="form-group">
-			    								<input type="text" name="store_name" class="form-control">
+			    								<input type="text" name="supplier_code" class="form-control">
 			    							</div>
 			    						</dd>
 	    							</dl>
@@ -273,7 +275,7 @@
 	    								<dt>Product brand</dt>
 	    								<dd>
 			    							<div class="form-group">
-			    								<select class="form-control">
+			    								<select class="form-control" name="brand">
 			    									<option value=""></option>
 			    									<?php foreach($product_brand_list as $row) : ?>
 			                                            <option value="<?php echo $row->product_brand_id; ?>"><?php echo $row->brand_name; ?></option>
@@ -284,13 +286,13 @@
 			    						<dt>Sales account code</dt>
 	    								<dd>
 			    							<div class="form-group">
-			    								<input type="text" name="store_name" class="form-control">
+			    								<input type="text" name="sales_account_code" class="form-control">
 			    							</div>
 			    						</dd>
 			    						<dt>Purchase account code</dt>
 	    								<dd>
 			    							<div class="form-group">
-			    								<input type="text" name="store_name" class="form-control">
+			    								<input type="text" name="purchase_account_code" class="form-control">
 			    							</div>
 			    						</dd>
 	    							</dl>
@@ -338,16 +340,16 @@
 	    							<span class="help-block">Excluding tax</span>
 	    						</td>
 	    						<td>
-	    							<input type="number" class="form-control supply-markup" name="supply_price" value="0.00" step="0.01">
+	    							<input type="number" class="form-control supply-markup" name="markup_price" value="0.00" step="0.01">
 	    						</td>
 	    						<td>
-	    							<input type="number" class="form-control retail_price_1" name="supply_price"  value="0.00" step="0.01" readonly="">
+	    							<input type="number" class="form-control retail_price_1" name="retail_price_wot"  value="0.00" step="0.01" readonly="">
 	    							<span class="help-block">Excluding tax</span>
 	    						</td>
 	    						<?php if($store_settings->display_price_settings == "WT") : ?>
 	    						<td>
 	    							<div class="input-group">
-								    	<select class="form-control compute-sales-tax-wt" data-default="<?php echo $store_settings->tax_rate; ?>">
+								    	<select class="form-control compute-sales-tax-wt" data-default="<?php echo $store_settings->tax_rate; ?>" name="sales_tax">
 								    		<option value="DEFAULT" selected="">Default tax for this outlet</option>
 								    		<option disabled="">-------------</option>
 								    		<?php foreach($default_sales_tax_list["sales_tax"] as $row) : ?>
@@ -365,7 +367,7 @@
 	    							<span class="help-block sales-tax-span">Currently, <?php echo $store_settings->tax_name; ?></span>
 	    						</td>
 	    						<td>
-	    							<input type="number" class="form-control retail_price_2" name="supply_price" value="0.00" step="0.01" readonly="">
+	    							<input type="number" class="form-control retail_price_2" name="retail_price_wt" value="0.00" step="0.01" readonly="">
 	    							<span class="help-block">Including tax</span>
 	    						</td>
 	    						<?php endif; ?>
@@ -388,13 +390,14 @@
 	    					</thead>
 	    					<tbody>
 	    						<?php foreach($outlet_list as $outlet) : ?>
+	    							<input type="hidden" name="outlet_tax[<?php echo $outlet->outlet_id?>][default_tax]" value="<?php echo $outlet->tax_rate; ?>">
 	    							<tr class="customer-row" style="cursor: default;">
 		    							<td><span><?php echo $outlet->outlet_name?></span></td>
 		    							<td>
 		    								<div class="row">
 		    									<div class="col-xs-6 col-lg-6 no-margin-bottom">
 		    										<div class="form-group no-margin-bottom">
-			    										<select class="form-control compute-sales-tax-wot" name="outlet_tax[<?php echo $outlet->outlet_id?>]" data-default="<?php echo $outlet->tax_rate; ?>">
+			    										<select class="form-control compute-sales-tax-wot" name="outlet_tax[<?php echo $outlet->outlet_id?>][sales_tax]" data-default="<?php echo $outlet->tax_rate; ?>">
 			    											<option value="DEFAULT">Default tax for this outlet</option>
 			    											<option disabled="">-------------</option>
 			    											<?php foreach($default_sales_tax_list["sales_tax"] as $row) : ?>
@@ -413,7 +416,10 @@
 		    								</div>
 		    							</td>
 		    							<td class="text-right"><span class="tax_amount">0.00</span></td>
-		    							<td class="text-right"><strong><span class="retail_price">0.00</span></strong></td>
+		    							<td class="text-right">
+		    								<input type="hidden" name="outlet_tax[<?php echo $outlet->outlet_id?>][retail_price]" class="retail_price">
+		    								<strong><span class="retail_price">0.00</span></strong>
+		    							</td>
 		    						</tr>
 	    						<?php endforeach; ?>
 	    					</tbody>
@@ -508,13 +514,13 @@
 		    							<tr class="customer-row" style="cursor: default;">
 			    							<td><span><?php echo $outlet->outlet_name?></span></td>
 			    							<td>
-			    								<input type="number" name="current_inventory[<?php echo $outlet->outlet_id; ?>]" class="form-control current_inventory" value="0">
+			    								<input type="number" name="inventory[<?php echo $outlet->outlet_id; ?>][current_inventory]" class="form-control current_inventory" value="0">
 			    							</td>
 			    							<td>
-			    								<input type="number" name="reorder_point[<?php echo $outlet->outlet_id; ?>]" class="form-control reorder_point" value="0">
+			    								<input type="number" name="inventory[<?php echo $outlet->outlet_id; ?>][reorder_point]" class="form-control reorder_point" value="0">
 			    							</td>
 			    							<td>
-			    								<input type="number" name="reorder_amount[<?php echo $outlet->outlet_id; ?>]" class="form-control reorder_amount" value="0">
+			    								<input type="number" name="inventory[<?php echo $outlet->outlet_id; ?>][reorder_amount]" class="form-control reorder_amount" value="0">
 			    							</td>
 			    						</tr>
 		    						<?php endif; ?>
@@ -532,15 +538,15 @@
 			    				<tbody>
 			    					<tr class="customer-row" style="cursor: default;">
 			    						<td>
-			    							<select class="form-control">
-			    								<option>Attribute 1</option>
-			    								<option>Attribute 2</option>
-			    								<option>Attribute 3</option>
+			    							<select class="form-control" name="attribute[product_attribute][]">
+			    								<option value="attrib1">Attribute 1</option>
+			    								<option value="attrib2">Attribute 2</option>
+			    								<option value="attrib3">Attribute 3</option>
 			    							</select>
 			    						</td>
 			    						<td>
 			    							<div class="input-group">
-											  <input type="text" name="" class="form-control" placeholder="Separate by comma">
+											  <input type="text" name="attribute[product_attribute_value][]" class="form-control" placeholder="Separate by comma">
 											  <span class="input-group-btn" id="basic-addon2" style="visibility: hidden;">
 											  		<a href="javascript:void(0);" class="btn btn-link remove-attribute" style="margin: 0px;"><i class="fa fa-trash" aria-hidden="true"></i></a>
 											  </span>
@@ -573,11 +579,11 @@
 		    						<tr>
 		    							<td>
 		    								<label>Product : </label>
-		    								<input type="text" name="" class="form-control">
+		    								<input type="text" name="composite[product_id][]" class="form-control">
 		    							</td>
 		    							<td>
 		    								<label>Quantity : </label>
-		    								<input type="number" name="" value="0" class="form-control">
+		    								<input type="number" name="composite[quantity][]" value="0" class="form-control">
 		    							</td>
 		    							<td>
 		    			
