@@ -310,3 +310,26 @@ a.link-style{
 	border:1px solid rgba(0,0,0,0.1);
 	padding: 10px;
 }
+.product-type-btn{
+	border:1px solid rgba(0,0,0,0.1);
+	display: block;
+	text-align: center;
+	padding: 20px;
+	text-decoration: none;
+}
+.product-type-btn img{
+	display: block;
+	margin:2px auto;
+	width: 80px;
+}
+.product-type-btn span{
+	font-weight: bold;
+	font-size: 18px;
+}
+
+.product-type-btn.active{
+	border-color: #50bc9c;
+}
+.product-type-btn.active span{
+	color: #50bc9c;
+}

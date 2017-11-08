@@ -31,16 +31,14 @@
 	    							<div class="form-group">
 	    								<div class="input-group">
 	    									<select class="form-control" name="sales_tax">
-	    										<optgroup label="Select Sales Tax">
-	    											<?php foreach($default_sales_tax_list["sales_tax"] as $row) : ?>
-		    											<option value="<?php echo $row->sales_tax_id; ?>"><?php echo $row->tax_name; ?></option>
-		    										<?php endforeach; ?>
-	    										</optgroup>
-	    										<optgroup label="----">
-		    										<?php foreach($default_sales_tax_list["group_sales_tax"] as $row) : ?>
-		    											<option value="<?php echo $row->sales_tax_group_id; ?>"><?php echo $row->tax_sales_group_name; ?></option>
-		    										<?php endforeach; ?>
-	    										</optgroup>
+	    										<option disabled="">-------------</option>
+	    										<?php foreach($default_sales_tax_list["sales_tax"] as $row) : ?>
+	    											<option value="<?php echo $row->sales_tax_id; ?>"><?php echo $row->tax_name; ?></option>
+	    										<?php endforeach; ?>
+	    										<option disabled="">-------------</option>
+	    										<?php foreach($default_sales_tax_list["group_sales_tax"] as $row) : ?>
+	    											<option value="<?php echo $row->sales_tax_group_id; ?>"><?php echo $row->tax_sales_group_name; ?></option>
+	    										<?php endforeach; ?>
 	    									</select>
 	    									<span class="input-group-btn">
 	    										<button class="btn btn-link" style="margin: 0px !important;" type="button">Add sales tax</button>

@@ -82,12 +82,15 @@ class Store_model extends CI_Model {
             $s = explode("|", $row->sales_tax_id);
             
             if($s[0] == "S"){
-                $sales_tax = $this->db->select("CONCAT(st.tax_name , ' (' , st.tax_rate , '%)') as tax_name")->where("sales_tax_id" , $s[1])->get("store_sales_tax st")->row();
+                $sales_tax = $this->db->select("CONCAT(st.tax_name , ' ( ' , st.tax_rate , '% )') as tax_name , tax_rate")->where("sales_tax_id" , $s[1])->get("store_sales_tax st")->row();
                 $result[$key]->tax_name = $sales_tax->tax_name;
+                $result[$key]->tax_rate = $sales_tax->tax_rate;
+                
             }else{
                 $sales_group = $this->db->select("tax_sales_group_name , sales_tax_id ")->where("sales_tax_group_id" , $s[1])->get("store_sales_tax_group")->row();
                 $tax_id = $this->db->select_sum("tax_rate")->where_in("sales_tax_id" , json_decode($sales_group->sales_tax_id))->get("store_sales_tax")->row();
-                $result[$key]->tax_name = $sales_group->tax_sales_group_name.' ('.$tax_id->tax_rate.' %)';
+                $result[$key]->tax_name = $sales_group->tax_sales_group_name.' ( '.$tax_id->tax_rate.' % )';
+                $result[$key]->tax_rate = $tax_id->tax_rate;
             }
         }
         
@@ -276,6 +279,18 @@ class Store_model extends CI_Model {
 
         $result = $this->db->where("outlet_id" , $outlet_id)->get("store_outlet")->row();
 
+
+        return $result;
+    }
+
+    public function get_store_settings(){
+        $store_id = $this->data['session_data']->store_id;
+
+        $this->db->select("s.store_name , s.default_currency , s.default_sales_tax , s.sku_generation_type , s.current_sequence_sku , s.display_price_settings");
+        $this->db->select("CONCAT(st.tax_name , ' ( ' , st.tax_rate , '% )' ) as tax_name , st.tax_rate");
+        $this->db->join("store_sales_tax st" , "st.sales_tax_id = s.default_sales_tax");
+        $this->db->where("s.store_id" , $store_id);
+        $result = $this->db->get("store s")->row();
 
         return $result;
     }

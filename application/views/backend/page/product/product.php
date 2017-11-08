@@ -146,7 +146,7 @@
                     <tr class="customer-row" style="cursor: default;">
                         <td>
                             <div class="with-img">
-                                <span><a href="#">My Girl Sunglasses</a> <br><small>10001</small></span>
+                                <span><a href="#">My Girl Sunglasses </a> <br><small>10001</small></span>
                                 <img src="http://192.168.1.147/crispy-system/thumbs/users/2017/11/80/80/14947775_1805564653049469_4850385028197505507_n.jpg" class="img img-responsive">
                             </div>
                         </td>
@@ -205,7 +205,7 @@
                     <tr class="customer-row" style="cursor: default;">
                         <td>
                             <div class="with-img">
-                                <span><a href="#">My Girl Sunglasses</a> <br><small>10001</small></span>
+                                <span><a href="#">My Girl Sunglasses</a> <br><small>10003</small></span>
                                 <img src="http://192.168.1.147/crispy-system/thumbs/users/2017/11/80/80/14947775_1805564653049469_4850385028197505507_n.jpg" class="img img-responsive">
                             </div>
                         </td>
@@ -213,16 +213,16 @@
                             <span>04 Nov 2017</span>
                         </td>
                         <td>
-                            <a href="#" class="link-style"><span>watch</span></a>
+                            <span>-</span>
                         </td>
                         <td>
-                            <a href="#" class="link-style"><span>Cluse</span></a>
+                            <span>-</span>
                         </td>
                         <td>
-                            <a href="#" class="link-style"><span>Flo & Frankie</span></a>
+                            <span>-</span>
                         </td>
                         <td>
-                            <a href="#" class="link-style view-variant" data-id="_1001"><span>3 Variants <i class="fa fa-caret-down" aria-hidden="true"></i></span></a>
+                            <a href="#" class="link-style view-variant" data-id="_1001"><span>1 Variants <i class="fa fa-caret-down" aria-hidden="true"></i></span></a>
                         </td>
                         <td>
                            <span>198.80</span>

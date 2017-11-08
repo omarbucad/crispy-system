@@ -29,11 +29,15 @@ class Product extends MY_Controller {
 		$this->data['product_type_list'] = $this->product->get_type();
 		$this->data['product_brand_list'] = $this->product->get_brand();
 		$this->data['supplier_list'] = $this->product->get_supplier();
-		$this->data['sales_tax_list'] = $this->store->get_sales_tax();
+		$this->data['default_sales_tax_list'] = $this->store->get_default_salestax_dropdown();
 		$this->data['product_tag_list'] = $this->product->get_tag();
-		$this->data['store_settings'] = $this->store->get_general_setup();
+		$this->data['store_settings'] = $this->store->get_store_settings();
+		$this->data['outlet_list'] = $this->store->get_outlet();
 
-
+		/*
+		ALTER TABLE `store` ADD `default_sales_tax` INT NOT NULL AFTER `default_currency`;
+		ALTER TABLE `store` CHANGE `display_price_settings` `display_price_settings` VARCHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'WT - With Tax | WOT - Without Tax';
+		*/
 		$this->load->view('backend/master' , $this->data);
 	}
 

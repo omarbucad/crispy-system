@@ -148,8 +148,11 @@ class Register_model extends CI_Model {
             "outlet_id" => 0 , /* 0 - All outlet */ 
             "store_id" => $store_id
         ]);
+
+        /* UPDATE STORE */
         $this->db->where("store_id" , $store_id)->update("store" , [
-            "main_outlet_id" => $outlet_id
+            "main_outlet_id"        => $outlet_id ,
+            "default_sales_tax"     => $sales_tax_id
         ]);
 
         $this->db->trans_complete();
