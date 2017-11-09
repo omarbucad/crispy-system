@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/sweetalert2.min.css?version='.$version) ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/bootstrap-switch.min.css?version='.$version) ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/select2.min.css?version='.$version) ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/lib/css/bootstrap-tagsinput.css?version='.$version) ?>">
 
     <link rel="stylesheet" type="text/css" href="<?php echo site_url('public/css/multi-select.css?version='.$version) ?>">
 
@@ -38,6 +39,7 @@
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/sweetalert2.all.min.js?version='.$version) ?>"></script>
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap-switch.min.js?version='.$version) ?>"></script>
     <script type="text/javascript" src="<?php echo site_url('public/lib/js/select2.full.min.js?version='.$version) ?>"></script>
+    <script type="text/javascript" src="<?php echo site_url('public/lib/js/bootstrap-tagsinput.min.js?version='.$version) ?>"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
     

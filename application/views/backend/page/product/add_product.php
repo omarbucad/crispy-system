@@ -1,55 +1,5 @@
+<script type="text/javascript" src="<?php echo site_url('public/js/product.js?version='.$version) ?>"></script>
 <script type="text/javascript">
-	
-	$(document).on("click" , '.add-tag-btn' , function(){
-		var newStateVal = "MHAR";
-	      // Set the value, creating a new option if necessary
-	      if ($("#select_tags").find("option[value=" + newStateVal + "]").length) {
-	        $("#select_tags").val(newStateVal).trigger("change");
-	      } else { 
-	        // Create the DOM option that is pre-selected by default
-	        var newState = new Option(newStateVal, newStateVal, true, true);
-	        // Append it to the select
-	        $("#select_tags").append(newState).trigger('change');
-	      } 
-	});
-
-	$(document).on("click" , '.view-outlet' , function(){
-		var $me = $(this);
-
-		if($me.find("span").text() == "View taxes by outlet"){
-			$me.find("span").text("Hide taxes by outlet");
-			$me.find("i").removeClass("fa-caret-down").addClass("fa-caret-up");
-			$("#outlet-table").removeClass("hide");
-		}else{
-			$me.find("span").text("View taxes by outlet");
-			$me.find("i").removeClass("fa-caret-up").addClass("fa-caret-down");
-			$("#outlet-table").addClass("hide");
-		}
-	});
-
-	$(document).on('change' , '.compute-sales-tax-wot' , function(){
-
-		if($(this).val() == "DEFAULT"){
-			var rate = parseFloat($(this).data("default"));
-			$(this).closest(".row").find(".sales-tax-span").fadeIn();
-		}else{
-			var rate = parseFloat($(this).find(":selected").data("rate"));
-			$(this).closest(".row").find(".sales-tax-span").fadeOut();
-		}
-
-		var retail_price = parseFloat($(".retail_price_1").val());
-
-		var tax_amount = parseFloat(retail_price * (rate / 100));
-		var retail_price_with_tax = parseFloat(retail_price + tax_amount).toFixed(2);
-
-		$(this).closest("tr").find(".tax_amount").text(tax_amount.toFixed(2));
-		$(this).closest("tr").find(".retail_price").text(retail_price_with_tax);
-		$(this).closest("tr").find(".retail_price").val(retail_price_with_tax);
-
-	});
-
-	$(document).on('change' , '.compute-sales-tax-wt' , computeSales);
-
 	$(document).on('keyup' , '.supply-price , .supply-markup' , function(){
 		var supply_price = parseFloat($(".supply-price").val());
 		var markup = parseFloat($(".supply-markup").val());
@@ -66,121 +16,6 @@
 		
 	});
 
-	function computeSales2(){
-		$.each( $(".compute-sales-tax-wot") , function(k , v){
-
-			if($(v).val() == "DEFAULT"){
-				var rate = parseFloat($(v).data("default"));
-				$(v).closest(".row").find(".sales-tax-span").fadeIn();
-			}else{
-				var rate = parseFloat($(v).find(":selected").data("rate"));
-				$(v).closest(".row").find(".sales-tax-span").fadeOut();
-			}
-
-			var retail_price = parseFloat($(".retail_price_1").val());
-
-			var tax_amount = parseFloat(retail_price * (rate / 100));
-			var retail_price_with_tax = parseFloat(retail_price + tax_amount).toFixed(2);
-
-			$(v).closest("tr").find(".tax_amount").text(tax_amount.toFixed(2));
-			$(v).closest("tr").find(".retail_price").text(retail_price_with_tax);
-			$(v).closest("tr").find(".retail_price").val(retail_price_with_tax);
-		});
-	}
-
-	function computeSales(){
-
-		if($(".compute-sales-tax-wt").val() == "DEFAULT"){
-			var rate = parseFloat($(".compute-sales-tax-wt").data("default"));
-			$(".sales-tax-span").fadeIn();
-		}else{
-			var rate = parseFloat($(".compute-sales-tax-wt").find(":selected").data("rate"));
-			$(".sales-tax-span").fadeOut();
-		}
-
-		var retail_price = parseFloat($(".retail_price_1").val());
-		var tax_amount = parseFloat(retail_price * (rate / 100));
-
-		$(".compute-sales-tax-wt").parent().find("span").text(tax_amount.toFixed(2));
-		$(".retail_price_2").val(parseFloat(retail_price + tax_amount).toFixed(2));
-	}
-
-	$(document).on('click' , '.apply-all' , function(){
-		var className = $(this).data("class");
-		$(className).val($(this).closest("td").find("input").val());
-	});
-
-	$(document).on('click' , '.add-attribute' , function(){
-		var table = $(this).parent().find("table");
-		var clone = table.find("tbody > tr:first-child").clone();
-
-		clone.find(".input-group-btn").css("visibility" , "visible");
-
-		if(table.find("tbody > tr").length == 2){
-			$(this).addClass("hide");
-			table.find("tbody").append(clone);
-		}else{
-			table.find("tbody").append(clone);
-		}
-	});
-
-	$(document).on("click" , '.remove-attribute' , function(){
-		$(this).closest("tr").fadeOut("slow").remove();
-		$(".add-attribute").removeClass("hide");
-	});
-
-	$(document).on("click" , '.product-type-btn' , function(){
-		$(".product-type-btn").removeClass("active");
-		$(this).addClass("active");
-
-		$("#product_type").val($(this).data("type"));
-
-		if($(this).data("type") == "STANDARD"){
-			$(".standard_product").fadeIn();
-			$(".composite_product").fadeOut();
-
-		}else{
-			$(".standard_product").fadeOut();
-			$(".composite_product").fadeIn();
-		}
-	});
-
-	$(document).ready(function(){
-		$("#product_variant").hide();
-		$(".composite_product").hide();
-
-		$(".track_inventory").bootstrapSwitch({
-		    size: "mini" ,
-		    onSwitchChange : function(event , state){
-		    	if(state){
-		    		if($(".has_variant").is(":checked")){
-		    			$("#product_inventory_table").fadeOut();
-		    		}else{
-		    			$("#product_inventory_table").fadeIn();
-		    		}
-		    	}else{
-		    		$("#product_inventory_table").fadeOut();
-		    	}
-		    }
-		});
-		$(".has_variant").bootstrapSwitch({
-		    size: "mini" ,
-		    onSwitchChange : function(event , state){
-		    	if(state){
-		    		if($(".track_inventory").is(":checked")){
-		    			$("#product_inventory_table").fadeOut();
-		    		}
-
-		    		$("#product_variant").fadeIn();
-		    	}else{
-		    		if($(".track_inventory").is(":checked")){
-		    			$("#product_inventory_table").fadeIn();
-		    		}
-		    		$("#product_variant").fadeOut();
-		    	}
-		    }
-		});
-	});
 </script>
 <div class="container margin-bottom">
     <div class="side-body padding-top">
@@ -454,6 +289,18 @@
 	    			<hr>
 
 	    			<section class="standard_product">
+	    				<div class="product_inventory_table">
+			    			<div class="row">
+			    				<div class="col-xs-12 col-lg-6 no-margin-bottom">
+			    					<h4>Stock keeping unit (SKU)</h4>
+			    				</div>
+			    				<div class="col-xs-12 col-lg-6 no-margin-bottom">
+			    					<input type="text" name="sku" placeholder="Stock keeping unit (SKU)" class="form-control">
+			    				</div>
+			    			</div>
+			   				<hr>
+		    			</div>
+
 		    			<div class="row">
 		    				<div class="col-xs-12 col-lg-6">
 		    					<h4>Variant Products<br>
@@ -477,6 +324,7 @@
 		    					<input type="checkbox" class="track_inventory" name="track_inventory" value="1" checked>
 		    				</div>
 		    			</div>
+		    			
 		    			<table class="customer-table" id="product_inventory_table">
 		    				<thead>
 		    					<tr>
@@ -538,15 +386,17 @@
 			    				<tbody>
 			    					<tr class="customer-row" style="cursor: default;">
 			    						<td>
-			    							<select class="form-control" name="attribute[product_attribute][]">
-			    								<option value="attrib1">Attribute 1</option>
-			    								<option value="attrib2">Attribute 2</option>
-			    								<option value="attrib3">Attribute 3</option>
+			    							<select class="form-control select-attribute" name="attribute[product_attribute][]">
+			    								<option value="">Please select an option</option>
+			    								<option value="ADD_ATTRIBUTE">+ Add Variant Attribute</option>
+			    								<?php foreach($attribute_list as $row) : ?>
+			    									<option value="<?php echo $row->attribute_name; ?>"><?php echo $row->attribute_name; ?></option>
+			    								<?php endforeach; ?>
 			    							</select>
 			    						</td>
 			    						<td>
 			    							<div class="input-group">
-											  <input type="text" name="attribute[product_attribute_value][]" class="form-control" placeholder="Separate by comma">
+											  <input type="text" name="attribute[product_attribute_value][]" class="form-control tags-input" placeholder="Separate by comma" data-width="100%">
 											  <span class="input-group-btn" id="basic-addon2" style="visibility: hidden;">
 											  		<a href="javascript:void(0);" class="btn btn-link remove-attribute" style="margin: 0px;"><i class="fa fa-trash" aria-hidden="true"></i></a>
 											  </span>
@@ -607,5 +457,56 @@
 	    		<input type="submit" name="submit" value="Save" class="btn btn-success">
 	    	</div>
     	</form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="add_attribute_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Add Variant Attribute</h4>
+            </div>
+            <div class="modal-body">
+                <form action="<?php echo site_url("app/product/add_attribute"); ?>"  method="POST">
+                    <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
+                    <div class="form-group">
+                        <label for="attribute_name">Name</label>
+                        <input type="text" name="attribute_name" class="form-control" id="attribute_name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary submit-form-ajax" >Add Attribute</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="add_tags_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Add Product Tags</h4>
+            </div>
+            <div class="modal-body">
+                <form action="<?php echo site_url("app/product/add_tag"); ?>"  method="POST">
+                    <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
+                    <input type="hidden" name="ajax" value="true">
+                    <div class="form-group">
+                        <label for="tag_name">Name</label>
+                        <input type="text" name="tag_name" class="form-control" id="tag_name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary submit-form-ajax-tags" >Add Tag</button>
+            </div>
+        </div>
     </div>
 </div>

@@ -44,6 +44,11 @@ $(function() {
   return $('.multi-select').multiSelect();
 });
 
+$(function() {
+  return $(".tags-input").tagsinput();
+});
+
+
 
 $(document).ready(function(){
     $(document).on('click' , '.submit-form' , function(){

@@ -38,6 +38,7 @@ class Product extends MY_Controller {
 			$this->data['product_tag_list'] = $this->product->get_tag();
 			$this->data['store_settings'] = $this->store->get_store_settings();
 			$this->data['outlet_list'] = $this->store->get_outlet();
+			$this->data['attribute_list'] = $this->product->get_variant_attribute();
 
 			$this->load->view('backend/master' , $this->data);
 		}else{
@@ -59,18 +60,24 @@ class Product extends MY_Controller {
 
 	public function add_tag(){
 
-		if($this->input->post()){
+		if($this->input->post("ajax")){
+			$this->product->add_tag();
+		}else{
+			if($this->input->post()){
 
-			if($this->product->add_tag()){
-				$this->session->set_flashdata('status' , 'success');	
-				$this->session->set_flashdata('message' , 'Successfully Added a new Product Tag');	
-			}else{
-				$this->session->set_flashdata('status' , 'error');
-				$this->session->set_flashdata('message' , 'Something went wrong');	
+				if($this->product->add_tag()){
+					$this->session->set_flashdata('status' , 'success');	
+					$this->session->set_flashdata('message' , 'Successfully Added a new Product Tag');	
+				}else{
+					$this->session->set_flashdata('status' , 'error');
+					$this->session->set_flashdata('message' , 'Something went wrong');	
+				}
 			}
+
+			redirect("app/product/tags" , 'refresh');
 		}
 
-		redirect("app/product/tags" , 'refresh');
+		
 	}
 
 	// PRODUCT BRANDS
@@ -178,4 +185,20 @@ class Product extends MY_Controller {
 		redirect("app/product/type" , 'refresh');
 	}
 
+
+	// ATTRIBUTE
+
+	public function attribute(){
+
+	}
+
+	public function add_attribute(){
+		if($this->input->post()){ 
+			if($attribute_id = $this->product->add_attribute()){
+				echo json_encode(["status" => true , "id" => $attribute_id , "value" => $this->input->post("attribute_name")]);
+			}else{
+				echo json_encode(["status" => false , "message" => "Something went wrong"]);
+			}
+		}
+	}
 }

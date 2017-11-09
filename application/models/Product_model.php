@@ -175,4 +175,22 @@ class Product_model extends CI_Model {
 
         return $this->db->insert_id();
     }
+
+
+    public function add_attribute(){
+        $store_id = $this->data['session_data']->store_id;
+
+        $this->db->insert("product_variants_attribute" , [
+            "store_id"          => $store_id ,
+            "attribute_name"    => $this->input->post("attribute_name")
+        ]);
+
+        return $this->db->insert_id();
+    }
+
+    public function get_variant_attribute(){
+        $store_id = $this->data['session_data']->store_id;
+
+        return $this->db->select("attribute_name")->where("store_id" , $store_id)->order_by("attribute_name" , "ASC")->get("product_variants_attribute")->result();
+    }
 }
