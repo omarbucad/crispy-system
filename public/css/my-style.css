@@ -174,8 +174,10 @@ nav > ul{
 .customer-table thead  th > a:hover{
 	color : #1ABC9C;
 }
-.customer-table tr.customer-row{
+.customer-table tr.customer-row:not(:last-child){
 	border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+.customer-table tr.customer-row{
 	cursor: pointer;
 }
 .customer-table tr.customer-row > td{

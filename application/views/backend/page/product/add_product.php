@@ -1,3 +1,6 @@
+<script type="text/javascript">
+	var outlet_list_json = '<?php echo $outlet_list_json; ?>';
+</script>
 <script type="text/javascript" src="<?php echo site_url('public/js/product.js?version='.$version) ?>"></script>
 <script type="text/javascript">
 	$(document).on('keyup' , '.supply-price , .supply-markup' , function(){
@@ -21,9 +24,9 @@
     <div class="side-body padding-top">
     	<ol class="breadcrumb">
     		<li><a href="<?php echo site_url('app/product'); ?>">Product</a></li>
-    		<li class="active">Add Product</li>
+    		<li class="active">New Product</li>
     	</ol>	
-    	<h3>Add Product</h3>
+    	<h3>New Product</h3>
     	<form class="form-horizontal" action="<?php echo site_url("app/product/add"); ?>" method="POST">
     		<input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
     		<!-- STORE SETTINGS -->
@@ -68,6 +71,20 @@
 										  	<button class="btn btn-link add-tag-btn" style="margin: 0px !important;" type="button">Add Tags</button>
 										  </span>
 										</div>
+										<p class="help-block">Describe the product using relevant keywords for easy filtering.</p>
+	    							</div>
+	    						</dd>
+
+	    						<dt>Product Type</dt>
+	    						<dd>
+	    							<div class="form-group">
+	    								<select class="form-control" name="type">
+	    									<option value=""></option>
+	    									<?php foreach($product_type_list as $row) : ?>
+	    										<option value="<?php echo $row->product_type_id; ?>"><?php echo $row->type_name; ?></option>
+	    									<?php endforeach; ?>
+	    								</select>
+	    								<p class="help-block">Categorise your products with types that can be used to filter sales and inventory reports.</p>
 	    							</div>
 	    						</dd>
 	    					</dl>
@@ -75,17 +92,7 @@
 	    					<div class="row">
 	    						<div class="col-xs-12 col-lg-6">
 	    							<dl class="dl-horizontal text-left">
-	    								<dt>Product Type</dt>
-	    								<dd>
-			    							<div class="form-group">
-			    								<select class="form-control" name="type">
-			    									<option value=""></option>
-			    									<?php foreach($product_type_list as $row) : ?>
-			                                            <option value="<?php echo $row->product_type_id; ?>"><?php echo $row->type_name; ?></option>
-			                                        <?php endforeach; ?>
-			    								</select>
-			    							</div>
-			    						</dd>
+
 			    						<dt>Supplier</dt>
 	    								<dd>
 			    							<div class="form-group">
@@ -103,11 +110,7 @@
 			    								<input type="text" name="supplier_code" class="form-control">
 			    							</div>
 			    						</dd>
-	    							</dl>
-	    						</div>
-	    						<div class="col-xs-12 col-lg-6">
-	    							<dl class="dl-horizontal text-left">
-	    								<dt>Product brand</dt>
+			    						<dt>Product brand</dt>
 	    								<dd>
 			    							<div class="form-group">
 			    								<select class="form-control" name="brand">
@@ -118,6 +121,11 @@
 			    								</select>
 			    							</div>
 			    						</dd>
+	    							</dl>
+	    						</div>
+	    						<div class="col-xs-12 col-lg-6">
+	    							<dl class="dl-horizontal text-left">
+	    								
 			    						<dt>Sales account code</dt>
 	    								<dd>
 			    							<div class="form-group">
@@ -406,7 +414,27 @@
 			    				</tbody>
 			    			</table>
 			    			<a href="javascript:void(0);" class="link-style add-attribute">+ Add Attribute</a>
+
+			    			<section id="product_variant_section" style="margin-top: 20px;">
+			    				<table class="customer-table" id="variant_table">
+			    					<thead>
+			    						<tr>
+			    							<th width="30%">Variant Name</th>
+			    							<th width="15%">SKU</th>
+			    							<th width="15%">Supplier Code</th>
+			    							<th width="15%">Supply Price</th>
+			    							<th width="15%">Retail Price <br> <small>Excluding Tax</small></th>
+			    							<th width="10%">Enabled</th>
+			    						</tr>
+			    					</thead>
+			    					<tbody>
+			    						
+			    					</tbody>
+			    				</table>
+			    			</section>
 		    			</div>
+
+
 	    			</section>
 	    			<section class="composite_product">
 	    				<div class="row">
