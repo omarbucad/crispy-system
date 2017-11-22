@@ -1,5 +1,7 @@
 <script type="text/javascript">
-	var outlet_list_json = '<?php echo $outlet_list_json; ?>';
+	var outlet_list_json = <?php echo $outlet_list_json; ?>;
+	var default_sales_tax_list = <?php echo $default_sales_tax_list_json; ?>;
+	var sku_generation = "<?php echo $store_settings->sku_generation_type; ?>";
 </script>
 <script type="text/javascript" src="<?php echo site_url('public/js/product.js?version='.$version) ?>"></script>
 <script type="text/javascript">
@@ -419,8 +421,14 @@
 			    				<table class="customer-table" id="variant_table">
 			    					<thead>
 			    						<tr>
-			    							<th width="30%">Variant Name</th>
-			    							<th width="15%">SKU</th>
+			    							
+			    							<?php if($store_settings->sku_generation_type == "GENERATE_BY_NAME") : ?>
+			    								<th width="30%">Variant Name</th>
+			    								<th width="15%">SKU</th>
+			    							<?php else : ?>
+			    								<th width="45%">Variant Name</th>
+			    							<?php endif; ?>
+			    							
 			    							<th width="15%">Supplier Code</th>
 			    							<th width="15%">Supply Price</th>
 			    							<th width="15%">Retail Price <br> <small>Excluding Tax</small></th>

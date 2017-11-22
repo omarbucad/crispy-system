@@ -39,6 +39,7 @@ class Product extends MY_Controller {
 			$this->data['store_settings'] = $this->store->get_store_settings();
 			$this->data['outlet_list'] = $this->store->get_outlet();
 			$this->data['outlet_list_json'] = json_encode($this->data['outlet_list']);
+			$this->data['default_sales_tax_list_json'] = json_encode($this->data['default_sales_tax_list']);
 			$this->data['attribute_list'] = $this->product->get_variant_attribute();
 
 			$this->load->view('backend/master' , $this->data);

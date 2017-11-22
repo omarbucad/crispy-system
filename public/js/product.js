@@ -49,9 +49,6 @@ $(document).on('change' , '.compute-sales-tax-wot' , function(){
 $(document).on('change' , '.compute-sales-tax-wt' , computeSales);
 
 
-
-
-
 $(document).on('click' , '.apply-all' , function(){
 	var className = $(this).data("class");
 
@@ -64,17 +61,17 @@ $(document).on('click' , '.add-attribute' , function(){
 
 	clone.find(".input-group-btn").css("visibility" , "visible");
 	clone.find(".bootstrap-tagsinput").remove();
-	clone.find(".tags-input").tagsinput({
-	  allowDuplicates: true
-	});
+
+	clone.find(".tags-input").val("");
+	clone.find(".tags-input").tagsinput();
 	clone.find(".bootstrap-tagsinput > span").remove();
 
 
-	$('.tags-input').on('itemAdded', function(event) {
+	clone.find('.tags-input').on('itemAdded', function(event) {
 	  	build_variant();
 	});
 
-	$('.tags-input').on('itemRemoved', function(event) {
+	clone.find('.tags-input').on('itemRemoved', function(event) {
 	  	build_variant();
 	});
 
@@ -177,11 +174,6 @@ $(document).on("click" , '.open-settings' , function(){
 
 $(document).ready(function(){
 
-
-	$("#variant_table tbody").append(build_variant_header(uniqId() , "Starbucks samsung"));
-	$("#variant_table tbody").append(build_variant_body(uniqId()));
-
-
 	$("#product_variant").hide();
 	$(".composite_product").hide();
 
@@ -237,9 +229,6 @@ $(document).ready(function(){
 });
 
 
-
-
-
 function computeSales2(){
 	$.each( $(".compute-sales-tax-wot") , function(k , v){
 
@@ -281,28 +270,79 @@ function computeSales(){
 
 function build_variant(){
 
+	var select_attrib = $("#product_variant .select-attribute");
+	var tags_length = $("#product_variant .tags-input").length;
+	$("#variant_table > tbody").html("");
+
+	if(tags_length == 1){
+
+		var result = $("#product_variant .tags-input:eq(0)").val().split(',');
+
+		$.each(result , function(k , v){
+			var a = uniqId();
+			$("#variant_table > tbody").append(build_variant_header( a, v));
+			$("#variant_table > tbody").append(build_variant_body(a , v));
+		});
+
+	}else if(tags_length == 2){
+
+		var result = $("#product_variant .tags-input:eq(0)").val().split(',');
+		var result2 = $("#product_variant .tags-input:eq(1)").val().split(',');
+
+		$.each(result , function(k , v){
+			$.each(result2 , function(k2 , v2){
+				var a = uniqId();
+				$("#variant_table > tbody").append(build_variant_header( a, v+"/"+v2));
+				$("#variant_table > tbody").append(build_variant_body(a , v+"/"+v2));
+			});
+		});
+
+
+	}else if(tags_length == 3){
+		var result = $("#product_variant .tags-input:eq(0)").val().split(',');
+		var result2 = $("#product_variant .tags-input:eq(1)").val().split(',');
+		var result3 = $("#product_variant .tags-input:eq(2)").val().split(',');
+
+		$.each(result , function(k , v){
+			$.each(result2 , function(k2 , v2){
+				$.each(result3 , function(k3 , v3){
+					var a = uniqId();
+					$("#variant_table > tbody").append(build_variant_header( a, v+"/"+v2+"/"+v3));
+					$("#variant_table > tbody").append(build_variant_body(a , v+"/"+v2+"/"+v3));
+				});
+			});
+		});
+	}
+
+	$(".variant_enabled_product").bootstrapSwitch({
+		size: "mini"
+	});
+
 }
 
 
-function build_variant_header(uniq_id , product_name){
+function build_variant_header(uniq_id , variant_name){
 	var tr = $("<tr>" , {class : "variant-head customer-row" , "data-id" : uniq_id});
 	var span = $("<span>");
 
-	var product_variant_name = $("<td>").append( span.append("<i class='fa fa-caret-right' aria-hidden='true'></i>") ).append( $("<strong>" , {style : "padding-left : 10px; " , text : product_name , class : "open-settings"}) );
+	var product_variant_name = $("<td>").append( span.append("<i class='fa fa-caret-right' aria-hidden='true'></i>") ).append( $("<strong>" , {style : "padding-left : 10px; " , text : variant_name , class : "open-settings"}) );
 
 	tr.append($("<td>").append(product_variant_name));
-	tr.append($("<td>").append("<input type='text'  class='form-control' aria-describedby='sizing-addon1' placeholder='Enter SKU'>"));
-	tr.append($("<td>").append("<input type='text'  class='form-control' aria-describedby='sizing-addon1' placeholder='Enter Supplier Code'>"));
-	tr.append($("<td>").append('<div class="input-group"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" step="0.01" class="form-control" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
-	tr.append($("<td>").append('<div class="input-group"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" step="0.01" class="form-control" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
-	tr.append($("<td>").append('<input type="checkbox" class="has_variant" value="1" checked>'));
+	
+	if(sku_generation  == "GENERATE_BY_NAME"){
+		tr.append($("<td>").append("<input type='text'  class='form-control' aria-describedby='sizing-addon1' name='variant["+variant_name+"][sku]' placeholder='Enter SKU'>"));
+	}
+	
+	tr.append($("<td>").append("<input type='text'  class='form-control' aria-describedby='sizing-addon1' name='variant["+variant_name+"][supplier_code]' placeholder='Enter Supplier Code'>"));
+	tr.append($("<td>").append('<div class="input-group"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" name="variant['+variant_name+'][supply_price]" step="0.01" class="form-control supply_price_variant" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
+	tr.append($("<td>").append('<div class="input-group"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" name="variant['+variant_name+'][supply_price]" step="0.01" class="form-control" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
+	tr.append($("<td>").append('<input type="checkbox" class="variant_enabled_product" name="variant['+variant_name+'][product_enabled]" value="1" checked>'));
 
 	return tr;
 }
 
-function build_variant_body(uniq_id){
+function build_variant_body(uniq_id , variant_name){
 	
-
 	var div = $("<div>" , {role : "tabpanel"});
 
 	var ul = $("<ul>" , {class : "nav nav-tabs" , role : "tablist"});
@@ -312,6 +352,7 @@ function build_variant_body(uniq_id){
 
 	var tab_content = $("<div>" , {class : "tab-content "});
 
+	//inventory
 	var tab_inventory = $("<div>" , {role : "tabpanel" , class : "tab-pane active no-padding" , id: uniq_id+"_inventory"});
 
 	var table = $("<table>" , {class : "customer-table"});
@@ -325,11 +366,67 @@ function build_variant_body(uniq_id){
 	var thead = $("<thead>").append(tr);
 	table.append(thead);
 
-	table.append(build_outlet_list());
+	table.append(build_outlet_list(variant_name));
 	tab_inventory.append(table);
 
+	//tax
 	var tab_tax = $("<div>" , {role : "tabpanel" , class : "tab-pane no-padding" , id: uniq_id+"_tax"});
+
+	var table = $("<table>" , {class : "customer-table"});
+	var tr = $("<tr>");
+	
+	tr.append($("<th>" , {text : "Outlet" , width : "40%"}));
+	tr.append($("<th>" , {text : "Tax	" , width : "60%"}));
+
+	var thead = $("<thead>").append(tr);
+	table.append(thead);
+
+	table.append(build_tax_list(variant_name));
+
+	tab_tax.append(table);
+
+	//price
 	var tab_price = $("<div>" , {role : "tabpanel" , class : "tab-pane no-padding" , id: uniq_id+"_price"});
+
+	var tbody = $("<tbody>");
+
+	var table = $("<table>" , {class : "customer-table"});
+
+	var tr = $("<tr>" , {class : "customer-row"});
+
+	tr.append($("<td>" , {text : "Supply Price" , width : "40%"}));
+
+	var supply_price = $("#variant_table > tbody > tr:last-child").find(".supply_price_variant").val();
+	supply_price = parseFloat(supply_price).toFixed(2);
+
+	if(isNaN(supply_price)){
+		supply_price = "0.00";
+	}
+
+	tr.append($("<td>" , {class : "text-right" ,width : "60%"}).append(supply_price));
+
+	tbody.append(tr);
+
+	var tr = $("<tr>" , {class : "customer-row"});
+
+	tr.append($("<td>" , {text : "Markup" , width : "40%"}));
+	tr.append($("<td>" , {class : "text-right" , width : "60%"}).append('<div class="input-group pull-right"><input type="number" name="variant['+variant_name+'][markup]" step="0.01" class="form-control supply_price_variant" placeholder="0.00" aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1">%</span></div>'));
+
+	tbody.append(tr);
+
+	var tr = $("<tr>" , {class : "customer-row"});
+
+	tr.append($("<td>" , {html : "Retail Price:<br><small>Excluding Tax</small>" , width : "40%"}));
+	tr.append($("<td>" , {class : "text-right" , width : "60%"}).append('<div class="input-group pull-right"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" step="0.01" class="form-control supply_price_variant" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
+
+	tbody.append(tr);
+
+	table.append(tbody);
+
+	tab_price.append(table);
+
+	//end
+
 
 	tab_content.append(tab_inventory);
 	tab_content.append(tab_tax);
@@ -346,8 +443,8 @@ function build_variant_body(uniq_id){
 }
 
 
-function build_outlet_list(){
-	var a = jQuery.parseJSON(outlet_list_json);
+function build_outlet_list(variant_name){
+	var a = outlet_list_json;
 	var tbody = $("<tbody>");
 
 	$.each( a , function(k , v){
@@ -355,15 +452,46 @@ function build_outlet_list(){
 		var tr = $("<tr>" , {class : "customer-row"});
 		if(k == 0){
 			tr.append('<td><span>'+v.outlet_name+'</span></td>');
-			tr.append('<td><input type="number" class="form-control" value="0"><div class="text-right"><a href="javascript:void(0);" class="link-style apply-all" data-class=".current_inventory">Apply to all</a></div></td>');
-			tr.append('<td><input type="number" class="form-control" value="0"><div class="text-right"><a href="javascript:void(0);" class="link-style apply-all" data-class=".reorder_point">Apply to all</a></div></td>');
-			tr.append('<td><input type="number" class="form-control" value="0"><div class="text-right"><a href="javascript:void(0);" class="link-style apply-all" data-class=".reorder_amount">Apply to all</a></div></td>');
+			tr.append('<td><input type="number" class="form-control" name="variant['+variant_name+'][inventory]['+v.outlet_id+'][current_inventory]" value="0"><div class="text-right"><a href="javascript:void(0);" class="link-style apply-all" data-class=".current_inventory">Apply to all</a></div></td>');
+			tr.append('<td><input type="number" class="form-control" name="variant['+variant_name+'][inventory]['+v.outlet_id+'][reorder_point]" value="0"><div class="text-right"><a href="javascript:void(0);" class="link-style apply-all" data-class=".reorder_point">Apply to all</a></div></td>');
+			tr.append('<td><input type="number" class="form-control" name="variant['+variant_name+'][inventory]['+v.outlet_id+'][reorder_amount]" value="0"><div class="text-right"><a href="javascript:void(0);" class="link-style apply-all" data-class=".reorder_amount">Apply to all</a></div></td>');
 		}else{
 			tr.append('<td><span>'+v.outlet_name+'</span></td>');
-			tr.append('<td><input type="number" class="form-control current_inventory" value="0"></td>');
-			tr.append('<td><input type="number" class="form-control reorder_point" value="0"></td>');
-			tr.append('<td><input type="number" class="form-control reorder_amount" value="0"></td>');
+			tr.append('<td><input type="number" class="form-control current_inventory" name="variant['+variant_name+'][inventory]['+v.outlet_id+'][current_inventory]" value="0"></td>');
+			tr.append('<td><input type="number" class="form-control reorder_point" name="variant['+variant_name+'][inventory]['+v.outlet_id+'][reorder_point]" value="0"></td>');
+			tr.append('<td><input type="number" class="form-control reorder_amount" name="variant['+variant_name+'][inventory]['+v.outlet_id+'][reorder_amount]" value="0"></td>');
 		}
+
+		tbody.append(tr);
+	});
+
+	return tbody;
+}
+
+
+function build_tax_list(variant_name){
+	var a = outlet_list_json;
+	var b = default_sales_tax_list;
+
+	var tbody = $("<tbody>");
+
+	$.each( a , function(k , v){
+		var tr = $("<tr>" , {class : "customer-row"});	
+		tr.append('<td><span>'+v.outlet_name+'</span></td>');
+
+		var select = $("<select>" , {class : "form-control" , name : "variant["+variant_name+"][tax]["+v.outlet_id+"][sales_tax_id]"});
+		var option = '<option value="DEFAULT">Default tax for this outlet</option>';
+		$.each(b.sales_tax , function(k , v){
+			option += '<option value='+v.sales_tax_id+'>'+v.tax_name+'</option>';
+		});
+		$.each(b.group_sales_tax , function(k , v){
+			option += '<option value='+v.sales_tax_group_id+'>'+v.tax_sales_group_name+'</option>';
+		});
+
+		select.append(option);
+
+		tr.append($("<td>").append(select));
+
 
 		tbody.append(tr);
 	});
