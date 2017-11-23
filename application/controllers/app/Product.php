@@ -44,7 +44,12 @@ class Product extends MY_Controller {
 
 			$this->load->view('backend/master' , $this->data);
 		}else{
-			print_r_die($this->input->post());
+
+			if($product_id = $this->product->add_product()){
+				echo $product_id;
+			}else{
+				echo "error";
+			}
 		}
 
 		

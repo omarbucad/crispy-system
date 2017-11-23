@@ -193,4 +193,273 @@ class Product_model extends CI_Model {
 
         return $this->db->select("attribute_name")->where("store_id" , $store_id)->order_by("attribute_name" , "ASC")->get("product_variants_attribute")->result();
     }
+
+    public function add_product(){
+        $store_id = $this->data['session_data']->store_id;
+
+        $this->db->trans_start();
+
+        //PRODUCT 
+
+        $this->db->insert("product" , [
+            "store_id"                  => $store_id ,
+            "product_name"              => $this->input->post("product_name"),
+            "product_handle"            => $this->input->post("product_handle"),
+            "description"               => $this->input->post("description"),
+            "supplier_id"               => $this->input->post("supplier"),
+            "brand_id"                  => $this->input->post("brand"),
+            "sales_account_code"        => $this->input->post("sales_account_code"),
+            "purchase_account_code"     => $this->input->post("purchase_account_code"),
+            "product_type"              => $this->input->post("product_type"),
+            "has_variant"               => $this->input->post("has_variant"),
+            "track_inventory"           => $this->input->post("track_inventory"),
+            "status"                    => 1,
+            "created"                   => time(),
+        ]);
+
+        $product_id = $this->db->insert_id();
+
+
+        //PRODUCT TAGS
+        if($this->input->post("tags")){
+
+            $tags = array();
+
+            foreach($this->input->post("tags") as $tag_id){
+                $tags[] = array(
+                    "product_id"    => $product_id ,
+                    "tag_id"        => $this->hash->decrypt($tag_id)
+                );
+            }
+            
+            $this->db->insert_batch("product_product_tags" , $tags);
+        }
+
+        
+        if($this->input->post("product_type") == "STANDARD"){
+
+            // HAS VARIANT BEEN CHECKED
+
+            if($this->input->post("has_variant")){
+                //VARIANTS
+
+                $attribute = $this->input->post("attribute");
+
+                foreach($attribute['product_attribute'] as $key => $variant){
+
+                    $this->db->insert("variants" , [
+                        "variant"       => $variant ,
+                        "product_id"    => $product_id
+                    ]);
+
+                    $variant_id = $this->db->insert_id();
+
+                    $value = explode(",", $attribute['product_attribute_value'][$key]);
+                    $v = array();
+
+                    foreach($value as $val){
+                        $v[] = array(
+                            "variant_id"    => $variant_id ,
+                            "value"         => $val
+                        );
+                    }
+                    $this->db->insert_batch("variants_value" , $v);
+                }
+
+                //VARIANTS
+
+                $variants = $this->input->post("variant");
+
+                foreach($variants as $variant_name => $variant_data){
+
+                    $this->db->insert("product_variants" , [
+                        "product_id"        => $product_id ,
+                        "variant_name"      => $variant_name,
+                        "sku"               => $variant_data['sku'] ,
+                        "supplier_code"     => $variant_data['supplier_code'],
+                        "supply_price"      => $variant_data['supply_price'],
+                        "product_enabled"   => ($variant_data['product_enabled']) ? 1 : 0,
+                        "markup_price"      => $variant_data['markup'] 
+                    ]);
+
+                    $product_variant_id = $this->db->insert_id();
+
+                    //INVENTORY
+                    $inventory = $variant_data['inventory'];
+                    $i = array();
+
+                    foreach($inventory as $outlet_id => $value){
+                        $i[] = array(
+                            "store_id"              => $store_id ,
+                            "product_variant_id"    => $product_variant_id ,
+                            "outlet_id"             => $this->hash->decrypt($outlet_id),
+                            "current_inventory"     => $value['current_inventory'],
+                            "reorder_point"         => $value['reorder_point'],
+                            "reorder_amount"        => $value['reorder_amount']
+                        );
+                    }
+
+                    $this->db->insert_batch("inventory" , $i);
+
+
+                    //OUTLET
+                    $tax = $variant_data['tax'];
+                    $t = array();
+
+                    foreach($tax as $outlet_id => $value){
+                        $t[] = array(
+                            "store_id"              => $store_id ,
+                            "product_variant_id"    => $product_variant_id,
+                            "outlet_id"             => $this->hash->decrypt($outlet_id),
+                            "sales_tax_id"          => $value['sales_tax_id'],
+                            "retail_price_wt"       => 0
+                        );
+                    }
+
+                    $this->db->insert_batch("product_variants_outlet" , $t);
+
+                }
+
+            }else{
+                //NO VARIANTS
+
+                //VARIANTS
+                $this->db->insert("product_variants" , [
+                    "product_id"        => $product_id ,
+                    "variant_name"      => "" ,
+                    "sku"               => $this->input->post("sku") ,
+                    "supplier_code"     => $this->input->post("supplier_code"),
+                    "supply_price"      => $this->input->post("supply_price"),
+                    "product_enabled"   => 1 ,
+                    "markup_price"      => $this->input->post("markup_price"), 
+                    "retail_price_wot"  => $this->input->post("retail_price_wot")
+                ]);
+
+                $product_variant_id = $this->db->insert_id();
+
+                //INVENTORY
+
+                $inventory = $this->input->post("inventory");
+                $i = array();
+                $o = array();
+
+                foreach($inventory as $outlet_id => $value){
+                    $i[] = array(
+                        "store_id"              => $store_id ,
+                        "product_variant_id"    => $product_variant_id ,
+                        "outlet_id"             => $this->hash->decrypt($outlet_id),
+                        "current_inventory"     => $value['current_inventory'],
+                        "reorder_point"         => $value['reorder_point'],
+                        "reorder_amount"        => $value['reorder_amount']
+                    );
+
+
+                    if($this->input->post("price_settings") == "WOT"){
+                        //TAX INCLUSIVE
+                        $o[] = array(
+                            "store_id"              => $store_id ,
+                            "product_variant_id"    => $product_variant_id,
+                            "outlet_id"             => $this->hash->decrypt($outlet_id),
+                            "sales_tax_id"          => $this->input->post("sales_tax"),
+                            "retail_price_wt"       => $this->input->post("retail_price_wt")
+                        );
+                    }
+                   
+                }
+
+                $this->db->insert_batch("inventory" , $i);
+
+                //OUTLET
+                if($this->input->post("price_settings") == "WT"){
+                    
+                    $outlet = $this->input->post("outlet_tax");
+
+                    foreach($outlet as $outlet_id => $value){
+                        $o[] = array(
+                            "store_id"              => $store_id ,
+                            "product_variant_id"    => $product_variant_id,
+                            "outlet_id"             => $this->hash->decrypt($outlet_id),
+                            "sales_tax_id"          => ($value['sales_tax'] == "DEFAULT") ? $value['default_tax_id'] : $value['sales_tax'] ,
+                            "retail_price_wt"       => $value['retail_price']
+                        );
+                    }
+                }
+
+                $this->db->insert_batch("product_variants_outlet" , $o);
+
+            }
+
+        }else{
+            //COMPOSITE
+
+            //VARIANTS
+            $this->db->insert("product_variants" , [
+                "product_id"        => $product_id ,
+                "variant_name"      => "" ,
+                "sku"               => $this->input->post("composite_sku") ,
+                "supplier_code"     => $this->input->post("supplier_code"),
+                "supply_price"      => $this->input->post("supply_price"),
+                "product_enabled"   => 1 ,
+                "markup_price"      => $this->input->post("markup_price"), 
+                "retail_price_wot"  => $this->input->post("retail_price_wot")
+            ]);
+
+            $product_variant_id = $this->db->insert_id();
+
+            if($this->input->post("price_settings") == "WT"){
+
+                $outlet = $this->input->post("outlet_tax");
+
+                foreach($outlet as $outlet_id => $value){
+                    $o[] = array(
+                        "store_id"              => $store_id ,
+                        "product_variant_id"    => $product_variant_id,
+                        "outlet_id"             => $this->hash->decrypt($outlet_id),
+                        "sales_tax_id"          => ($value['sales_tax'] == "DEFAULT") ? $value['default_tax_id'] : $value['sales_tax'] ,
+                        "retail_price_wt"       => $value['retail_price']
+                    );
+                }
+            }else{
+                $inventory = $this->input->post("inventory");
+                $o = array();
+
+                foreach($inventory as $outlet_id => $value){
+                    $o[] = array(
+                        "store_id"              => $store_id ,
+                        "product_variant_id"    => $product_variant_id,
+                        "outlet_id"             => $this->hash->decrypt($outlet_id),
+                        "sales_tax_id"          => $this->input->post("sales_tax"),
+                        "retail_price_wt"       => $this->input->post("retail_price_wt")
+                    );
+                   
+                }
+            }
+
+            $this->db->insert_batch("product_variants_outlet" , $o);
+
+            $composite = $this->input->post("composite");
+
+            $p = array();
+
+            foreach($composite['product_id'] as $key => $product_id){
+                $p[] = array(
+                    "product_variant_id"      => $product_variant_id ,
+                    "product_id"              => $composite['product_id'][$key],
+                    "quantity"                => $composite['quantity'][$key]
+                );
+            }
+
+            $this->db->insert_batch("product_composite" , $p);
+
+        }
+
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return $product_id;
+        }
+    }
 }

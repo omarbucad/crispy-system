@@ -278,6 +278,15 @@ function build_variant(){
 
 		var result = $("#product_variant .tags-input:eq(0)").val().split(',');
 
+		if(result[0] == ""){
+
+			if(!$("#product_variant_section").hasClass("hidden")){
+				$('#product_variant_section').addClass("hidden");
+			}
+		}else{
+			$('#product_variant_section').removeClass("hidden");
+		}
+
 		$.each(result , function(k , v){
 			var a = uniqId();
 			$("#variant_table > tbody").append(build_variant_header( a, v));
@@ -288,6 +297,15 @@ function build_variant(){
 
 		var result = $("#product_variant .tags-input:eq(0)").val().split(',');
 		var result2 = $("#product_variant .tags-input:eq(1)").val().split(',');
+
+		if(result[0] == "" && result2[0] == ""){
+			if(!$("#product_variant_section").hasClass("hidden")){
+				$('#product_variant_section').addClass("hidden");
+			}
+		}else{
+			$('#product_variant_section').removeClass("hidden");
+		}
+
 
 		$.each(result , function(k , v){
 			$.each(result2 , function(k2 , v2){
@@ -302,6 +320,15 @@ function build_variant(){
 		var result = $("#product_variant .tags-input:eq(0)").val().split(',');
 		var result2 = $("#product_variant .tags-input:eq(1)").val().split(',');
 		var result3 = $("#product_variant .tags-input:eq(2)").val().split(',');
+
+
+		if(result[0] == "" && result2[0] == "" && result3[0] == ""){
+			if(!$("#product_variant_section").hasClass("hidden")){
+				$('#product_variant_section').addClass("hidden");
+			}
+		}else{
+			$('#product_variant_section').removeClass("hidden");
+		}
 
 		$.each(result , function(k , v){
 			$.each(result2 , function(k2 , v2){

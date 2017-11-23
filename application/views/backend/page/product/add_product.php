@@ -31,6 +31,7 @@
     	<h3>New Product</h3>
     	<form class="form-horizontal" action="<?php echo site_url("app/product/add"); ?>" method="POST">
     		<input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
+    		<input type="hidden" name="price_settings" value="<?php echo $store_settings->display_price_settings; ?>">
     		<!-- STORE SETTINGS -->
     		<div class="card margin-bottom">
 	    		<div class="card-header">
@@ -236,6 +237,7 @@
 	    					<tbody>
 	    						<?php foreach($outlet_list as $outlet) : ?>
 	    							<input type="hidden" name="outlet_tax[<?php echo $outlet->outlet_id?>][default_tax]" value="<?php echo $outlet->tax_rate; ?>">
+	    							<input type="hidden" name="outlet_tax[<?php echo $outlet->outlet_id?>][default_tax_id]" value="<?php echo $outlet->sales_tax_id; ?>">
 	    							<tr class="customer-row" style="cursor: default;">
 		    							<td><span><?php echo $outlet->outlet_name?></span></td>
 		    							<td>
@@ -417,7 +419,7 @@
 			    			</table>
 			    			<a href="javascript:void(0);" class="link-style add-attribute">+ Add Attribute</a>
 
-			    			<section id="product_variant_section" style="margin-top: 20px;">
+			    			<section id="product_variant_section" class="hidden" style="margin-top: 20px;">
 			    				<table class="customer-table" id="variant_table">
 			    					<thead>
 			    						<tr>
@@ -450,7 +452,7 @@
 		    					<h4>Stock keeping unit (SKU)</h4>
 		    				</div>
 		    				<div class="col-xs-12 col-lg-6 no-margin-bottom">
-		    					<input type="text" name="sku" placeholder="Stock keeping unit (SKU)" class="form-control">
+		    					<input type="text" name="composite_sku" placeholder="Stock keeping unit (SKU)" class="form-control">
 		    				</div>
 		    			</div>
 		    			<hr>
