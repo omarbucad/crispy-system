@@ -151,7 +151,7 @@
                         <tr class="customer-row" style="cursor: default;">
                             <td>
                                 <div class="with-img">
-                                    <span><a href="#"><?php echo $row->product_name; ?> </a> <br><small><?php echo $row->variants[0]->sku; ?></small></span>
+                                    <span><a href="<?php echo site_url("app/product/view/$row->product_id"); ?>"><?php echo $row->product_name; ?> </a> <br><small><?php echo $row->variants[0]->sku; ?></small></span>
                                     <img src="https://www.lowrance.com/assets/img/default-product-img.png" class="img img-responsive">
                                 </div>
                             </td>

@@ -225,7 +225,7 @@ class Product_model extends CI_Model {
         $store_id = $this->data['session_data']->store_id;
         $status = $this->input->get("status") ? $this->input->get("status") : 1;
 
-        $this->db->select("p.product_id , p.product_name , p.product_handle , p.description , p.created , p.has_variant , p.track_inventory");
+        $this->db->select("p.product_id , p.product_name , p.product_handle , p.description , p.created , p.has_variant , p.track_inventory , p.brand_id , p.supplier_id");
         $this->db->select("s.supplier_name , pb.brand_name");
         $this->db->join("supplier s" , "s.supplier_id = p.supplier_id" , "LEFT");
         $this->db->join("product_brands pb" , "pb.product_brand_id = p.brand_id" , "LEFT");
@@ -239,17 +239,17 @@ class Product_model extends CI_Model {
                 $result[$key]->inventory = "&#8734;";      
             }    
             
-            $result[$key]->brand_name = ($row->brand_name) ? '<a href="#" class="link-style"><span>'.$row->brand_name.'</span></a>' : "-";
-            $result[$key]->supplier_name = ($row->supplier_name) ? '<a href="#" class="link-style"><span>'.$row->supplier_name.'</span></a>' : "-";
+            $result[$key]->brand_name = ($row->brand_name) ? '<a href="'.site_url("app/product/?brand=").$this->hash->encrypt($row->supplier_id).'" class="link-style"><span>'.$row->brand_name.'</span></a>' : "-";
+            $result[$key]->supplier_name = ($row->supplier_name) ? '<a href="'.site_url("app/product/?supplier=").$this->hash->encrypt($row->brand_id).'" class="link-style"><span>'.$row->supplier_name.'</span></a>' : "-";
             $result[$key]->created = convert_timezone($row->created);
             //tags
             $tags = $this->db->select("tag_name, tag_id")->join("product_tags pt" , "pt.product_tag_id = ppt.tag_id")->where("product_id" , $row->product_id)->get("product_product_tags ppt")->result();
             $tags_template = "";
             foreach($tags as $k => $r){
                if($k == 0){
-                    $tags_template .= '<a href="'.$this->hash->encrypt($r->tag_id).'" class="link-style"><span>'.trim($r->tag_name).'</span></a>';
+                    $tags_template .= '<a href="'.site_url("app/product/?tags=").$this->hash->encrypt($r->tag_id).'" class="link-style"><span>'.trim($r->tag_name).'</span></a>';
                }else{
-                    $tags_template .= ' , <a href="'.$this->hash->encrypt($r->tag_id).'" class="link-style"><span>'.trim($r->tag_name).'</span></a>';
+                    $tags_template .= ' , <a href="'.site_url("app/product/?tags=").$this->hash->encrypt($r->tag_id).'" class="link-style"><span>'.trim($r->tag_name).'</span></a>';
                }
             }
 
@@ -272,6 +272,7 @@ class Product_model extends CI_Model {
 
             $result[$key]->variants = $variants;
             $result[$key]->variants_count = count($variants);
+            $result[$key]->product_id = $this->hash->encrypt($row->product_id);
 
         }
 
@@ -565,5 +566,11 @@ class Product_model extends CI_Model {
         }else{
             return $this->hash->encrypt($product_id);
         }
+    }
+
+
+    public function get_product_by_id($product_id){
+        $product = $this->db->where("p.product_id" , $product_id)->get("product p")->row();
+        return $product;
     }
 }

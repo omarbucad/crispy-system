@@ -63,7 +63,17 @@ class Product extends MY_Controller {
 			}
 		}
 
-		
+	}
+
+	public function view($product_id){
+		$product_id = $this->hash->decrypt($product_id);
+
+		$this->data['product_information'] = $this->product->get_product_by_id($product_id);
+		$this->data['website_title'] = "View Product | Accounts Package";
+		$this->data['page_name'] = "Product";
+		$this->data['main_page'] = "backend/page/product/view_product";
+
+		$this->load->view('backend/master' , $this->data);
 	}
 
 	// PRODUCT TAGS
