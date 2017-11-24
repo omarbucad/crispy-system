@@ -31,7 +31,7 @@
                         <tr class="customer-row" style="cursor: default;">
                             <td><span><strong><a href="<?php echo site_url("app/product/?brands=$row->product_brand_id"); ?>" class="link-style"><?php echo $row->brand_name; ?></a></strong></span></td>
                             <td><span><?php echo $row->description; ?></span></td>
-                            <td><span>0</span></td>
+                            <td><span><?php echo $row->count; ?></span></td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="...">
                                     <a href="<?php echo site_url("app/product/?brands=$row->product_brand_id"); ?>" class="btn btn-link">View Products</a>

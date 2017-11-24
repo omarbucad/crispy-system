@@ -31,7 +31,7 @@
                             <td>
                                 <span><strong><a href="<?php echo site_url("app/product/?tags=$row->product_tag_id"); ?>" class="link-style"><?php echo $row->tag_name; ?></a></strong></span>
                             </td>
-                            <td><span>1</span></td>
+                            <td><span><?php echo $row->count; ?></span></td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="...">
                                     <a href="<?php echo site_url("app/product/?tags=$row->product_tag_id"); ?>" class="btn btn-link">View Products</a>

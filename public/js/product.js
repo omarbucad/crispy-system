@@ -5,6 +5,8 @@ var uniqId = (function(){
     }
 })();
 
+var sku_sec = parseInt(sku_sequence);
+
 $(document).on("click" , '.add-tag-btn' , function(){
 
 	$("#add_tags_modal").modal("show");
@@ -124,8 +126,8 @@ $(document).on("click" , '.submit-form-ajax' , function(){
 
 			if(json.status){
 				$(".select-attribute").append($("<option>" , {
-					value : attribute_name ,
-					text : attribute_name ,
+					value : form.find('#attribute_name').val() ,
+					text : form.find('#attribute_name').val() ,
 					selected : true
 				}));
 
@@ -170,6 +172,25 @@ $(document).on("click" , '.open-settings' , function(){
 		$(this).closest("tr").next().addClass("open").removeClass("hidden");
 		$(this).closest("td").find("i").removeClass("fa-caret-right").addClass("fa-caret-down");
 	}
+});
+
+$(document).on("click" , '.add-more-product' , function(){
+	var tr = $("<tr>");
+
+	var select = $("<select>" , {class : "form-control" , name : "composite[product_id][]"});
+	select.append($("<option>" , { value : "" , text : "- Select Product -"}));
+	$.each(product_list , function(k , v){
+		select.append($("<option>" , {value : v.product_id , text : v.p_name}));
+	});
+	tr.append($("<td>").append(select));
+	tr.append('<td><input type="number" name="composite[quantity][]" value="0" class="form-control"></td>');
+	tr.append('<td><a href="javascript:void(0);" class="remove-product btn btn-link" title="Remove Product" style="margin-top:-4px;"><i class="fa fa-2x fa-trash" aria-hidden="true"></i></a></td>');
+
+	$(".composite_product .append-top").before(tr);
+});
+
+$(document).on("click" , '.remove-product' , function(){
+	$(this).closest("tr").remove();
 });
 
 $(document).ready(function(){
@@ -269,6 +290,9 @@ function computeSales(){
 }
 
 function build_variant(){
+	
+	sku_sec = parseInt(sku_sequence);
+
 
 	var select_attrib = $("#product_variant .select-attribute");
 	var tags_length = $("#product_variant .tags-input").length;
@@ -353,16 +377,22 @@ function build_variant_header(uniq_id , variant_name){
 	var span = $("<span>");
 
 	var product_variant_name = $("<td>").append( span.append("<i class='fa fa-caret-right' aria-hidden='true'></i>") ).append( $("<strong>" , {style : "padding-left : 10px; " , text : variant_name , class : "open-settings"}) );
+	var supply_price = parseFloat($(".supply-price").val()).toFixed(2);
+	var retail_price_wot = parseFloat($(".retail_price_1").val()).toFixed(2);
+	var supplier_code = $('#supplier_code').val();
 
 	tr.append($("<td>").append(product_variant_name));
 	
 	if(sku_generation  == "GENERATE_BY_NAME"){
 		tr.append($("<td>").append("<input type='text'  class='form-control' aria-describedby='sizing-addon1' name='variant["+variant_name+"][sku]' placeholder='Enter SKU'>"));
+		tr.append($("<td>").append("<input type='text'  class='form-control' aria-describedby='sizing-addon1' name='variant["+variant_name+"][supplier_code]' value="+supplier_code+" placeholder='Enter Supplier Code'>"));
+	}else{
+		tr.append($("<td>").append("<input type='hidden' name='variant["+variant_name+"][sku]' value="+(++sku_sec)+"><input type='text'  class='form-control' aria-describedby='sizing-addon1' name='variant["+variant_name+"][supplier_code]' value="+supplier_code+" placeholder='Enter Supplier Code'>"));
 	}
 	
-	tr.append($("<td>").append("<input type='text'  class='form-control' aria-describedby='sizing-addon1' name='variant["+variant_name+"][supplier_code]' placeholder='Enter Supplier Code'>"));
-	tr.append($("<td>").append('<div class="input-group"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" name="variant['+variant_name+'][supply_price]" step="0.01" class="form-control supply_price_variant" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
-	tr.append($("<td>").append('<div class="input-group"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" name="variant['+variant_name+'][supply_price]" step="0.01" class="form-control" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
+	
+	tr.append($("<td>").append('<div class="input-group"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" name="variant['+variant_name+'][supply_price]" step="0.01" value="'+supply_price+'" class="form-control supply_price_variant" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
+	tr.append($("<td>").append('<div class="input-group"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" name="variant['+variant_name+'][retail_price_wot]" value="'+retail_price_wot+'" step="0.01" class="form-control retail_wot_price_variant" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
 	tr.append($("<td>").append('<input type="checkbox" class="variant_enabled_product" name="variant['+variant_name+'][product_enabled]" value="1" checked>'));
 
 	return tr;
@@ -434,17 +464,21 @@ function build_variant_body(uniq_id , variant_name){
 
 	tbody.append(tr);
 
+	var markup = parseFloat($(".supply-markup").val()).toFixed(2);
+	var retail_price_wot = $("#variant_table > tbody > tr:last-child").find(".retail_wot_price_variant").val();
+	retail_price_wot = parseFloat(retail_price_wot).toFixed(2);
+
 	var tr = $("<tr>" , {class : "customer-row"});
 
 	tr.append($("<td>" , {text : "Markup" , width : "40%"}));
-	tr.append($("<td>" , {class : "text-right" , width : "60%"}).append('<div class="input-group pull-right"><input type="number" name="variant['+variant_name+'][markup]" step="0.01" class="form-control supply_price_variant" placeholder="0.00" aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1">%</span></div>'));
+	tr.append($("<td>" , {class : "text-right" , width : "60%"}).append('<div class="input-group pull-right"><input type="number" name="variant['+variant_name+'][markup]" step="0.01" value="'+markup+'" class="form-control supply_price_variant" placeholder="0.00" aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1">%</span></div>'));
 
 	tbody.append(tr);
 
 	var tr = $("<tr>" , {class : "customer-row"});
 
 	tr.append($("<td>" , {html : "Retail Price:<br><small>Excluding Tax</small>" , width : "40%"}));
-	tr.append($("<td>" , {class : "text-right" , width : "60%"}).append('<div class="input-group pull-right"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" step="0.01" class="form-control supply_price_variant" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
+	tr.append($("<td>" , {class : "text-right" , width : "60%"}).append('<div class="input-group pull-right"><span class="input-group-addon" id="sizing-addon1">₱</span><input type="number" step="0.01" class="form-control retail_price_variant" value="'+retail_price_wot+'" placeholder="0.00" aria-describedby="sizing-addon1"></div>'));
 
 	tbody.append(tr);
 
@@ -504,7 +538,7 @@ function build_tax_list(variant_name){
 
 	$.each( a , function(k , v){
 		var tr = $("<tr>" , {class : "customer-row"});	
-		tr.append('<td><span>'+v.outlet_name+'</span></td>');
+		tr.append('<td><input type="hidden" name="variant['+variant_name+'][tax]['+v.outlet_id+'][default_tax_id]" value='+v.sales_tax_id+'><span>'+v.outlet_name+'</span></td>');
 
 		var select = $("<select>" , {class : "form-control" , name : "variant["+variant_name+"][tax]["+v.outlet_id+"][sales_tax_id]"});
 		var option = '<option value="DEFAULT">Default tax for this outlet</option>';

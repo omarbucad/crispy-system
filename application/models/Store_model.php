@@ -92,6 +92,7 @@ class Store_model extends CI_Model {
                 $result[$key]->tax_name = $sales_group->tax_sales_group_name.' ( '.$tax_id->tax_rate.' % )';
                 $result[$key]->tax_rate = $tax_id->tax_rate;
             }
+
         }
         
         return $result;
@@ -291,7 +292,7 @@ class Store_model extends CI_Model {
         $this->db->join("store_sales_tax st" , "st.sales_tax_id = s.default_sales_tax");
         $this->db->where("s.store_id" , $store_id);
         $result = $this->db->get("store s")->row();
-
+        $result->sequence_sku = ($result->sku_generation_type == "GENERATE_BY_SEQUENCE") ? ($result->current_sequence_sku + 1) : "";
         return $result;
     }
 

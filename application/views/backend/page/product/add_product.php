@@ -1,7 +1,9 @@
 <script type="text/javascript">
 	var outlet_list_json = <?php echo $outlet_list_json; ?>;
 	var default_sales_tax_list = <?php echo $default_sales_tax_list_json; ?>;
+	var product_list = <?php echo $product_list_json; ?>;
 	var sku_generation = "<?php echo $store_settings->sku_generation_type; ?>";
+	var sku_sequence = "<?php echo $store_settings->current_sequence_sku; ?>";
 </script>
 <script type="text/javascript" src="<?php echo site_url('public/js/product.js?version='.$version) ?>"></script>
 <script type="text/javascript">
@@ -32,6 +34,7 @@
     	<form class="form-horizontal" action="<?php echo site_url("app/product/add"); ?>" method="POST">
     		<input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
     		<input type="hidden" name="price_settings" value="<?php echo $store_settings->display_price_settings; ?>">
+    		<input type="hidden" name="sku_generation_type" value="<?php echo $store_settings->sku_generation_type; ?>">
     		<!-- STORE SETTINGS -->
     		<div class="card margin-bottom">
 	    		<div class="card-header">
@@ -110,7 +113,7 @@
 			    						<dt>Supplier Code</dt>
 	    								<dd>
 			    							<div class="form-group">
-			    								<input type="text" name="supplier_code" class="form-control">
+			    								<input type="text" name="supplier_code" id="supplier_code" class="form-control">
 			    							</div>
 			    						</dd>
 			    						<dt>Product brand</dt>
@@ -307,7 +310,7 @@
 			    					<h4>Stock keeping unit (SKU)</h4>
 			    				</div>
 			    				<div class="col-xs-12 col-lg-6 no-margin-bottom">
-			    					<input type="text" name="sku" placeholder="Stock keeping unit (SKU)" class="form-control">
+			    					<input type="text" name="sku" placeholder="Stock keeping unit (SKU)" value="<?php echo $store_settings->sequence_sku; ?>" class="form-control">
 			    				</div>
 			    			</div>
 			   				<hr>
@@ -452,7 +455,7 @@
 		    					<h4>Stock keeping unit (SKU)</h4>
 		    				</div>
 		    				<div class="col-xs-12 col-lg-6 no-margin-bottom">
-		    					<input type="text" name="composite_sku" placeholder="Stock keeping unit (SKU)" class="form-control">
+		    					<input type="text" name="composite_sku" placeholder="Stock keeping unit (SKU)" value="<?php echo $store_settings->sequence_sku; ?>" class="form-control">
 		    				</div>
 		    			</div>
 		    			<hr>
@@ -464,22 +467,26 @@
 		    				</div>
 		    				<div class="col-xs-12 col-lg-6">
 		    					<table class="table">
-		    						<tr>
+		    						<tr class="dont-remove">
 		    							<td>
 		    								<label>Product : </label>
-		    								<input type="text" name="composite[product_id][]" class="form-control">
+		    								<select class="form-control" name="composite[product_id][]">
+		    									<option value="">- Select Product -</option>
+		    									<?php foreach($product_list as $row) : ?>
+		    										<option value="<?php echo $row->product_variant_id?>"><?php echo $row->p_name; ?></option>
+		    									<?php endforeach; ?>
+		    								</select>
 		    							</td>
 		    							<td>
 		    								<label>Quantity : </label>
 		    								<input type="number" name="composite[quantity][]" value="0" class="form-control">
 		    							</td>
 		    							<td>
-		    			
-		    								<a href="javascript:void(0);" class="btn btn-primary" style="margin-top: 24px;">Add</a>
+		    								<a href="javascript:void(0);" class="btn btn-link add-more-product" style="margin-top: 20px;" title="Add More Product"><i class="fa fa-2x fa-plus-circle" aria-hidden="true"></i></a>
 		    							</td>
 		    						</tr>
-		    						<tr>
-		    							<td colspan="3" class="text-center"><span class="help-block">Tip: Product quantities can be less than 1.</span></td>
+		    						<tr class="append-top">
+		    							<!-- <td colspan="3" class="text-center"><span class="help-block">Tip: Product quantities can be less than 1.</span></td> -->
 		    						</tr>
 		    					</table>
 		    				</div>

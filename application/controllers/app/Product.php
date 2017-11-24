@@ -18,6 +18,8 @@ class Product extends MY_Controller {
 		$this->data['product_brand_list'] = $this->product->get_brand();
 		$this->data['supplier_list'] = $this->product->get_supplier();
 		$this->data['product_tag_list'] = $this->product->get_tag();
+		$this->data['product_list'] = $this->product->get_product();
+		$this->data['product_status'] = $this->product->get_product_status();
 
 		$this->load->view('backend/master' , $this->data);
 	}
@@ -38,17 +40,26 @@ class Product extends MY_Controller {
 			$this->data['product_tag_list'] = $this->product->get_tag();
 			$this->data['store_settings'] = $this->store->get_store_settings();
 			$this->data['outlet_list'] = $this->store->get_outlet();
+			$this->data['attribute_list'] = $this->product->get_variant_attribute();
+			$this->data['product_list'] = $this->product->get_product_list();
+			$this->data['product_list_json'] = json_encode($this->data['product_list']);
 			$this->data['outlet_list_json'] = json_encode($this->data['outlet_list']);
 			$this->data['default_sales_tax_list_json'] = json_encode($this->data['default_sales_tax_list']);
-			$this->data['attribute_list'] = $this->product->get_variant_attribute();
+
 
 			$this->load->view('backend/master' , $this->data);
 		}else{
 
 			if($product_id = $this->product->add_product()){
-				echo $product_id;
+				$this->session->set_flashdata('status' , 'success');	
+				$this->session->set_flashdata('message' , 'Successfully Added a new Product Tag');	
+
+				redirect("app/product/?id=".$product_id , 'refresh');
 			}else{
-				echo "error";
+				$this->session->set_flashdata('status' , 'error');
+				$this->session->set_flashdata('message' , 'Something went wrong');	
+
+				redirect("app/product/add" , 'refresh');
 			}
 		}
 

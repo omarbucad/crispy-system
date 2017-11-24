@@ -26,7 +26,7 @@
         }else{
             $me.closest("tr").addClass("active");
             $("."+className).removeClass("hidden").addClass("open");
-             $me.find("i").removeClass("fa-caret-down").addClass("fa-caret-up");
+            $me.find("i").removeClass("fa-caret-down").addClass("fa-caret-up");
         }
     });
 </script>
@@ -118,11 +118,12 @@
             </div>
         </div>
         <div class="container">
+            <?php if($product_list) : ?>
             <div class="customer-table-showing">
                 <span class="pull-left">
-                    <a href="#" class="btn btn-link">Active (1)</a>
-                    <a href="#" class="btn btn-link">Inactive (0)</a>
-                    <a href="#" class="btn btn-link">All (1)</a>
+                    <a href="#" class="btn btn-link">Active (<?php echo $product_status['active']; ?>)</a>
+                    <a href="#" class="btn btn-link">Inactive (<?php echo $product_status['inactive']; ?>)</a>
+                    <a href="#" class="btn btn-link">All (<?php echo $product_status['all']; ?>)</a>
                 </span>
                 <a href="#" class="btn btn-primary pull-right"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export List</a>
             </div>
@@ -143,108 +144,62 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="customer-row" style="cursor: default;">
-                        <td>
-                            <div class="with-img">
-                                <span><a href="#">My Girl Sunglasses </a> <br><small>10001</small></span>
-                                <img src="http://192.168.1.147/crispy-system/thumbs/users/2017/11/80/80/14947775_1805564653049469_4850385028197505507_n.jpg" class="img img-responsive">
-                            </div>
-                        </td>
-                        <td>
-                            <span>04 Nov 2017</span>
-                        </td>
-                        <td>
-                            <a href="#" class="link-style"><span>watch</span></a>
-                        </td>
-                        <td>
-                            <a href="#" class="link-style"><span>Cluse</span></a>
-                        </td>
-                        <td>
-                            <a href="#" class="link-style"><span>Flo & Frankie</span></a>
-                        </td>
-                        <td>
-                            <a href="#" class="link-style view-variant" data-id="_1000"><span>3 Variants <i class="fa fa-caret-down" aria-hidden="true"></i></span></a>
-                        </td>
-                        <td>
-                           <span>198.80</span>
-                        </td>
-                        <td>
-                            <span>15</span>
-                        </td>
-                        <td>
-                            <a href="<?php echo site_url("app/product/edit/"); ?>" class="btn btn-link" title="Edit Product"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                        </td>
-                        <td>
-                            <input type="checkbox" class="toggle-checkbox" name="my-checkbox" checked>
-                        </td>
-                    </tr>
-                    <tr class="customer-info hidden _1000 product-variant">
-                        <td colspan="6">
-                            <a href="#"><span>LaBoheme Mesh Strap Watch / Rose Gold</span></a>
-                        </td>
-                        <td><span>198.90</span></td>
-                        <td><span>5</span></td>
-                        <td colspan="2"></td>
-                    </tr>
-                    <tr class="customer-info hidden _1000 product-variant">
-                        <td colspan="6">
-                            <a href="#"><span>LaBoheme Mesh Strap Watch / Rose Gold</span></a>
-                        </td>
-                        <td><span>198.90</span></td>
-                        <td><span>5</span></td>
-                        <td colspan="2"></td>
-                    </tr>
-                    <tr class="customer-info hidden _1000 product-variant">
-                        <td colspan="6">
-                            <a href="#"><span>LaBoheme Mesh Strap Watch / Rose Gold</span></a>
-                        </td>
-                        <td><span>198.90</span></td>
-                        <td><span>5</span></td>
-                        <td colspan="2"></td>
-                    </tr>
-                    <tr class="customer-row" style="cursor: default;">
-                        <td>
-                            <div class="with-img">
-                                <span><a href="#">My Girl Sunglasses</a> <br><small>10003</small></span>
-                                <img src="http://192.168.1.147/crispy-system/thumbs/users/2017/11/80/80/14947775_1805564653049469_4850385028197505507_n.jpg" class="img img-responsive">
-                            </div>
-                        </td>
-                        <td>
-                            <span>04 Nov 2017</span>
-                        </td>
-                        <td>
-                            <span>-</span>
-                        </td>
-                        <td>
-                            <span>-</span>
-                        </td>
-                        <td>
-                            <span>-</span>
-                        </td>
-                        <td>
-                            <a href="#" class="link-style view-variant" data-id="_1001"><span>1 Variants <i class="fa fa-caret-down" aria-hidden="true"></i></span></a>
-                        </td>
-                        <td>
-                           <span>198.80</span>
-                        </td>
-                        <td>
-                            <span>15</span>
-                        </td>
-                        <td>
-                            <a href="<?php echo site_url("app/product/edit/"); ?>" class="btn btn-link" title="Edit Product"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                        </td>
-                        <td>
-                            <input type="checkbox" class="toggle-checkbox" name="my-checkbox" checked>
-                        </td>
-                    </tr>
-                    <tr class="customer-info hidden _1001 product-variant">
-                        <td colspan="6">
-                            <a href="#"><span>LaBoheme Mesh Strap Watch / Rose Gold</span></a>
-                        </td>
-                        <td><span>198.90</span></td>
-                        <td><span>5</span></td>
-                        <td colspan="2"></td>
-                    </tr>
+
+
+
+                    <?php foreach($product_list as $key => $row) : ?>
+                        <tr class="customer-row" style="cursor: default;">
+                            <td>
+                                <div class="with-img">
+                                    <span><a href="#"><?php echo $row->product_name; ?> </a> <br><small><?php echo $row->variants[0]->sku; ?></small></span>
+                                    <img src="https://www.lowrance.com/assets/img/default-product-img.png" class="img img-responsive">
+                                </div>
+                            </td>
+                            <td>
+                                <span><?php echo $row->created; ?></span>
+                            </td>
+                            <td>
+                                <?php echo $row->tags; ?>
+                            </td>
+                            <td>
+                                <?php echo $row->brand_name; ?>
+                            </td>
+                            <td>
+                                <?php echo $row->supplier_name; ?>
+                            </td>
+                            <td>
+                                <?php if($row->has_variant) : ?>
+                                    <a href="#" class="link-style view-variant" data-id="_<?php echo $row->variants[0]->sku; ?>"><span><?php echo $row->variants_count; ?> Variants <i class="fa fa-caret-down" aria-hidden="true"></i></span></a>
+                                <?php else : ?>
+                                    -
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                               <span><?php echo $row->variants[0]->retail_price_wot; ?></span>
+                            </td>
+                            <td>
+                                <span><?php echo $row->inventory; ?></span>
+                            </td>
+                            <td>
+                                <a href="<?php echo site_url("app/product/edit/"); ?>" class="btn btn-link" title="Edit Product"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                            </td>
+                            <td>
+                                <input type="checkbox" class="toggle-checkbox" name="my-checkbox" checked>
+                            </td>
+                        </tr>
+                        <?php if($row->has_variant) : ?>
+                            <?php foreach($row->variants as $k => $var) : ?>
+                                <tr class="customer-info hidden _<?php echo $row->variants[0]->sku; ?> product-variant">
+                                    <td colspan="6">
+                                        <a href="#"><span><?php echo $row->product_name.' '.$var->variant_name; ?></span></a>
+                                    </td>
+                                    <td><span><?php echo $var->retail_price_wot; ?></span></td>
+                                    <td><span><?php echo $var->inventory; ?></span></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
             <div class="customer-table-showing margin-bottom">
@@ -254,6 +209,17 @@
                     </nav>
                 </div>
             </div>
+            <?php elseif($this->input->get("submit")) : ?>
+                <div class="text-center">
+                    <img src="<?php echo site_url("public/img/packing.png"); ?>" class="img">
+                    <p class="help-block">No matching products found. Update your filters to view more products.</p>
+                </div>
+            <?php else : ?>
+                <div class="text-center">
+                    <img src="<?php echo site_url("public/img/packing.png"); ?>" class="img">
+                    <p class="help-block">No Product Found , Click <a href="<?php echo site_url('app/product/add'); ?>">Here</a> to add Product</p>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

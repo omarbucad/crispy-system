@@ -35,7 +35,7 @@
                             </td>
                             <td><span><?php echo $row->description; ?></span></td>
                             <td><span><?php echo $row->default_markup; ?></span></td>
-                            <td><span>0</span></td>
+                            <td><span><?php echo $row->count; ?></span></td>
                             <td>
                                <div class="btn-group" role="group" aria-label="...">
                                     <a href="<?php echo site_url("app/product/?supplier=$row->supplier_id ") ?>" class="btn btn-link">View Products</a>
