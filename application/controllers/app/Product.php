@@ -68,13 +68,51 @@ class Product extends MY_Controller {
 	public function view($product_id){
 		$product_id = $this->hash->decrypt($product_id);
 
+		$this->data['outlet_list'] = $this->store->get_outlet();
 		$this->data['product_information'] = $this->product->get_product_by_id($product_id);
 		$this->data['website_title'] = "View Product | Accounts Package";
 		$this->data['page_name'] = "Product";
 		$this->data['main_page'] = "backend/page/product/view_product";
 
+		//print_r_die($this->data['product_information']);
 		$this->load->view('backend/master' , $this->data);
 	}
+
+	//STOCK CONTROL
+
+	public function consignment(){
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Stock Control";
+		$this->data['main_page'] = "backend/page/product/consignment";
+
+		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function order_stock(){
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Order Stock";
+		$this->data['main_page'] = "backend/page/product/order_stock";
+
+		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function return_stock(){
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Return Stock";
+		$this->data['main_page'] = "backend/page/product/return_stock";
+
+		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function inventory_count(){
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Inventory Count";
+		$this->data['main_page'] = "backend/page/product/inventory_count";
+
+		$this->load->view('backend/master' , $this->data);
+	}
+
+
 
 	// PRODUCT TAGS
 	public function tags(){

@@ -570,7 +570,38 @@ class Product_model extends CI_Model {
 
 
     public function get_product_by_id($product_id){
-        $product = $this->db->where("p.product_id" , $product_id)->get("product p")->row();
+
+
+
+        $this->db->select("p.product_id , p.description , p.product_name , p.product_handle");
+        $this->db->select("pt.type_name , pb.brand_name , s.supplier_name , pv.supply_price , pv.retail_price_wot , pv.sku");
+        $this->db->join("product_types pt" , "pt.product_type_id = p.product_type_id");
+        $this->db->join("product_brands pb" , "pb.product_brand_id = p.brand_id" );
+        $this->db->join("supplier s" , "s.supplier_id = p.supplier_id");
+        $this->db->join("product_variants pv" , "pv.product_id = p.product_id");
+        $product = $this->db->where("p.product_id" , $product_id)->group_by("product_id" , "ASC")->get("product p")->row();
+
+        $product->supply_price = number_format($product->supply_price , 2);
+        $product->retail_price_wot = number_format($product->retail_price_wot , 2);
+
+        $outlet = array(); 
+        foreach($this->data['outlet_list'] as $key => $row){
+            $outlet[] = array(
+                "outlet_id" => $row->outlet_id ,
+                "outlet_name" => $row->outlet_name ,
+                "stock" => $this->db->select("current_inventory")->join("product_variants pv" , "pv.product_variant_id = i.product_variant_id")->where("outlet_id" , $this->hash->decrypt($row->outlet_id ))->where("product_id" , $product_id)->get("inventory i")->row()->current_inventory
+            );
+        }
+
+        $product->outlet = $outlet;
+        //TAGS
+
+        $tags = $this->db->select("tag_name, tag_id")->join("product_tags pt" , "pt.product_tag_id = ppt.tag_id")->where("product_id" , $product->product_id)->get("product_product_tags ppt")->result();
+        $tags_template = "";
+        foreach($tags as $k => $r){
+            $tags_template .= ' <a href="'.site_url("app/product/?tags=").$this->hash->encrypt($r->tag_id).'"><span class="label label-success">'.trim($r->tag_name).'</span></a>';
+        }
+        $product->tags = $tags_template;
         return $product;
     }
 }

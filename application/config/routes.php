@@ -65,6 +65,9 @@ $route['app/setup/add-register'] = 'app/setup/add_register';
 
 
 
+$route['app/product/order-stock'] = 'app/product/order_stock';
+$route['app/product/return-stock'] = 'app/product/return_stock';
+$route['app/product/inventory-count'] = 'app/product/inventory_count';
 $route['app/product/supplier/add'] = 'app/product/add_supplier';
 $route['app/product/supplier/view/(:any)'] = 'app/product/view_supplier/$1';
 

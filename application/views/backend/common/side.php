@@ -66,7 +66,7 @@
                         <div class="panel-body">
                             <ul class="nav navbar-nav">
                                 <li><a href="<?php echo site_url("app/product"); ?>">Products</a></li>
-                                <li><a href="<?php echo site_url("app/product/stock-control"); ?>">Stock Control</a></li>
+                                <li><a href="<?php echo site_url("app/product/consignment"); ?>">Stock Control</a></li>
                                 <li><a href="<?php echo site_url("app/product/price-books"); ?>">Price Books</a></li>
                                 <li><a href="<?php echo site_url("app/product/type"); ?>">Product Types</a></li>
                                 <li><a href="<?php echo site_url("app/product/supplier"); ?>">Supplier</a></li>
