@@ -29,11 +29,12 @@ h1 , h2 , h3 , h4 , h5 ,h6 , a{
 	font-size: 20px;
 	text-decoration: none;
 	padding-bottom: 10px;
+	margin-right: 10px;
 	border-bottom: 4px solid transparent;
 }
-.account_container_btn > a:first-child{
+/*.account_container_btn > a:first-child{
 	margin-right: 10px;
-}
+}*/
 
 .account_container_btn > a.active , .account_container_btn > a:hover{
 	color: #1ABC9C !important;

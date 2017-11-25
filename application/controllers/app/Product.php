@@ -74,7 +74,6 @@ class Product extends MY_Controller {
 		$this->data['page_name'] = "Product";
 		$this->data['main_page'] = "backend/page/product/view_product";
 
-		//print_r_die($this->data['product_information']);
 		$this->load->view('backend/master' , $this->data);
 	}
 
@@ -92,6 +91,9 @@ class Product extends MY_Controller {
 		$this->data['website_title'] = "Stock Control | Accounts Package";
 		$this->data['page_name'] = "Order Stock";
 		$this->data['main_page'] = "backend/page/product/order_stock";
+		$this->data['outlet_list'] = $this->store->get_outlet();
+		$this->data['supplier_list'] = $this->product->get_supplier();
+		$this->data['store_settings'] = $this->store->get_store_settings();
 
 		$this->load->view('backend/master' , $this->data);
 	}
@@ -100,6 +102,9 @@ class Product extends MY_Controller {
 		$this->data['website_title'] = "Stock Control | Accounts Package";
 		$this->data['page_name'] = "Return Stock";
 		$this->data['main_page'] = "backend/page/product/return_stock";
+		$this->data['outlet_list'] = $this->store->get_outlet();
+		$this->data['supplier_list'] = $this->product->get_supplier();
+		$this->data['store_settings'] = $this->store->get_store_settings();
 
 		$this->load->view('backend/master' , $this->data);
 	}

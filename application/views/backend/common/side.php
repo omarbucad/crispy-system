@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </li>
-                <li class="panel panel-default dropdown <?php echo ($this->uri->segment(2) == 'products') ? "active" : "" ;?>">
+                <li class="panel panel-default dropdown <?php echo ($this->uri->segment(2) == 'product') ? "active" : "" ;?>">
                     <a data-toggle="collapse" href="#dropdown-element-products">
                         <span class="icon fa fa-tags"></span><span class="title">Products</span>
                     </a>
