@@ -27,9 +27,30 @@ $(function() {
 });
 
 $(function() {
-  return $('input.daterange').daterangepicker();
+  var a = $('input.daterange').daterangepicker({
+    autoUpdateInput: false
+  });
+
+  $('input.daterange').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+  });
+
+  $('input.daterange').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+  });
+
+  return a;
 });
 
+$(function() {
+  return $('input.datepicker').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'D MMM YYYY'
+        }
+    });
+});
 
 $(function() {
   return $('.select2').select2();

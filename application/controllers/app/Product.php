@@ -113,11 +113,46 @@ class Product extends MY_Controller {
 		$this->data['website_title'] = "Stock Control | Accounts Package";
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_count";
+		$this->data['no_result_found'] = "You have no due inventory counts";
 
 		$this->load->view('backend/master' , $this->data);
 	}
 
+	public function inventory_count_upcoming(){
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Inventory Count";
+		$this->data['main_page'] = "backend/page/product/inventory_count";
+		$this->data['no_result_found'] = "You have no upcoming inventory counts";
 
+		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function inventory_count_completed(){
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Inventory Count";
+		$this->data['main_page'] = "backend/page/product/inventory_count";
+		$this->data['no_result_found'] = "You have no upcoming inventory counts";
+
+		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function inventory_count_cancelled(){
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Inventory Count";
+		$this->data['main_page'] = "backend/page/product/inventory_count";
+		$this->data['no_result_found'] = "You have no upcoming inventory counts";
+
+		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function inventory_count_create(){
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Inventory Count";
+		$this->data['main_page'] = "backend/page/product/inventory_create";
+		$this->data['outlet_list'] = $this->store->get_outlet();
+
+		$this->load->view('backend/master' , $this->data);
+	}
 
 	// PRODUCT TAGS
 	public function tags(){

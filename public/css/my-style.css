@@ -336,3 +336,30 @@ a.link-style{
 .product-type-btn.active span{
 	color: #50bc9c;
 }
+
+.product_container{
+	width: 100%;
+	background: white;
+	overflow: hidden;
+}
+.product_container > div{
+	cursor: pointer;
+	float: left;
+	padding: 10px;
+	width: 50%;
+	border: 2px solid rgba(0,0,0,0.2);
+	height: 150px;
+}
+.product_container > div.active{
+	border-color: #1ABC9C;
+}
+.product_container > div h3{
+	padding-bottom: 10px;
+	border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.help-block-inline{
+    margin-top: 6px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    color: #737373;
+}
