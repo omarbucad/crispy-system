@@ -138,7 +138,9 @@
                             		<label>Filter Products</label>
                             		<div class="input-group">
                             			<select class="form-control select2" name="product">
-
+                                            <?php foreach($product_list as $product) : ?>
+                                                <option value="<?php echo $product->product_variant_id; ?>"><?php echo $product->p_name; ?></option>
+                                            <?php endforeach ; ?>
                             			</select>
                             			<span class="input-group-btn">
                             				<button class="btn btn-link" style="margin: 0px !important;" type="button">Add Product</button>

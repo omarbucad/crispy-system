@@ -150,6 +150,8 @@ class Product extends MY_Controller {
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_create";
 		$this->data['outlet_list'] = $this->store->get_outlet();
+		$this->data['product_list'] = $this->product->get_product_list();
+		
 
 		$this->load->view('backend/master' , $this->data);
 	}
