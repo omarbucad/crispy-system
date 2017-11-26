@@ -151,7 +151,34 @@ class Product extends MY_Controller {
 		$this->data['main_page'] = "backend/page/product/inventory_create";
 		$this->data['outlet_list'] = $this->store->get_outlet();
 		$this->data['product_list'] = $this->product->get_product_list();
-		
+		/*
+		inventory_stock_control
+
+		stock_control_id
+		count_name
+		start_date
+		start_time
+		outlet_id
+		store_id
+		count_type
+		include_inactive
+		status [ in-progress , completed , cancelled ]
+		user_id
+		created
+		updated
+		deleted
+
+
+		inventory_stock_count
+
+		stock_count_id
+		stock_control_id
+		product_variant_id
+		expected
+		counted
+		status [ uncounted , unmatched , matched , excluded ]
+
+		*/
 
 		$this->load->view('backend/master' , $this->data);
 	}

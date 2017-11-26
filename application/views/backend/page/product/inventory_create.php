@@ -8,12 +8,57 @@
 
 		if(type == "partial"){
 			$('#product_search_container').removeClass("hidden");
-			$("#product_count").html("0");
+			var product_count = $(".product-list table tbody > tr").length;
+
+            if(product_count){
+                $("#product_count").html(product_count);
+            }else{
+                $("#product_count").html("0");
+            }
+            
 		}else{
 			$('#product_search_container').addClass("hidden");
 			$("#product_count").html("All");
 		}
 	});
+
+    $(document).on("click" , '.remove-product' , function(){
+
+        $(this).closest("tr").remove();
+
+        var product_count = $(".product-list table tbody > tr").length;
+        $("#product_count").html(product_count);
+
+        if(!product_count){
+            $(".product-list").find(".p-list-none").removeClass("hidden");
+            $(".product-list").find(".p-list").addClass("hidden");
+        }
+
+        
+    });
+
+    $(document).on("click" , ".add-product" , function(){
+        var product_id = $(this).closest(".input-group").find("select").val();
+        var product_name = $(this).closest(".input-group").find("select option:selected").text();
+
+        $(".product-list").find(".p-list").removeClass("hidden");
+        $(".product-list").find(".p-list-none").addClass("hidden");
+
+
+        var hasClass = $(".product-list").find("table tbody tr._"+product_id).length;
+
+        if(!hasClass){
+
+            var tr = $("<tr>" , { class : "_"+product_id});
+            tr.append("<td><input type='hidden' name='product_id[]' value="+product_id+">"+product_name+"</td>");
+            tr.append('<td class="text-center"><a href="javascript:void(0);" class="link-style remove-product"><i class="fa fa-trash" aria-hidden="true"></i></td>');
+
+            $(".product-list").find("table tbody").append(tr);
+        }
+
+        var product_count = $(".product-list table tbody > tr").length;
+        $("#product_count").html(product_count);
+    });
 
 	$(document).ready(function(){
 		$(".include_inactive").bootstrapSwitch({
@@ -143,14 +188,27 @@
                                             <?php endforeach ; ?>
                             			</select>
                             			<span class="input-group-btn">
-                            				<button class="btn btn-link" style="margin: 0px !important;" type="button">Add Product</button>
+                            				<button class="btn btn-link add-product" style="margin: 0px !important;" type="button">Add Product</button>
                             			</span>
                             		</div>
 
                             		<br>
 
                             		<div class="product-list">
-                            			<div class="text-center">
+                                        <div class="p-list hidden card">
+                                            <table class="table no-margin-bottom">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Product</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                   
+                                                </tbody>
+                                            </table>
+                                        </div>
+                            			<div class="p-list-none  text-center">
                             				<img src="<?php echo site_url("public/img/packing.png"); ?>" class="img" width="100px;">
                 							<p class="help-block">Use filters to include products in this count.</p>
                             			</div>
