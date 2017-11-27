@@ -571,8 +571,6 @@ class Product_model extends CI_Model {
 
     public function get_product_by_id($product_id){
 
-
-
         $this->db->select("p.product_id , p.description , p.product_name , p.product_handle");
         $this->db->select("pt.type_name , pb.brand_name , s.supplier_name , pv.supply_price , pv.retail_price_wot , pv.sku");
         $this->db->join("product_types pt" , "pt.product_type_id = p.product_type_id");
@@ -603,5 +601,69 @@ class Product_model extends CI_Model {
         }
         $product->tags = $tags_template;
         return $product;
+    }
+
+
+    public function create_stock_count(){
+        $store_id = $this->data['session_data']->store_id;
+        $user_id = $this->data['session_data']->user_id;
+
+        $this->db->trans_start();
+
+        $this->db->insert("inventory_stock_control" , [
+            "count_name"        => $this->input->post("count_name"),
+            "start_date"        => $this->input->post("start_date"),
+            "start_time"        => $this->input->post("start_time"),
+            "schedule_time"     => strtotime($this->input->post("start_date").' '.$this->input->post("start_time")),
+            "outlet_id"         => $this->hash->decrypt($this->input->post("outlet")),
+            "store_id"          => $store_id,
+            "count_type"        => $this->input->post("count_type"),
+            "include_inactive"  => ($this->input->post("include_inactive")) ? 1 : 0,
+            "status"            => "IN PROGRESS",
+            "user_id"           => $user_id,
+            "created"           => time()
+        ]);
+
+        $stock_control_id = $this->db->insert_id();
+
+        if($this->input->post("count_type") == "partial"){
+            $product_variant_list = $this->input->post("product_id");
+
+            foreach($product_variant_list as $key => $product){
+                $inventory = $this->db->select("reorder_point , reorder_amount")->where("product_variant_id" , $this->hash->decrypt($product))->where("outlet_id" , $this->hash->decrypt($this->input->post("outlet")))->get("inventory")->row();
+                $product_variant_list[$key] = array(
+                    "product_variant_id"    => $this->hash->decrypt($product),
+                    "expected"              => $inventory->reorder_point ,
+                    "reorder_amount"        => $inventory->reorder_amount,
+                    "stock_control_id"      => $stock_control_id
+                );
+            }
+
+
+        }else{
+
+            $this->db->select("i.reorder_amount , i.reorder_point as expected , i.product_variant_id")->join("product_variants pv" , "pv.product_id = p.product_id")->join("inventory i" , "i.product_variant_id = pv.product_variant_id")->where("p.store_id" , $store_id)->where("i.outlet_id" , $this->hash->decrypt($this->input->post("outlet")));
+            
+            if($this->input->post("include_inactive")){
+                $this->db->where("status" , 1);
+            }
+            $product_variant_list = $this->db->get("product p")->result();
+
+            foreach($product_variant_list as $key => $product){
+                $product_variant_list[$key]->stock_control_id = $stock_control_id;
+            }
+
+        }
+
+        $this->db->insert("inventory_stock_count" , $product_variant_list);
+
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return $this->hash->encrypt($stock_control_id);
+        }
     }
 }

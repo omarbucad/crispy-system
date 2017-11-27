@@ -146,41 +146,23 @@ class Product extends MY_Controller {
 	}
 
 	public function inventory_count_create(){
-		$this->data['website_title'] = "Stock Control | Accounts Package";
-		$this->data['page_name'] = "Inventory Count";
-		$this->data['main_page'] = "backend/page/product/inventory_create";
-		$this->data['outlet_list'] = $this->store->get_outlet();
-		$this->data['product_list'] = $this->product->get_product_list();
-		/*
-		inventory_stock_control
-
-		stock_control_id
-		count_name
-		start_date
-		start_time
-		outlet_id
-		store_id
-		count_type
-		include_inactive
-		status [ in-progress , completed , cancelled ]
-		user_id
-		created
-		updated
-		deleted
+		$this->form_validation->set_rules('start_date'		, 'Start Date'			, 'trim|required');
 
 
-		inventory_stock_count
+		if ($this->form_validation->run() == FALSE){ 
+			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['page_name'] = "Inventory Count";
+			$this->data['main_page'] = "backend/page/product/inventory_create";
+			$this->data['outlet_list'] = $this->store->get_outlet();
+			$this->data['product_list'] = $this->product->get_product_list();
 
-		stock_count_id
-		stock_control_id
-		product_variant_id
-		expected
-		counted
-		status [ uncounted , unmatched , matched , excluded ]
+			$this->load->view('backend/master' , $this->data);
+		}else{
+			print_r_die($this->input->post());
+		} 
 
-		*/
 
-		$this->load->view('backend/master' , $this->data);
+		
 	}
 
 	// PRODUCT TAGS

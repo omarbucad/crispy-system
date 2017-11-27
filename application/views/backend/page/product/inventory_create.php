@@ -105,7 +105,7 @@
         </div>
 
         <div class="container ">
-            <form action="<?php echo site_url("app/setup/users/add");?>" method="post" enctype="multipart/form-data" id="form_users">
+            <form action="<?php echo site_url("app/product/inventory-count/create");?>" method="post" enctype="multipart/form-data" id="form_users">
                 <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
                 <section class="sec_border_bottom">
                     <h3>General</h3>
@@ -182,7 +182,7 @@
                             	<div id="product_search_container" class="container-fluid">
                             		<label>Filter Products</label>
                             		<div class="input-group">
-                            			<select class="form-control select2" name="product">
+                            			<select class="form-control select2">
                                             <?php foreach($product_list as $product) : ?>
                                                 <option value="<?php echo $product->product_variant_id; ?>"><?php echo $product->p_name; ?></option>
                                             <?php endforeach ; ?>
