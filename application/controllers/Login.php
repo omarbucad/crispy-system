@@ -28,7 +28,9 @@ class Login extends MY_Controller {
 	}
 	public function do_login(){
 
-		if($this->register->signin($this->input->post())){
+		if($data = $this->register->signin($this->input->post())){
+			$data->currency_symbol = $this->world_currency_symbol($data->default_currency);
+			$this->session->set_userdata("user" , $data);
 			$this->session->set_flashdata('status' , 'success');
 			redirect('/app/welcome', 'refresh');
 

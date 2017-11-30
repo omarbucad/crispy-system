@@ -40,8 +40,9 @@ class Welcome extends MY_Controller {
 				$this->input->set_cookie("store_id" , $data['store_id'] , COOKIE_EXPIRE , DOMAIN_IP);
 				$this->input->set_cookie("store_name" , $data['store_name'] , COOKIE_EXPIRE , DOMAIN_IP);
 
-				$this->register->signin($data['user_id']);
-
+				$user_data = $this->register->signin($data['user_id']);
+				$user_data->currency_symbol = $this->world_currency_symbol($data->default_currency);
+				$this->session->set_userdata("user" , $user_data);
 				redirect('/app/welcome', 'refresh');
 			}else{
 				$this->session->set_flashdata('status' , 'error');
