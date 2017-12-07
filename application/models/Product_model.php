@@ -568,7 +568,6 @@ class Product_model extends CI_Model {
         }
     }
 
-
     public function get_product_by_id($product_id){
 
         $this->db->select("p.product_id , p.description , p.product_name , p.product_handle");
@@ -603,7 +602,6 @@ class Product_model extends CI_Model {
         return $product;
     }
 
-
     public function create_stock_count(){
         $store_id = $this->data['session_data']->store_id;
         $user_id = $this->data['session_data']->user_id;
@@ -630,32 +628,44 @@ class Product_model extends CI_Model {
             $product_variant_list = $this->input->post("product_id");
 
             foreach($product_variant_list as $key => $product){
-                $inventory = $this->db->select("reorder_point , reorder_amount")->where("product_variant_id" , $this->hash->decrypt($product))->where("outlet_id" , $this->hash->decrypt($this->input->post("outlet")))->get("inventory")->row();
+
+                $inventory = $this->db->select("reorder_point , reorder_amount")
+                ->where("product_variant_id" , $this->hash->decrypt($product))
+                ->where("outlet_id" , $this->hash->decrypt($this->input->post("outlet")))
+                ->get("inventory")->row();
+
                 $product_variant_list[$key] = array(
                     "product_variant_id"    => $this->hash->decrypt($product),
                     "expected"              => $inventory->reorder_point ,
                     "reorder_amount"        => $inventory->reorder_amount,
-                    "stock_control_id"      => $stock_control_id
+                    "stock_control_id"      => $stock_control_id,
+                    "status"                => "uncounted"
                 );
             }
 
 
         }else{
 
-            $this->db->select("i.reorder_amount , i.reorder_point as expected , i.product_variant_id")->join("product_variants pv" , "pv.product_id = p.product_id")->join("inventory i" , "i.product_variant_id = pv.product_variant_id")->where("p.store_id" , $store_id)->where("i.outlet_id" , $this->hash->decrypt($this->input->post("outlet")));
+            $this->db->select("i.reorder_amount , i.reorder_point as expected , i.product_variant_id")
+                ->join("product_variants pv" , "pv.product_id = p.product_id")
+                ->join("inventory i" , "i.product_variant_id = pv.product_variant_id")
+                ->where("p.store_id" , $store_id)
+                ->where("i.outlet_id" , $this->hash->decrypt($this->input->post("outlet")));
             
-            if($this->input->post("include_inactive")){
+            if(!$this->input->post("include_inactive")){
                 $this->db->where("status" , 1);
             }
+
             $product_variant_list = $this->db->get("product p")->result();
 
             foreach($product_variant_list as $key => $product){
                 $product_variant_list[$key]->stock_control_id = $stock_control_id;
+                $product_variant_list[$key]->uncounted = "uncounted";
             }
 
         }
 
-        $this->db->insert("inventory_stock_count" , $product_variant_list);
+        $this->db->insert_batch("inventory_stock_count" , $product_variant_list);
 
 
         $this->db->trans_complete();
@@ -665,5 +675,64 @@ class Product_model extends CI_Model {
         }else{
             return $this->hash->encrypt($stock_control_id);
         }
+    }
+
+    public function get_stock_count($stock_type = ""){
+        $store_id = $this->data['session_data']->store_id;
+        $current_time = time();
+
+        $this->db->select("stock_control_id , count_name , start_date , start_time , i.status , i.created , i.outlet_id , schedule_time");
+        $this->db->select("u.display_name");
+        $this->db->select("so.outlet_name");
+        $this->db->join("user u" , "u.user_id = i.user_id");
+        $this->db->join("store_outlet so" , "so.outlet_id = i.outlet_id");
+        $this->db->where("i.store_id" , $store_id);
+
+        switch ($stock_type) {
+            case 'due':
+                $this->db->where("i.schedule_time > " , $current_time)->where("status" , "IN PROGRESS");
+                break;
+            case 'upcoming':
+                 $this->db->where("i.schedule_time < " , $current_time)->where("status" , "IN PROGRESS");
+                break;
+            case 'completed':
+                 $this->db->where("status" , "COMPLETED");
+                break;
+            case 'cancelled':
+                 $this->db->where("status" , "CANCELLED");
+                break;
+            default:
+                return $this->db->where("stock_control_id" , $stock_type)->get("inventory_stock_control i ")->row();
+                break;
+        }
+
+        $result = $this->db->get("inventory_stock_control i ")->result();
+        
+        foreach($result as $key => $row){
+            $result[$key]->created = convert_timezone($row->created , true);
+        }
+
+        return $result;
+    }
+
+    public function get_stock_count_by_id($stock_id){
+        $stock_information = $this->get_stock_count($stock_id);
+
+        $stock_information->created = convert_timezone($stock_information->created , true);
+        $stock_information->schedule_time = convert_timezone($stock_information->schedule_time , true);
+
+        $this->db->select("pv.sku , pv.variant_name , pv.supply_price , pv.markup_price , pv.retail_price_wot , pv.product_variant_id");
+        $this->db->select("p.product_name , p.product_handle");
+        $this->db->select("i.expected , i.counted , i.status , i.reorder_amount");
+        $this->db->join("product p" , "p.product_id = pv.product_id");
+        $this->db->join("inventory_stock_count i" , "i.product_variant_id = pv.product_variant_id");
+        $this->db->where("stock_control_id" , $stock_id);
+        $stock_information->products = $this->db->get("product_variants pv")->result();
+
+        foreach($stock_information->products as $key => $row){
+            $stock_information->products[$key]->product_variant_id = $this->hash->encrypt($row->product_variant_id);     
+        }
+
+        return $stock_information;
     }
 }

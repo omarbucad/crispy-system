@@ -7,7 +7,6 @@ class Product extends MY_Controller {
        parent::__construct();
 
        $this->load->model("Product_model" , "product");
-       $this->load->model("Store_model" , "store");
     }
 
 	public function index(){
@@ -158,11 +157,37 @@ class Product extends MY_Controller {
 
 			$this->load->view('backend/master' , $this->data);
 		}else{
-			print_r_die($this->input->post());
+
+			if($count_id = $this->product->create_stock_count()){
+				$this->session->set_flashdata('status' , 'success');	
+				$this->session->set_flashdata('message' , 'Successfully Scheduled a Inventory Count');	
+				
+				if($this->input->post("submit_input") == "start_count"){
+					redirect("app/product/inventory-count/start/".$count_id , 'refresh');
+				}else{
+					redirect("app/product/inventory-count/?inventory_count=".$count_id , 'refresh');
+				}
+			}else{
+				$this->session->set_flashdata('status' , 'error');
+				$this->session->set_flashdata('message' , 'Something went wrong');	
+
+				redirect("app/product/inventory-count/create", 'refresh');
+			}
 		} 
+	
+	}
 
+	public function inventory_count_start($count_id){
+		$count_id = $this->hash->decrypt($count_id);
 
-		
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Inventory Count";
+		$this->data['main_page'] = "backend/page/product/inventory_start";
+		$this->data['inventory_information'] = $this->product->get_stock_count_by_id($count_id);
+
+		//print_r_die($this->data['inventory_information']);
+
+		$this->load->view('backend/master' , $this->data);
 	}
 
 	// PRODUCT TAGS

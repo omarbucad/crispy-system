@@ -97,8 +97,8 @@
                         <span>Schedule a full or partial inventory count to maintain accurate inventory levels. <a href="#" class="text-underline">need help?</a></span>
                     </div>
                     <div class="col-xs-12 col-lg-4 text-right no-margin-bottom">
-                        <a href="javascript:void(0);" class="btn btn-info btn-same-size" >Save & Exit</a>
-                        <a href="javascript:void(0);" class="btn btn-success btn-same-size" >Start Count</a>
+                        <a href="javascript:void(0);" class="btn btn-info btn-same-size submit-form" data-form="#form_users" data-submit="save_exit">Save & Exit</a>
+                        <a href="javascript:void(0);" class="btn btn-success btn-same-size submit-form" data-form="#form_users" data-submit="start_count">Start Count</a>
                     </div>
                 </div>
             </div>

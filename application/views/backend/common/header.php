@@ -21,8 +21,35 @@
                     <li class="title">
                         Notification <span class="badge pull-right">0</span>
                     </li>
-                    <li class="message">
-                        No new notification
+                   
+                </ul>
+
+                <ul class="dropdown-menu  animated fadeInDown">
+                    <li class="title">
+                        Outlet List <span class="badge pull-right"><?php echo count($switch_outlet_list); ?></span>
+                    </li>
+                    <li>
+                        <ul class="list-group notifications">
+
+                            <?php foreach($switch_outlet_list as $key => $row) : ?>
+                                <a href="<?php echo site_url('app/welcome/switch_outlet/'.$row->outlet_id); ?>">
+                                    <li class="list-group-item">
+                                        <?php if($key == 0): ?>
+                                            <?php if($session_data->outlet_id == 0) : ?>
+                                                <span class="badge">Active</span> 
+                                            <?php endif; ?>
+                                            <?php echo $row->outlet_name; ?>
+                                        <?php else : ?>
+                                            <?php if($session_data->outlet_id == $this->hash->decrypt($row->outlet_id)) : ?>
+                                                <span class="badge">Active</span> 
+                                            <?php endif; ?>
+                                            <?php echo $row->outlet_name; ?>
+                                        <?php endif; ?>
+                                    </li>
+                                </a>
+                            <?php endforeach; ?>
+
+                        </ul>
                     </li>
                 </ul>
             </li>

@@ -74,6 +74,13 @@ $(function() {
 $(document).ready(function(){
     $(document).on('click' , '.submit-form' , function(){
         var form = $($(this).data('form'));
+        var submit = $(this).data("submit");
+
+        if(submit){
+          var submit_hidden = '<input type="hidden" value="'+submit+'" name="submit_input">';
+          form.append(submit_hidden);
+     
+        }
         form.submit();
     });
 

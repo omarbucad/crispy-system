@@ -12,6 +12,8 @@ class MY_Controller extends CI_Controller {
             redirect("/" , "refresh");
        }
 
+       $this->load->model("Store_model" , "store");
+
        $this->data['session_data'] = $this->session->userdata("user");
        $this->data['website_title'] = "Accounts Software";
        $this->data['application_name'] = "Accounts Software";
@@ -20,6 +22,7 @@ class MY_Controller extends CI_Controller {
        $this->data['year'] = date("Y");
        $this->data['csrf_token_name'] = $this->security->get_csrf_token_name();
        $this->data['csrf_hash'] = $this->security->get_csrf_hash();
+       $this->data['switch_outlet_list'] = $this->store->get_outlet();
 
        $config["per_page"] =  ($this->input->get("limit")) ? $this->input->get("limit") : 10;
        $config['reuse_query_string'] = true;
