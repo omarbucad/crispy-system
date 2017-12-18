@@ -103,10 +103,47 @@
             </div>
         </div>
         <div class="container">
-            <div class="text-center">
-                <img src="<?php echo site_url("public/img/packing.png"); ?>" class="img">
-                <p class="help-block">No results found. Try a different search or filter.</p>
-            </div>
+            <?php if($result) : ?>
+                <table class="customer-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Delivery Due</th>
+                            <th>Number</th>
+                            <th>Outlet</th>
+                            <th>Source</th>
+                            <th>Status</th>
+                            <th>Items</th>
+                            <th>Total Cost</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($result as $row) : ?>
+                            <tr class="customer-row">
+                                <td><a href="#" class="link-style"><?php echo $row->reference_name; ?></a></td>
+                                <td><a href="#"><?php echo $row->order_type; ?></a></td>
+                                <td><?php echo $row->created; ?></td>
+                                <td><?php echo $row->due_date; ?></td>
+                                <td><?php echo $row->order_number; ?></td>
+                                <td><?php echo $row->deliver_to; ?></td>
+                                <td><?php echo $row->order_from; ?></td>
+                                <td><?php echo $row->status; ?></td>
+                                <td><?php echo $row->items_count; ?></td>
+                                <td><?php echo $row->total_cost; ?></td>
+                                <td></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else : ?>
+                <div class="text-center">
+                    <img src="<?php echo site_url("public/img/packing.png"); ?>" class="img">
+                    <p class="help-block">No results found. Try a different search or filter.</p>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

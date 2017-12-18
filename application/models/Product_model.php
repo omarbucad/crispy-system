@@ -660,7 +660,7 @@ class Product_model extends CI_Model {
 
             foreach($product_variant_list as $key => $product){
                 $product_variant_list[$key]->stock_control_id = $stock_control_id;
-                $product_variant_list[$key]->uncounted = "uncounted";
+                $product_variant_list[$key]->status = "uncounted";
             }
 
         }
@@ -693,13 +693,13 @@ class Product_model extends CI_Model {
                 $this->db->where("i.schedule_time > " , $current_time)->where("status" , "IN PROGRESS");
                 break;
             case 'upcoming':
-                 $this->db->where("i.schedule_time < " , $current_time)->where("status" , "IN PROGRESS");
+                $this->db->where("i.schedule_time < " , $current_time)->where("status" , "IN PROGRESS");
                 break;
             case 'completed':
-                 $this->db->where("status" , "COMPLETED");
+                $this->db->where("status" , "COMPLETED");
                 break;
             case 'cancelled':
-                 $this->db->where("status" , "CANCELLED");
+                $this->db->where("status" , "CANCELLED");
                 break;
             default:
                 return $this->db->where("stock_control_id" , $stock_type)->get("inventory_stock_control i ")->row();
@@ -734,5 +734,98 @@ class Product_model extends CI_Model {
         }
 
         return $stock_information;
+    }
+
+    public function get_stock_control_list($status = "DUE"){
+        $store_id = $this->data['session_data']->store_id;
+        $current_time = time();
+
+
+        $this->db->select("tc.stock_control_id , tc.count_name , tc.status , o.outlet_name , tc.created , tc.count_type");
+        $this->db->join("store_outlet o" , "o.outlet_id = tc.outlet_id");
+        $this->db->where("tc.store_id" , $store_id);
+
+        switch ($status) {
+            case 'DUE':
+                $this->db->where("tc.schedule_time < " , $current_time)->where("tc.status" , "IN PROGRESS");
+                break;
+            case 'UPCOMMING':
+                $this->db->where("tc.schedule_time > " , $current_time)->where("tc.status" , "IN PROGRESS");
+                break;
+            case 'COMPLETED':
+                $this->db->where("tc.status" , "COMPLETED");
+                break;
+             case 'CANCELLED':
+                $this->db->where("tc.status" , "CANCELLED");
+                break;
+            default:
+                # code...
+                break;
+        }
+
+        $result = $this->db->get("inventory_stock_control tc")->result();
+
+        foreach($result as $key => $row){
+            $result[$key]->created = fromNow($row->created);
+            $result[$key]->count_type = ucwords($row->count_type);
+            $result[$key]->stock_control_id = $this->hash->encrypt($row->stock_control_id);
+        }
+
+        return $result;
+
+    }
+
+    public function order_stock($type = "ORDER"){
+        $store_id = $this->data['session_data']->store_id;
+        $user_id = $this->data['session_data']->user_id;
+
+        $this->db->trans_start();
+
+        $this->db->insert("inventory_order" , [
+            "reference_name"    => $this->input->post("reference_name") ,
+            "order_type"        => $type ,
+            "created"           => time() ,
+            "due_date"          => strtotime($this->input->post("due_date")),
+            "order_number"      => $this->input->post("order_no"),
+            "status"            => "Open" ,
+            "items_count"       => 0 ,
+            "order_from"        => $this->hash->decrypt($this->input->post("order_from")) ,
+            "deliver_to"        => $this->hash->decrypt($this->input->post("deliver_to")) ,
+            "supplier_invoice"  => $this->input->post("supplier_invoice") ,
+            "autofill"          => $this->input->post("auto_fill") ,
+            "created_by"        => $user_id ,
+            "store_id"          => $store_id
+        ]);
+
+        $inventory_order_id = $this->db->insert_id();
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return $this->hash->encrypt($inventory_order_id);
+        }
+    }
+
+    public function get_consignment(){
+        $store_id = $this->data['session_data']->store_id;
+
+        $this->db->select("ord.inventory_order_id , ord.reference_name , ord.order_type , ord.created , ord.due_date , ord.order_number , ord.status , ord.items_count , ord.total_cost , s.supplier_name as order_from , so.outlet_name as deliver_to , ord.supplier_invoice , ord.autofill , ord.created_by , u.display_name");
+        $this->db->join("supplier s" , "s.supplier_id = ord.order_from" , "LEFT");
+        $this->db->join("store_outlet so" , "so.outlet_id = ord.deliver_to" , "LEFT");
+        $this->db->join("user u" , "u.user_id = ord.created_by");
+        $this->db->where("ord.store_id" , $store_id);
+        $result = $this->db->get("inventory_order ord")->result();
+
+        foreach($result as $key => $row){
+            $result[$key]->inventory_order_id = $this->hash->encrypt($row->inventory_order_id);
+            $result[$key]->created = convert_timezone($row->created);
+            $result[$key]->due_date = convert_timezone($row->due_date);
+            $result[$key]->order_from = ($row->order_from) ? $row->order_from : "Any";
+        }
+
+
+        return $result;
     }
 }

@@ -67,7 +67,7 @@
         <div class="row" id="inventory_count_page">
             <div class="col-xs-12 col-lg-9 col-md-8 col-sm-7">
                 <div class="container-fluid" >
-                    <a href="<?php echo site_url('app/setup/users'); ?>" style="display:inline-block;position: relative;left: -10px;"><i class="fa fa-arrow-left fa-3x"  aria-hidden="true"></i> </a> <h1 style="display:inline-block;"> <?php echo $inventory_information->count_name; ?> </h1><a href="javascript:void(0);" class="text-underline show-details"><small class="help-block-inline">Show Details</small></a>
+                    <a href="<?php echo site_url('app/product/inventory-count'); ?>" style="display:inline-block;position: relative;left: -10px;"><i class="fa fa-arrow-left fa-3x"  aria-hidden="true"></i> </a> <h1 style="display:inline-block;"> <?php echo $inventory_information->count_name; ?> </h1><a href="javascript:void(0);" class="text-underline show-details"><small class="help-block-inline">Show Details</small></a>
                     <div class="row hide" style="margin:10px 0px;" id="show-details">
                         <table>
                             <tr>

@@ -82,30 +82,77 @@ class Product extends MY_Controller {
 		$this->data['website_title'] = "Stock Control | Accounts Package";
 		$this->data['page_name'] = "Stock Control";
 		$this->data['main_page'] = "backend/page/product/consignment";
+		$this->data['result'] = $this->product->get_consignment();
 
 		$this->load->view('backend/master' , $this->data);
 	}
 
 	public function order_stock(){
-		$this->data['website_title'] = "Stock Control | Accounts Package";
-		$this->data['page_name'] = "Order Stock";
-		$this->data['main_page'] = "backend/page/product/order_stock";
-		$this->data['outlet_list'] = $this->store->get_outlet();
-		$this->data['supplier_list'] = $this->product->get_supplier();
-		$this->data['store_settings'] = $this->store->get_store_settings();
+		
+		$this->form_validation->set_rules('reference_name'		, 'Reference Name'			, 'trim|required');
 
-		$this->load->view('backend/master' , $this->data);
+		if ($this->form_validation->run() == FALSE){ 
+
+			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['page_name'] = "Order Stock";
+			$this->data['main_page'] = "backend/page/product/order_stock";
+			$this->data['outlet_list'] = $this->store->get_outlet();
+			$this->data['supplier_list'] = $this->product->get_supplier();
+			$this->data['store_settings'] = $this->store->get_store_settings();
+			$this->data['name_reference'] = "Order - ".date("D d M Y");
+
+			$this->load->view('backend/master' , $this->data);
+		}else{
+
+			if($last_id = $this->product->order_stock("ORDER")){
+
+				$this->session->set_flashdata('status' , 'success');	
+				$this->session->set_flashdata('message' , 'Successfully Created an Order Stock');	
+
+				redirect("app/product/order-stock/edit/".$last_id , 'refresh');
+
+			}else{
+				$this->session->set_flashdata('status' , 'error');
+				$this->session->set_flashdata('message' , 'Something went wrong');	
+
+				redirect("app/product/order-stock", 'refresh');
+			}
+		}
+
 	}
 
 	public function return_stock(){
-		$this->data['website_title'] = "Stock Control | Accounts Package";
-		$this->data['page_name'] = "Return Stock";
-		$this->data['main_page'] = "backend/page/product/return_stock";
-		$this->data['outlet_list'] = $this->store->get_outlet();
-		$this->data['supplier_list'] = $this->product->get_supplier();
-		$this->data['store_settings'] = $this->store->get_store_settings();
+		$this->form_validation->set_rules('reference_name'		, 'Reference Name'			, 'trim|required');
 
-		$this->load->view('backend/master' , $this->data);
+		if ($this->form_validation->run() == FALSE){ 
+
+			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['page_name'] = "Return Stock";
+			$this->data['main_page'] = "backend/page/product/return_stock";
+			$this->data['outlet_list'] = $this->store->get_outlet();
+			$this->data['supplier_list'] = $this->product->get_supplier();
+			$this->data['store_settings'] = $this->store->get_store_settings();
+			$this->data['name_reference'] = "Return - ".date("D d M Y");
+
+			$this->load->view('backend/master' , $this->data);
+
+		}else{
+			if($last_id = $this->product->order_stock("RETURNED")){
+
+				$this->session->set_flashdata('status' , 'success');	
+				$this->session->set_flashdata('message' , 'Successfully Created an Return Stock');	
+
+				redirect("app/product/return-stock/edit/".$last_id , 'refresh');
+
+			}else{
+				$this->session->set_flashdata('status' , 'error');
+				$this->session->set_flashdata('message' , 'Something went wrong');	
+
+				redirect("app/product/return-stock", 'refresh');
+			}
+		}	
+
+		
 	}
 
 	public function inventory_count(){
@@ -113,6 +160,8 @@ class Product extends MY_Controller {
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_count";
 		$this->data['no_result_found'] = "You have no due inventory counts";
+		$this->data['result'] = $this->product->get_stock_control_list("DUE");
+
 
 		$this->load->view('backend/master' , $this->data);
 	}
@@ -121,6 +170,7 @@ class Product extends MY_Controller {
 		$this->data['website_title'] = "Stock Control | Accounts Package";
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_count";
+		$this->data['result'] = $this->product->get_stock_control_list("UPCOMMING");
 		$this->data['no_result_found'] = "You have no upcoming inventory counts";
 
 		$this->load->view('backend/master' , $this->data);
@@ -131,6 +181,7 @@ class Product extends MY_Controller {
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_count";
 		$this->data['no_result_found'] = "You have no upcoming inventory counts";
+		$this->data['result'] = $this->product->get_stock_control_list("COMPLETED");
 
 		$this->load->view('backend/master' , $this->data);
 	}
@@ -140,6 +191,7 @@ class Product extends MY_Controller {
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_count";
 		$this->data['no_result_found'] = "You have no upcoming inventory counts";
+		$this->data['result'] = $this->product->get_stock_control_list("CANCELLED");
 
 		$this->load->view('backend/master' , $this->data);
 	}
@@ -173,8 +225,7 @@ class Product extends MY_Controller {
 
 				redirect("app/product/inventory-count/create", 'refresh');
 			}
-		} 
-	
+		} 	
 	}
 
 	public function inventory_count_start($count_id){
@@ -185,9 +236,15 @@ class Product extends MY_Controller {
 		$this->data['main_page'] = "backend/page/product/inventory_start";
 		$this->data['inventory_information'] = $this->product->get_stock_count_by_id($count_id);
 
-		//print_r_die($this->data['inventory_information']);
-
 		$this->load->view('backend/master' , $this->data);
+	}
+
+	public function getOrderNumber(){
+		$outlet_id = $this->input->post("outlet_id");
+
+		$outlet_information = $this->store->get_outlet_by_id($this->hash->decrypt($outlet_id), ["order_number" , "order_number_prefixes"]);
+
+		echo ($outlet_information->order_number_prefixes) ? $outlet_information->order_number_prefixes ." - ". ($outlet_information->order_number + 1) : ($outlet_information->order_number + 1);		
 	}
 
 	// PRODUCT TAGS

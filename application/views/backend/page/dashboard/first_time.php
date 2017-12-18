@@ -14,7 +14,7 @@
 	    						<img src="<?php echo site_url("public/img/tag.png"); ?>" width="150px">
 	    						<h3>Make a Sale</h3>
 	    						<p class="help-block">Explore the Sell screen, and learn how to make your first sale in seconds.</p>
-	    						<a href="javascript:void(0);" class="btn btn-success btn-lg">Make a Sale</a>
+	    						<a href="<?php echo site_url("app/pos/sell"); ?>" class="btn btn-success btn-lg">Make a Sale</a>
 	    					</div>
 	    				</div>
 	    				<div class="col-xs-12 col-lg-4">
@@ -22,7 +22,7 @@
 	    						<img src="<?php echo site_url("public/img/3d-printer.png"); ?>" width="150px">
 	    						<h3>Add a Product</h3>
 	    						<p class="help-block">Manage your products easily, whether you want to add one or import one thousand.</p>
-	    						<a href="javascript:void(0);" class="btn btn-success btn-lg">Add a Product</a>
+	    						<a href="<?php echo site_url("app/product/add"); ?>" class="btn btn-success btn-lg">Add a Product</a>
 	    					</div>
 	    				</div>
 	    				<div class="col-xs-12 col-lg-4">
@@ -30,7 +30,7 @@
 	    						<img src="<?php echo site_url("public/img/rating.png"); ?>" width="150px">
 	    						<h3>Add a Customer</h3>
 	    						<p class="help-block">Start a customer base to grow repeat business or simply upload existing customers.</p>
-	    						<a href="javascript:void(0);" class="btn btn-success btn-lg disabled">You've added a customer!</a>
+	    						<a href="<?php echo site_url("app/customer/add-customer"); ?>" class="btn btn-success btn-lg disabled">You've added a customer!</a>
 	    					</div>
 	    				</div>
 	    			</div>

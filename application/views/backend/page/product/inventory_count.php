@@ -23,11 +23,42 @@
         </div>
 
         <div class="container">
-            <div class="text-center">
-                <img src="<?php echo site_url("public/img/packing.png"); ?>" class="img">
-                <p class="help-block"><?php echo $no_result_found; ?></p>
-                <a href="<?php echo site_url("app/product/inventory-count/create"); ?>" class="btn btn-success">Add Inventory Count</a>
-            </div>
+
+            <?php if($result) : ?>
+
+                <table class="customer-table">
+                    <thead>
+                        <tr>
+                            <th width="50%">Name</th>
+                            <th width="25%">Outlet</th>
+                            <th width="25%">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($result as $row) : ?>
+                            <tr class="customer-row">
+                                <td>
+                                    <a href="<?php echo site_url("app/product/inventory-count/start/$row->stock_control_id" ); ?>"><?php echo $row->count_name; ?> <span class="label label-success"><?php echo $row->status; ?></span></a><br>
+                                    <small><?php echo $row->created; ?></small>
+                                </td>
+                                <td><a href="javascript:void(0);"><?php echo $row->outlet_name; ?></a></td>
+                                <td><?php echo $row->count_type; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+            <?php else : ?>
+                <div class="text-center">
+                    <img src="<?php echo site_url("public/img/packing.png"); ?>" class="img">
+                    <p class="help-block"><?php echo $no_result_found; ?></p>
+                    <a href="<?php echo site_url("app/product/inventory-count/create"); ?>" class="btn btn-success">Add Inventory Count</a>
+                </div>
+            <?php endif; ?>
+
+            
+
+            
         </div>
     </div>
 </div>
