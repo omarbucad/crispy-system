@@ -792,7 +792,7 @@ class Product_model extends CI_Model {
             "order_from"        => $this->hash->decrypt($this->input->post("order_from")) ,
             "deliver_to"        => $this->hash->decrypt($this->input->post("deliver_to")) ,
             "supplier_invoice"  => $this->input->post("supplier_invoice") ,
-            "autofill"          => $this->input->post("auto_fill") ,
+            "autofill"          => $this->input->post("auto_fill"),
             "created_by"        => $user_id ,
             "store_id"          => $store_id
         ]);
@@ -816,15 +816,48 @@ class Product_model extends CI_Model {
         $this->db->join("store_outlet so" , "so.outlet_id = ord.deliver_to" , "LEFT");
         $this->db->join("user u" , "u.user_id = ord.created_by");
         $this->db->where("ord.store_id" , $store_id);
-        $result = $this->db->get("inventory_order ord")->result();
+        $result = $this->db->order_by("ord.created" , "DESC")->get("inventory_order ord")->result();
 
         foreach($result as $key => $row){
             $result[$key]->inventory_order_id = $this->hash->encrypt($row->inventory_order_id);
             $result[$key]->created = convert_timezone($row->created);
             $result[$key]->due_date = convert_timezone($row->due_date);
             $result[$key]->order_from = ($row->order_from) ? $row->order_from : "Any";
+
+            if($row->order_type == "ORDER"){
+                $result[$key]->edit_link = $this->config->site_url("app/product/order-stock/edit/".$result[$key]->inventory_order_id);
+            }else{
+                $result[$key]->edit_link = $this->config->site_url("app/product/return-stock/edit/".$result[$key]->inventory_order_id);
+            }
+            
         }
 
+
+        return $result;
+    }
+
+    public function get_consignment_by_id($id){
+        $id = $this->hash->decrypt($id);
+
+        $this->db->select("ord.inventory_order_id , ord.reference_name , ord.order_type , ord.created , ord.due_date , ord.order_number , ord.status , ord.items_count , ord.total_cost , s.supplier_name as order_from , so.outlet_name as deliver_to , ord.supplier_invoice , ord.autofill , ord.created_by , u.display_name");
+        $this->db->join("supplier s" , "s.supplier_id = ord.order_from" , "LEFT");
+        $this->db->join("store_outlet so" , "so.outlet_id = ord.deliver_to" , "LEFT");
+        $this->db->join("user u" , "u.user_id = ord.created_by");
+        $this->db->where("ord.inventory_order_id" , $id);
+        $result = $this->db->order_by("ord.created" , "DESC")->get("inventory_order ord")->row();
+
+        if($result){
+            $result->inventory_order_id = $this->hash->encrypt($result->inventory_order_id);
+
+            if($result->order_type == "ORDER"){
+                $result->edit_link = $this->config->site_url("app/product/order-stock/edit/".$result->inventory_order_id);
+            }else{
+                $result->edit_link = $this->config->site_url("app/product/return-stock/edit/".$result->inventory_order_id);
+            }
+
+            $result->due_date = convert_timezone($result->due_date);
+            $result->created = convert_timezone($result->created);
+        }
 
         return $result;
     }

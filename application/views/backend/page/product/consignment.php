@@ -123,8 +123,10 @@
                     <tbody>
                         <?php foreach($result as $row) : ?>
                             <tr class="customer-row">
-                                <td><a href="#" class="link-style"><?php echo $row->reference_name; ?></a></td>
-                                <td><a href="#"><?php echo $row->order_type; ?></a></td>
+                                <td>
+                                    <a href="<?php echo $row->edit_link; ?>" class="link-style"><?php echo $row->reference_name; ?></a>
+                                </td>
+                                <td><a href="<?php echo $row->edit_link; ?>"><?php echo $row->order_type; ?></a></td>
                                 <td><?php echo $row->created; ?></td>
                                 <td><?php echo $row->due_date; ?></td>
                                 <td><?php echo $row->order_number; ?></td>

@@ -17,7 +17,7 @@
 		$.ajax({
 			url : url ,
 			method : "POST" ,
-			data : {outlet_id : outlet_id} ,
+			data : {outlet_id : outlet_id , type : "order"} ,
 			success : function(response){
 				order_no.val(response);
 			}

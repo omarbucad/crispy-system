@@ -17,8 +17,9 @@
 		$.ajax({
 			url : url ,
 			method : "POST" ,
-			data : {outlet_id : outlet_id} ,
+			data : {outlet_id : outlet_id , type : "return"} ,
 			success : function(response){
+				console.log(response);
 				order_no.val(response);
 			}
 		});
@@ -33,7 +34,7 @@
     		<li class="active">Return Stock</li>
     	</ol>	
     	<h3>New Stock Return</h3>
-    	<form class="form-horizontal" action="<?php echo site_url("app/product/order-stock"); ?>" method="POST">
+    	<form class="form-horizontal" action="<?php echo site_url("app/product/return-stock"); ?>" method="POST">
     		<input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
     		<!-- STORE SETTINGS -->
     		<div class="card margin-bottom">
@@ -66,7 +67,7 @@
 	    						<dt>Return from</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<select class="form-control" name="deliver_to">
+	    								<select class="form-control" name="deliver_to" id="deliver_to">
 	    									<?php foreach($outlet_list as $outlet) : ?>
 	    										<option value="<?php echo $outlet->outlet_id; ?>"><?php echo $outlet->outlet_name; ?></option>
 	    									<?php endforeach; ?>
@@ -115,9 +116,6 @@
 	    			</div>
 	    		</div>
 	    	</div>
-
-
-
 	    	<div class="text-right margin-bottom">
 	    		<a href="javascript:void(0);" class="btn btn-default">Cancel</a>
 	    		<input type="submit" name="submit" class="btn btn-success" value="Save">

@@ -137,7 +137,7 @@ class Product extends MY_Controller {
 			$this->load->view('backend/master' , $this->data);
 
 		}else{
-			if($last_id = $this->product->order_stock("RETURNED")){
+			if($last_id = $this->product->order_stock("RETURN")){
 
 				$this->session->set_flashdata('status' , 'success');	
 				$this->session->set_flashdata('message' , 'Successfully Created an Return Stock');	
@@ -152,7 +152,6 @@ class Product extends MY_Controller {
 			}
 		}	
 
-		
 	}
 
 	public function inventory_count(){
@@ -241,10 +240,28 @@ class Product extends MY_Controller {
 
 	public function getOrderNumber(){
 		$outlet_id = $this->input->post("outlet_id");
+		$type = $this->input->post("type");
 
-		$outlet_information = $this->store->get_outlet_by_id($this->hash->decrypt($outlet_id), ["order_number" , "order_number_prefixes"]);
+		if($type == "order"){
+			$outlet_information = $this->store->get_outlet_by_id($this->hash->decrypt($outlet_id), ["order_number" , "order_number_prefixes"]);
 
-		echo ($outlet_information->order_number_prefixes) ? $outlet_information->order_number_prefixes ." - ". ($outlet_information->order_number + 1) : ($outlet_information->order_number + 1);		
+			echo ($outlet_information->order_number_prefixes) ? $outlet_information->order_number_prefixes ." - ". ($outlet_information->order_number + 1) : ($outlet_information->order_number + 1);	
+		}else{
+
+			$outlet_information = $this->store->get_outlet_by_id($this->hash->decrypt($outlet_id), ["supplier_return" , "supplier_return_prefixes"]);
+
+			echo ($outlet_information->supplier_return_prefixes) ? $outlet_information->supplier_return_prefixes ." - ". ($outlet_information->supplier_return + 1) : ($outlet_information->supplier_return + 1);	
+		}
+			
+	}
+
+	public function edit_order_stock($type , $id){
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Edit Stock";
+		$this->data['main_page'] = "backend/page/product/edit_stock";
+		$this->data['result'] = $this->product->get_consignment_by_id($id);
+
+		$this->load->view('backend/master' , $this->data);
 	}
 
 	// PRODUCT TAGS
