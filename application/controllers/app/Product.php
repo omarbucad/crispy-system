@@ -134,6 +134,8 @@ class Product extends MY_Controller {
 			$this->data['store_settings'] = $this->store->get_store_settings();
 			$this->data['name_reference'] = "Return - ".date("D d M Y");
 
+
+
 			$this->load->view('backend/master' , $this->data);
 
 		}else{
@@ -260,6 +262,7 @@ class Product extends MY_Controller {
 		$this->data['page_name'] = "Edit Stock";
 		$this->data['main_page'] = "backend/page/product/edit_stock";
 		$this->data['result'] = $this->product->get_consignment_by_id($id);
+		$this->data['product_list'] = $this->product->get_product_list(true , $this->data['result']->d_to);
 
 		$this->load->view('backend/master' , $this->data);
 	}
@@ -293,7 +296,6 @@ class Product extends MY_Controller {
 			redirect("app/product/tags" , 'refresh');
 		}
 
-		
 	}
 
 	// PRODUCT BRANDS
@@ -371,7 +373,6 @@ class Product extends MY_Controller {
 				redirect("app/product/supplier/add" , 'refresh');
 			}
 
-			
 		}
 
 	}

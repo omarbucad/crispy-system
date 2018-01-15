@@ -198,16 +198,27 @@ class Product_model extends CI_Model {
         return $this->db->select("attribute_name")->where("store_id" , $store_id)->order_by("attribute_name" , "ASC")->get("product_variants_attribute")->result();
     }
 
-    public function get_product_list(){
+    public function get_product_list($low_inventory = false , $outlet_id = 0){
         $store_id = $this->data['session_data']->store_id;
 
-        $this->db->select("product_name , product_handle , p.product_id , variant_name , p.has_variant , pv.product_variant_id");
+        $this->db->select("product_name , product_handle , p.product_id , variant_name , p.has_variant , pv.product_variant_id , pv.supply_price , i.current_inventory , i.reorder_point , i.reorder_amount ");
         $this->db->join("product_variants pv" , "pv.product_id = p.product_id");
-        $result = $this->db->where("store_id" , $store_id)->where("status" , 1)->order_by("product_name" , "ASC")->get("product p")->result();
+        $this->db->join("inventory i" , "i.product_variant_id = pv.product_variant_id" , "LEFT");
+
+        if($low_inventory){
+            $this->db->where("i.current_inventory < i.reorder_point");
+        }
+
+        if($outlet_id){
+           $this->db->where("i.outlet_id" , $outlet_id);
+        }
+
+        $result = $this->db->where("p.store_id" , $store_id)->where("status" , 1)->order_by("product_name" , "ASC")->get("product p")->result();
 
         foreach($result as $key => $row){
             $result[$key]->product_id = $this->hash->encrypt($row->product_id);
             $result[$key]->product_variant_id = $this->hash->encrypt($row->product_variant_id);
+            $result[$key]->order_quantity = ($row->current_inventory < $row->reorder_point) ?  $row->reorder_amount : 0;
 
             if($row->has_variant){
                 $result[$key]->p_name = $row->product_name.' - '.$row->variant_name;
@@ -799,6 +810,39 @@ class Product_model extends CI_Model {
 
         $inventory_order_id = $this->db->insert_id();
 
+        //AUTO SELECT BELOW MINIMUM STOCK
+
+        if($type == "ORDER" AND $this->input->post("auto_fill")){
+
+            $data = $this->get_product_list(true , $this->hash->decrypt($this->input->post("deliver_to")) );
+            $product_variant_id = array();
+            $total_cost = 0;
+
+            foreach($data as $key => $row){
+                $product_variant_id[] = array(
+                    "inventory_order_id" => $inventory_order_id ,
+                    "order_number"       => ($key + 1) ,
+                    "product_variant_id" => $this->hash->decrypt($row->product_variant_id) ,
+                    "quantity"           => $row->order_quantity,
+                    "supply_price"       => $row->supply_price ,
+                    "total_price"        => ($row->order_quantity * $row->supply_price)
+                );
+
+                $total_cost += ($row->order_quantity * $row->supply_price);
+            }
+
+            $this->db->insert_batch("inventory_stock_order" , $product_variant_id);
+
+
+            //UPDATE INVENTORY ORDER FOR TOTAL COST
+
+            $this->db->where("inventory_order_id" , $inventory_order_id)->update("inventory_order" , [
+                "total_cost" => $total_cost , 
+                "items_count" => count( $product_variant_id )
+            ]);
+
+        }
+
         $this->db->trans_complete();
 
         if ($this->db->trans_status() === FALSE){
@@ -832,14 +876,13 @@ class Product_model extends CI_Model {
             
         }
 
-
         return $result;
     }
 
     public function get_consignment_by_id($id){
         $id = $this->hash->decrypt($id);
 
-        $this->db->select("ord.inventory_order_id , ord.reference_name , ord.order_type , ord.created , ord.due_date , ord.order_number , ord.status , ord.items_count , ord.total_cost , s.supplier_name as order_from , so.outlet_name as deliver_to , ord.supplier_invoice , ord.autofill , ord.created_by , u.display_name");
+        $this->db->select("ord.inventory_order_id , ord.reference_name , ord.order_type , ord.created , ord.due_date , ord.order_number , ord.status , ord.items_count , ord.total_cost , s.supplier_name as order_from , so.outlet_name as deliver_to , ord.supplier_invoice , ord.autofill , ord.created_by , u.display_name , ord.deliver_to as d_to");
         $this->db->join("supplier s" , "s.supplier_id = ord.order_from" , "LEFT");
         $this->db->join("store_outlet so" , "so.outlet_id = ord.deliver_to" , "LEFT");
         $this->db->join("user u" , "u.user_id = ord.created_by");
@@ -855,8 +898,32 @@ class Product_model extends CI_Model {
                 $result->edit_link = $this->config->site_url("app/product/return-stock/edit/".$result->inventory_order_id);
             }
 
+            if($result->order_from == ""){
+                $result->order_from = "ANY";
+            }
+
             $result->due_date = convert_timezone($result->due_date);
             $result->created = convert_timezone($result->created);
+
+            //LIST OF PRODUCT VARIANTS
+
+            $this->db->select("inventory_order_id , io.order_number , io.product_variant_id , quantity , io.supply_price , total_price , i.current_inventory");
+            $this->db->select("pv.variant_name , p.product_name");
+            $this->db->join("product_variants pv" , "pv.product_variant_id = io.product_variant_id");
+            $this->db->join("product p" , "p.product_id = pv.product_id");
+            $this->db->join("inventory i" , "i.product_variant_id = io.product_variant_id");
+            $this->db->where("io.inventory_order_id" , $this->hash->decrypt($result->inventory_order_id));
+            $this->db->where("i.outlet_id" , $result->d_to);
+            $this->db->order_by("io.order_number" , "DESC");
+            
+            $product_list = $this->db->get("inventory_stock_order io")->result();
+            
+            foreach($product_list as $key => $row){
+                $product_list[$key]->product_variant_id = $this->hash->encrypt($row->product_variant_id);
+                $product_list[$key]->inventory_order_id = $this->hash->encrypt($row->inventory_order_id);
+            }
+
+            $result->product_list = $product_list;
         }
 
         return $result;

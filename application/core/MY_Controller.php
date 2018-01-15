@@ -55,7 +55,6 @@ class MY_Controller extends CI_Controller {
        $this->data['config'] = $config;
     }
 
-
     public function world_currency(){
        return array (
               '' => array(

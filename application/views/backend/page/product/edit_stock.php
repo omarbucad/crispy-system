@@ -1,3 +1,35 @@
+<script type="text/javascript">
+    $(document).on("click" , "#add_count" , function(){
+        var product_quantity = $(this).closest(".form-group").find('#product_quantity').val();
+        var product_variant_id = $(this).closest(".row").find("#select_product").val();
+        var selected_option = $(this).closest(".row").find("#select_product option:selected");
+        var product_name = selected_option.text();
+        var rate = parseFloat(selected_option.data("rate"));
+        var stock = selected_option.data("stock");
+        var order = selected_option.data("order");
+
+        var table = $('#product_table tbody');
+        var count = table.find("tr").length;
+        count++;
+
+
+        var total = product_quantity * rate;
+        var tr = $("<tr>");
+
+        tr.append($("<td>").text(count));
+        tr.append($("<td>").text(product_name));
+        tr.append($("<td>").text(stock));
+        tr.append($("<td>").append("<input type='number' value='"+product_quantity+"' class='product_quantity'>"));
+        tr.append($("<td>").append("<input type='number' value='"+rate+"' class='supply_price'>"));
+        tr.append($("<td>").text(total));
+        tr.append($("<td>").append($("<a>" , {href : "javascript:void(0);", class : "remove_order", text : "x"})));
+        table.prepend(tr);
+    });
+
+    $(document).on("click" , ".remove_order" , function(){
+        $(this).closest("tr").remove();
+    });
+</script>
 <div class="container margin-bottom">
     <div class="side-body padding-top">
     	<ol class="breadcrumb">
@@ -18,7 +50,7 @@
     				</div>
     			</div>
     			<div class="card-body">
-    				<table width="100%;">
+    				<table width="100%;" >
     					<tbody>
     						<tr>
     							<td width="15%" style="padding: 5px 0px;"><strong>Order name</strong></td>
@@ -59,9 +91,9 @@
 	    								<label >Search Products</label>
 	    								<select class="select2 form-control" id="select_product">
 	    									<option value=""></option>
-	    									<?php foreach($inventory_information->products as $key => $row): ?>
-	    										<option value="<?php echo $row->product_variant_id; ?>"><?php echo $row->product_name.' '.$row->variant_name; ?></option>
-	    									<?php endforeach; ?>
+	    									<?php foreach($product_list as $row) : ?>
+                                                <option value="<?php echo $row->product_variant_id?>" data-order="<?php echo $row->order_quantity; ?>" data-stock="<?php echo $row->current_inventory; ?>" data-rate="<?php echo $row->supply_price; ?>"><?php echo $row->p_name; ?></option>
+                                            <?php endforeach; ?>
 	    								</select>
 	    							</div>
 	    						</div>
@@ -79,7 +111,7 @@
 	    					</div>
 	    				</form>
     				</div>
-    				<table class="table">
+    				<table class="table" id="product_table">
     					<thead>
     						<tr>
     							<th width="10%">Order</th>
@@ -87,14 +119,29 @@
     							<th width="15%">Stock on Hand</th>
     							<th width="10%">Quantity</th>
     							<th width="10%">Supply Price</th>
-    							<th width="15%">Total</th>
+    							<th width="15%">Total (<?php echo $this->session->userdata("user")->currency_symbol; ?>)</th>
     							<th width="5%"></th>
     						</tr>
     					</thead>
+                        <tfoot>
+                            <tr>
+                                <th colspan="5" class="text-right">TOTAL</th>
+                                <th><?php echo $this->session->userdata("user")->currency_symbol; ?> <span><?php echo $result->total_cost; ?></span></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
     					<tbody>
-    						<tr>
-    							<td></td>
-    						</tr>
+    	                   <?php foreach($result->product_list as $row) : ?>
+                                <tr class="_<?php echo $row->product_variant_id; ?>">
+                                    <td><?php echo $row->order_number; ?></td>
+                                    <td><?php echo $row->product_name; ?></td>
+                                    <td><?php echo $row->current_inventory; ?></td>
+                                    <td><input type="number" name="" value="<?php echo $row->quantity; ?>"></td>
+                                    <td><input type="number" name="" value="<?php echo $row->supply_price; ?>"></td>
+                                    <td><?php echo $row->total_price; ?></td>
+                                    <td><a href="javascript:void(0);" class="remove_order">x</a></td>
+                                </tr>
+                            <?php endforeach; ?>
     					</tbody>
     				</table>
     			</div>
