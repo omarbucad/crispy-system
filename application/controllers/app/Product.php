@@ -78,15 +78,60 @@ class Product extends MY_Controller {
 
 	//STOCK CONTROL
 
-	public function consignment(){
-		$this->data['website_title'] = "Stock Control | Accounts Package";
-		$this->data['page_name'] = "Stock Control";
-		$this->data['main_page'] = "backend/page/product/consignment";
-		$this->data['result'] = $this->product->get_consignment();
+	public function consignment($inventory_order = false){
+		if($inventory_order){
 
-		$this->load->view('backend/master' , $this->data);
+			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['page_name'] = "View Stock Information";
+			$this->data['main_page'] = "backend/page/product/view_stock";
+			$this->data['result'] = $this->product->get_consignment_by_id($inventory_order);
+
+
+			$this->load->view('backend/master' , $this->data);
+
+		}else{
+			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['page_name'] = "Stock Control";
+			$this->data['main_page'] = "backend/page/product/consignment";
+			$this->data['result'] = $this->product->get_consignment();
+
+			$this->load->view('backend/master' , $this->data);
+		}
 	}
 
+	public function edit_consignment($id){
+
+		$this->form_validation->set_rules('order_name'		, 'Order Name'			, 'trim|required');
+		$this->form_validation->set_rules('due_date'		, 'Due Date'			, 'trim|required');
+		$this->form_validation->set_rules('order_number'	, 'Order Number'		, 'trim|required');
+
+		if ($this->form_validation->run() == FALSE){ 
+
+			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['page_name'] = "Update Order";
+			$this->data['main_page'] = "backend/page/product/edit_consignment";
+			$this->data['result'] = $this->product->get_consignment_by_id($id);
+
+			$this->load->view('backend/master' , $this->data);
+		}else{
+			if($this->product->update_consignment()){
+				$this->session->set_flashdata('status' , 'success');	
+				$this->session->set_flashdata('message' , 'Successfully Updated the Order Stock');	
+
+				redirect("app/product/consignment/$id" , 'refresh');
+			}else{
+				$this->session->set_flashdata('status' , 'error');
+				$this->session->set_flashdata('message' , 'Something went wrong');	
+
+				redirect("app/product/edit-consignment/$id", 'refresh');
+			}
+		}
+
+	}
+
+	public function send_message(){
+		print_r_die($this->input->post());
+	}
 	public function order_stock(){
 		
 		$this->form_validation->set_rules('reference_name'		, 'Reference Name'			, 'trim|required');
@@ -103,6 +148,7 @@ class Product extends MY_Controller {
 
 			$this->load->view('backend/master' , $this->data);
 		}else{
+
 
 			if($last_id = $this->product->order_stock("ORDER")){
 
@@ -258,13 +304,29 @@ class Product extends MY_Controller {
 	}
 
 	public function edit_order_stock($type , $id){
-		$this->data['website_title'] = "Stock Control | Accounts Package";
-		$this->data['page_name'] = "Edit Stock";
-		$this->data['main_page'] = "backend/page/product/edit_stock";
-		$this->data['result'] = $this->product->get_consignment_by_id($id);
-		$this->data['product_list'] = $this->product->get_product_list(true , $this->data['result']->d_to);
 
-		$this->load->view('backend/master' , $this->data);
+		$this->form_validation->set_rules('inventory_order_id'		, 'Inventory Order'			, 'trim|required');
+
+		if ($this->form_validation->run() == FALSE){ 
+
+			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['page_name'] = "Edit Stock";
+			$this->data['main_page'] = "backend/page/product/edit_stock";
+			$this->data['result'] = $this->product->get_consignment_by_id($id);
+			$this->data['product_list'] = $this->product->get_product_list(true , $this->data['result']->d_to);
+
+			$this->load->view('backend/master' , $this->data);
+
+		}else{
+			
+			if($this->product->save_stock_settings()){
+				echo json_encode(["status" => TRUE , "message" => "Successfully Updated the data "]);
+			}else{
+				echo json_encode(["status" => FALSE]);
+			}
+
+		}
+
 	}
 
 	// PRODUCT TAGS

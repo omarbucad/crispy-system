@@ -291,10 +291,12 @@ class Product_model extends CI_Model {
     }
 
     public function get_product_status(){
+        $store_id = $this->data['session_data']->store_id;
+
         return [
-            "active"    => $this->db->where("status" , 1)->get("product")->num_rows(),
-            "inactive"  => $this->db->where("status" , 0)->get("product")->num_rows(),
-            "all"       => $this->db->get("product")->num_rows(),
+            "active"    => $this->db->where("status" , 1)->where("store_id" , $store_id)->get("product")->num_rows(),
+            "inactive"  => $this->db->where("status" , 0)->where("store_id" , $store_id)->get("product")->num_rows(),
+            "all"       => $this->db->where("store_id" , $store_id)->get("product")->num_rows(),
         ];
     }
 
@@ -766,7 +768,7 @@ class Product_model extends CI_Model {
             case 'COMPLETED':
                 $this->db->where("tc.status" , "COMPLETED");
                 break;
-             case 'CANCELLED':
+            case 'CANCELLED':
                 $this->db->where("tc.status" , "CANCELLED");
                 break;
             default:
@@ -815,6 +817,8 @@ class Product_model extends CI_Model {
         if($type == "ORDER" AND $this->input->post("auto_fill")){
 
             $data = $this->get_product_list(true , $this->hash->decrypt($this->input->post("deliver_to")) );
+
+
             $product_variant_id = array();
             $total_cost = 0;
 
@@ -825,6 +829,7 @@ class Product_model extends CI_Model {
                     "product_variant_id" => $this->hash->decrypt($row->product_variant_id) ,
                     "quantity"           => $row->order_quantity,
                     "supply_price"       => $row->supply_price ,
+                    "current_stock"      => $row->current_inventory,
                     "total_price"        => ($row->order_quantity * $row->supply_price)
                 );
 
@@ -843,6 +848,8 @@ class Product_model extends CI_Model {
 
         }
 
+
+         
         $this->db->trans_complete();
 
         if ($this->db->trans_status() === FALSE){
@@ -907,8 +914,8 @@ class Product_model extends CI_Model {
 
             //LIST OF PRODUCT VARIANTS
 
-            $this->db->select("inventory_order_id , io.order_number , io.product_variant_id , quantity , io.supply_price , total_price , i.current_inventory");
-            $this->db->select("pv.variant_name , p.product_name");
+            $this->db->select("inventory_order_id , io.order_number , io.product_variant_id , quantity , io.supply_price , total_price , i.current_inventory , io.current_stock , io.recieved_stock");
+            $this->db->select("pv.variant_name , p.product_name , pv.markup_price , pv.retail_price_wot , pv.sku , pv.supplier_code");
             $this->db->join("product_variants pv" , "pv.product_variant_id = io.product_variant_id");
             $this->db->join("product p" , "p.product_id = pv.product_id");
             $this->db->join("inventory i" , "i.product_variant_id = io.product_variant_id");
@@ -917,15 +924,98 @@ class Product_model extends CI_Model {
             $this->db->order_by("io.order_number" , "DESC");
             
             $product_list = $this->db->get("inventory_stock_order io")->result();
+
+            $result->total_inventory = 0;
+            $result->total_ordered = 0;
+            $result->total_recieved = 0;
+            $result->total_price = 0;
+            $result->total_retail_price = 0;
             
             foreach($product_list as $key => $row){
                 $product_list[$key]->product_variant_id = $this->hash->encrypt($row->product_variant_id);
                 $product_list[$key]->inventory_order_id = $this->hash->encrypt($row->inventory_order_id);
+                $product_list[$key]->total_retail_price = $row->quantity * $row->retail_price_wot;
+
+
+                $result->total_inventory += $row->current_inventory;
+                $result->total_ordered += $row->quantity;
+                $result->total_recieved += $row->recieved_stock;
+                $result->total_price += $row->total_price;
+                $result->total_retail_price += $product_list[$key]->total_retail_price;
             }
 
             $result->product_list = $product_list;
         }
 
         return $result;
+    }
+
+    public function save_stock_settings(){
+        $inventory_order_id = $this->hash->decrypt($this->input->post("inventory_order_id"));
+        $list = $this->input->post("product_variant");
+
+        $this->db->trans_start();
+
+
+        //REMOVE ALL THE DATA IN INVENTORY ORDER
+        $this->db->where("inventory_order_id" , $inventory_order_id)->delete("inventory_stock_order");
+
+        $data = array();
+
+        $total_price = 0;
+
+        //PREPARE THE DATA FOR BATCH INSERT
+        foreach($list['product_variant_id'] as $key => $row){
+            $data[] = array(
+                "product_variant_id" => $this->hash->decrypt($list['product_variant_id'][$key]),
+                "order_number"       => $list['order_number'][$key],
+                "quantity"           => $list['quantity'][$key],
+                "supply_price"       => $list['supply_price'][$key],
+                "total_price"        => $list['total_price'][$key],
+                "current_stock"      => $list['current_stock'][$key],
+                "inventory_order_id" => $inventory_order_id
+            );
+
+            $total_price += $list['total_price'][$key];
+        }
+
+        //INSERT THE NEW DATA FOR INVENTORY ORDER
+        $this->db->insert_batch("inventory_stock_order" , $data);
+
+
+        //UPDATE THE TOTAL COST ON INVENTORY ORDER TABLE
+        $this->db->where("inventory_order_id" , $inventory_order_id)->update("inventory_order" , [
+            "total_cost"   => $total_price ,
+            "items_count"  => count($data)
+        ]);
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public function update_consignment(){
+        $inventory_order_id = $this->hash->decrypt($this->input->post("inventory_order_id"));
+
+        $this->db->trans_start();
+
+        $this->db->where("inventory_order_id" , $inventory_order_id)->update("inventory_order" , [
+            "reference_name"   => $this->input->post("order_name"), 
+            "due_date"         => strtotime($this->input->post("due_date")),
+            "order_number"     => $this->input->post("order_number"),
+            "supplier_invoice" => $this->input->post("supplier_invoice")
+        ]);
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return true;
+        }
     }
 }

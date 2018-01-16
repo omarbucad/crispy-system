@@ -116,7 +116,7 @@
                             <th>Source</th>
                             <th>Status</th>
                             <th>Items</th>
-                            <th>Total Cost</th>
+                            <th>Total Cost </th>
                             <th></th>
                         </tr>
                     </thead>
@@ -124,9 +124,9 @@
                         <?php foreach($result as $row) : ?>
                             <tr class="customer-row">
                                 <td>
-                                    <a href="<?php echo $row->edit_link; ?>" class="link-style"><?php echo $row->reference_name; ?></a>
+                                    <a href="<?php echo site_url("app/product/consignment/$row->inventory_order_id"); ?>" class="link-style"><?php echo $row->reference_name; ?></a>
                                 </td>
-                                <td><a href="<?php echo $row->edit_link; ?>"><?php echo $row->order_type; ?></a></td>
+                                <td><a href="<?php echo site_url("app/product/consignment/$row->inventory_order_id"); ?>"><?php echo $row->order_type; ?></a></td>
                                 <td><?php echo $row->created; ?></td>
                                 <td><?php echo $row->due_date; ?></td>
                                 <td><?php echo $row->order_number; ?></td>
@@ -134,7 +134,7 @@
                                 <td><?php echo $row->order_from; ?></td>
                                 <td><?php echo $row->status; ?></td>
                                 <td><?php echo $row->items_count; ?></td>
-                                <td><?php echo $row->total_cost; ?></td>
+                                <td><?php echo $this->session->userdata("user")->currency_symbol.' '.$row->total_cost; ?></td>
                                 <td></td>
                             </tr>
                         <?php endforeach; ?>

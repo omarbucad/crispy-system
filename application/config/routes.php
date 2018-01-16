@@ -75,6 +75,8 @@ $route['app/product/inventory-count/completed'] = 'app/product/inventory_count_c
 $route['app/product/inventory-count/cancelled'] = 'app/product/inventory_count_cancelled';
 $route['app/product/inventory-count/create'] = 'app/product/inventory_count_create';
 $route['app/product/inventory-count/start/(:any)'] = 'app/product/inventory_count_start/$1';
+$route['app/product/edit-consignment/(:any)'] = 'app/product/edit_consignment/$1';
+
 
 $route['app/product/supplier/add'] = 'app/product/add_supplier';
 $route['app/product/supplier/view/(:any)'] = 'app/product/view_supplier/$1';

@@ -79,7 +79,6 @@ $(document).ready(function(){
         if(submit){
           var submit_hidden = '<input type="hidden" value="'+submit+'" name="submit_input">';
           form.append(submit_hidden);
-     
         }
         form.submit();
     });

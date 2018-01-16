@@ -166,3 +166,21 @@ if(!function_exists("fromNow")){
         }
     }
 }
+
+
+if ( ! function_exists('custom_money_format'))
+{
+    function custom_money_format($money)
+    {
+        $obj =& get_instance();
+
+        if(!$money){
+            $money = "0.00";
+        }
+   
+        $formatted = $obj->session->userdata("user")->currency_symbol;
+
+        $formatted .= number_format(sprintf('%0.2f', preg_replace("/[^0-9.]/", "", $money)), 2);
+        return $money < 0 ? "({$formatted})" : "{$formatted}";
+    }   
+}
