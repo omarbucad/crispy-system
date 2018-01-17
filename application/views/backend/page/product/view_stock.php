@@ -67,8 +67,8 @@
                                 <td width="35%"> <?php echo $result->created; ?> </td>
                             </tr>
                             <tr>
-                                <td width="15%" ></td>
-                                <td width="35%" class="text-left"> &nbsp; </td>
+                                <td width="15%" style="padding: 5px 0px;"><strong>Supplier Invoice</strong></td>
+                                <td width="35%" class="text-left"> <?php echo $result->supplier_invoice; ?> </td>
                                 <td width="15%" style="padding: 5px 0px;"><strong>Created By</strong></td>
                                 <td width="35%"> <?php echo $result->display_name; ?> </td>
                             </tr>

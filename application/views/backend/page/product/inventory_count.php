@@ -3,8 +3,8 @@
         <div class="container">
         	<h1>Inventory Count </h1>
         	<div class="account_container_btn">
-        		<a href="<?php echo site_url("app/product/inventory-count"); ?>" class="<?php echo ($this->uri->segment(4) == "") ? "active" : "" ; ?>" >Due (0)</a>
-                <a href="<?php echo site_url("app/product/inventory-count/upcoming"); ?>" class="<?php echo ($this->uri->segment(4) == "upcoming") ? "active" : ""; ?>">Upcoming (0)</a>
+        		<a href="<?php echo site_url("app/product/inventory-count"); ?>" class="<?php echo ($this->uri->segment(4) == "") ? "active" : "" ; ?>" >Due (<?php echo $due_count; ?>)</a>
+                <a href="<?php echo site_url("app/product/inventory-count/upcoming"); ?>" class="<?php echo ($this->uri->segment(4) == "upcoming") ? "active" : ""; ?>">Upcoming (<?php echo $upcoming_count; ?>)</a>
                 <a href="<?php echo site_url("app/product/inventory-count/completed"); ?>" class="<?php echo ($this->uri->segment(4) == "completed") ? "active" :"" ; ?>">Completed </a>
         		<a href="<?php echo site_url("app/product/inventory-count/cancelled"); ?>" class="<?php echo ($this->uri->segment(4) == "cancelled") ? "active" :"" ; ?>">Cancelled </a>
         	</div>

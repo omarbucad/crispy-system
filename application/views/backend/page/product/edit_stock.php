@@ -61,10 +61,20 @@
 
     $(document).on("click" , ".save" , function(){
         var send = $(this).data("send");
+      
+        $(".save").prop("disabled" , true);
+
+        if(send){
+            $("#send_order_modal").modal("show");
+        }else{
+            save_order();
+        }
+        
+    });
+
+    function save_order(){
         var data = $("#product_variant_form").serialize();
         var url = $("#product_variant_form").attr("action");
-
-        $(".save").prop("disabled" , true);
 
         $.ajax({
             url : url ,
@@ -74,16 +84,12 @@
                 var json = jQuery.parseJSON(response);
 
                 if(json){
-                    if(send){
-                        $("#send_order_modal").modal("show");
+                    $.notify(json.message+"\n You will be redirected in 3 seconds" , { className:  "success" , position : "top center"});
 
-                    }else{
-                        $.notify(json.message+"\n You will be redirected in 3 seconds" , { className:  "success" , position : "top center"});
+                    setTimeout(function(){
+                        window.location.replace("<?php echo site_url("app/product/consignment/$result->inventory_order_id"); ?>");
+                    } , 3000);
 
-                        setTimeout(function(){
-                            window.location.replace("<?php echo site_url("app/product/consignment/$result->inventory_order_id"); ?>");
-                        } , 3000);
-                    }
                 }else{
                     $.notify("Please Try Again" , { className:  "error" , position : "top center"});
                     $(".save").prop("disabled" , false);
@@ -91,6 +97,10 @@
 
             } 
         });
+    }
+
+    $(document).on('hidden.bs.modal', '#send_order_modal', function (event) {
+        $(".save").prop("disabled" , false);    
     });
 
     $(document).on("click" , '.submit-form-ajax' , function(){
@@ -98,22 +108,7 @@
         var form = $me.closest(".modal").find("form");
         var action = form.attr("action");
 
-        $.ajax({
-            url : action ,
-            method : "POST" ,
-            data : form.serialize(),
-            success : function(response){
-                var json = jQuery.parseJSON(response);
-
-                if(json.status){
-                    $.notify(json.message+"\n You will be redirected in 3 seconds" , { className:  "success" , position : "top center"});
-
-                    setTimeout(function(){
-                        window.location.replace("<?php echo site_url("app/product/consignment"); ?>");
-                    } , 3000);
-                }
-            }
-        });
+        save_order();
     });
 
     $(document).ready(function(){
@@ -271,7 +266,7 @@
     		</div>
 
 	    	<div class="text-right margin-bottom">
-                <a href="<?php echo site_url("app/product/"); ?>" class="btn btn-default">Cancel</a>
+                <a href="<?php echo site_url("app/product/consignment"); ?>" class="btn btn-default">Cancel</a>
                 <button type="button" class="btn btn-success save" data-send="false">Save</button>
 	    		<button type="button" class="btn btn-success save" data-send="true">Save and Send</button>
 	    	</div>

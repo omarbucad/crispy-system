@@ -378,3 +378,15 @@ a.link-style{
 .product-count-li > ul > li:first-child{
 	background-color: #efefef;
 }
+tr.uncounted > td:first-child > i{
+	visibility: hidden;
+}
+tr.counted > td:first-child > i{
+	visibility: visible;
+}
+tr.counted{
+	background-color: white;
+}
+tr.counted > td , tr.counted > td > small{
+	color: #48b553 !important;
+}

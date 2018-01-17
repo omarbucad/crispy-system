@@ -86,7 +86,6 @@ class Product extends MY_Controller {
 			$this->data['main_page'] = "backend/page/product/view_stock";
 			$this->data['result'] = $this->product->get_consignment_by_id($inventory_order);
 
-
 			$this->load->view('backend/master' , $this->data);
 
 		}else{
@@ -132,6 +131,7 @@ class Product extends MY_Controller {
 	public function send_message(){
 		print_r_die($this->input->post());
 	}
+
 	public function order_stock(){
 		
 		$this->form_validation->set_rules('reference_name'		, 'Reference Name'			, 'trim|required');
@@ -208,8 +208,9 @@ class Product extends MY_Controller {
 		$this->data['main_page'] = "backend/page/product/inventory_count";
 		$this->data['no_result_found'] = "You have no due inventory counts";
 		$this->data['result'] = $this->product->get_stock_control_list("DUE");
-
-
+		$this->data['due_count'] = count($this->data['result']);
+		$this->data['upcoming_count']  = count($this->product->get_stock_control_list("UPCOMING"));
+		
 		$this->load->view('backend/master' , $this->data);
 	}
 
@@ -217,7 +218,9 @@ class Product extends MY_Controller {
 		$this->data['website_title'] = "Stock Control | Accounts Package";
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_count";
-		$this->data['result'] = $this->product->get_stock_control_list("UPCOMMING");
+		$this->data['result'] = $this->product->get_stock_control_list("UPCOMING");
+		$this->data['upcoming_count'] = count($this->data['result']);
+		$this->data['due_count']  = count($this->product->get_stock_control_list("DUE"));
 		$this->data['no_result_found'] = "You have no upcoming inventory counts";
 
 		$this->load->view('backend/master' , $this->data);
@@ -329,6 +332,22 @@ class Product extends MY_Controller {
 
 	}
 
+	public function inventory_stock_save(){
+
+		if($this->input->post()){
+			if($this->product->save_stock_count()){
+				echo json_encode([
+					"status" => true ,
+					"message" => "Successfully Updated the Stock Control"
+				]);
+			}else{
+				echo json_encode([
+					"status" => false ,
+					"message" => "Saving Failed. Please Try again Later"
+				]);
+			}
+		}
+	}
 	// PRODUCT TAGS
 	public function tags(){
 		$this->data['website_title'] = "Product - Tags | Accounts Package";

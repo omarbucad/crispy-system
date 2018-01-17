@@ -656,7 +656,6 @@ class Product_model extends CI_Model {
                 );
             }
 
-
         }else{
 
             $this->db->select("i.reorder_amount , i.reorder_point as expected , i.product_variant_id")
@@ -733,10 +732,11 @@ class Product_model extends CI_Model {
 
         $stock_information->created = convert_timezone($stock_information->created , true);
         $stock_information->schedule_time = convert_timezone($stock_information->schedule_time , true);
+        $stock_information->stock_control_id = $this->hash->encrypt($stock_information->stock_control_id);
 
         $this->db->select("pv.sku , pv.variant_name , pv.supply_price , pv.markup_price , pv.retail_price_wot , pv.product_variant_id");
         $this->db->select("p.product_name , p.product_handle");
-        $this->db->select("i.expected , i.counted , i.status , i.reorder_amount");
+        $this->db->select("i.expected , i.counted , i.status , i.reorder_amount , i.stock_count_id");
         $this->db->join("product p" , "p.product_id = pv.product_id");
         $this->db->join("inventory_stock_count i" , "i.product_variant_id = pv.product_variant_id");
         $this->db->where("stock_control_id" , $stock_id);
@@ -744,7 +744,24 @@ class Product_model extends CI_Model {
 
         foreach($stock_information->products as $key => $row){
             $stock_information->products[$key]->product_variant_id = $this->hash->encrypt($row->product_variant_id);     
+            $stock_information->products[$key]->stock_count_id = $this->hash->encrypt($row->stock_count_id);     
         }
+
+        $this->db->select("p.product_name , pv.variant_name , pv.product_variant_id , lc.stock_count_id , lc.quantity");
+
+        $last_counted = $this->db
+        ->join("inventory_stock_count sc" , "sc.stock_count_id = lc.stock_count_id")
+        ->join("product_variants pv" , "pv.product_variant_id = sc.product_variant_id")
+        ->join("product p" , "p.product_id = pv.product_id")
+        ->where("lc.stock_control_id" , $this->hash->decrypt($stock_information->stock_control_id))
+        ->get("inventory_stock_last_counted lc")->result();
+
+        foreach($last_counted as $key => $row){
+            $last_counted[$key]->stock_count_id = $this->hash->encrypt($row->stock_count_id);
+            $last_counted[$key]->product_variant_id = $this->hash->encrypt($row->product_variant_id);
+        }
+
+        $stock_information->last_counted = $last_counted;
 
         return $stock_information;
     }
@@ -752,7 +769,6 @@ class Product_model extends CI_Model {
     public function get_stock_control_list($status = "DUE"){
         $store_id = $this->data['session_data']->store_id;
         $current_time = time();
-
 
         $this->db->select("tc.stock_control_id , tc.count_name , tc.status , o.outlet_name , tc.created , tc.count_type");
         $this->db->join("store_outlet o" , "o.outlet_id = tc.outlet_id");
@@ -762,7 +778,7 @@ class Product_model extends CI_Model {
             case 'DUE':
                 $this->db->where("tc.schedule_time < " , $current_time)->where("tc.status" , "IN PROGRESS");
                 break;
-            case 'UPCOMMING':
+            case 'UPCOMING':
                 $this->db->where("tc.schedule_time > " , $current_time)->where("tc.status" , "IN PROGRESS");
                 break;
             case 'COMPLETED':
@@ -1011,6 +1027,62 @@ class Product_model extends CI_Model {
         ]);
 
         $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public function save_stock_count(){
+        $stock_control_id = $this->hash->decrypt($this->input->post("stock_control_id"));
+        $product = $this->input->post("product");
+
+        $this->db->trans_start();   
+
+
+        //UPDATE THE STOCK COUNT
+        foreach($product["stock_count_id"] as $key => $row){
+
+            $stock_count_id = $product['stock_count_id'][$key];
+            $counted        = $product['counted'][$key];
+            $status         = $product['status'][$key];
+
+            $this->db->where("stock_count_id" , $this->hash->decrypt($stock_count_id))->update("inventory_stock_count" , [
+                "counted" => $counted ,
+                "status"  => $status
+            ]);
+        }
+
+
+        //REMOVE LAST COUNTED
+        $this->db->where("stock_control_id" , $stock_control_id)->delete("inventory_stock_last_counted");
+
+        //ADD COUNTED
+        $counted = array();
+        $stock = $this->input->post("stock");
+
+        if($stock){
+            foreach($stock['stock_count_id'] as $key => $row){
+                $counted[] = array(
+                    "stock_control_id"=> $stock_control_id ,
+                    "stock_count_id"  => $this->hash->decrypt($stock['stock_count_id'][$key]),
+                    "quantity"        => $stock['quantity'][$key],
+                    "created"         => time()
+                );
+            }
+            $this->db->insert_batch("inventory_stock_last_counted" , $counted);
+        }
+
+    
+        //UPDATE THE STOCK CONTROL
+        $this->db->where("stock_control_id" , $stock_control_id)->update("inventory_stock_control" , [
+            "updated" => time()
+        ]);
+
+        $this->db->trans_complete();
+
 
         if ($this->db->trans_status() === FALSE){
             return false;
