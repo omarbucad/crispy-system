@@ -766,6 +766,84 @@ class Product_model extends CI_Model {
         return $stock_information;
     }
 
+    public function get_stock_count_by_id_review($stock_id){
+        $inventory_information = $this->get_stock_count_by_id($stock_id);
+        $product_list = $inventory_information->products;
+        $result = array();
+        $all = array();
+        $uncounted = array();
+        $excluded = array();
+        $unmatched = array();
+        $matched = array();
+
+        //ALL TAB
+        foreach($product_list as $row){
+            $all[] = array(
+                "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
+                "expected"                     => $row->expected ,
+                "total"                        => $row->counted ,
+                "unit"                         => $row->counted - $row->expected ,
+                "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
+                "product_variant_id"           => $row->product_variant_id
+            );
+
+            if($row->expected == $row->counted){
+                $matched[] = array(
+                    "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
+                    "expected"                     => $row->expected ,
+                    "total"                        => $row->counted ,
+                    "unit"                         => $row->counted - $row->expected ,
+                    "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
+                    "product_variant_id"           => $row->product_variant_id
+                );
+            }
+
+             if($row->expected != $row->counted){
+                $unmatched[] = array(
+                    "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
+                    "expected"                     => $row->expected ,
+                    "total"                        => $row->counted ,
+                    "unit"                         => $row->counted - $row->expected ,
+                    "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
+                    "product_variant_id"           => $row->product_variant_id
+                );
+            }
+
+            if($row->status == "uncounted"){
+                $uncounted[] = array(
+                    "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
+                    "expected"                     => $row->expected ,
+                    "total"                        => $row->counted ,
+                    "unit"                         => $row->counted - $row->expected ,
+                    "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
+                    "product_variant_id"           => $row->product_variant_id
+                );
+            }
+
+            if($row->status == "excluded"){
+                $excluded[] = array(
+                    "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
+                    "expected"                     => $row->expected ,
+                    "total"                        => $row->counted ,
+                    "unit"                         => $row->counted - $row->expected ,
+                    "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
+                    "product_variant_id"           => $row->product_variant_id
+                );
+            }
+
+        }
+
+        $inventory_information->products = array(
+            "all" => $all ,
+            "excluded" => $excluded ,
+            "uncounted" => $uncounted ,
+            "unmatched" => $unmatched, 
+            "matched" => $matched 
+        );
+
+        return $inventory_information;
+    }
+
     public function get_stock_control_list($status = "DUE"){
         $store_id = $this->data['session_data']->store_id;
         $current_time = time();
@@ -804,6 +882,19 @@ class Product_model extends CI_Model {
 
     }
 
+    public function update_stock_control($id , $status){
+        $this->db->trans_start();
+
+        $this->db->where("stock_control_id" , $id)->update("inventory_stock_control" , ["status" => $status]);
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return true;
+        }
+    }
     public function order_stock($type = "ORDER"){
         $store_id = $this->data['session_data']->store_id;
         $user_id = $this->data['session_data']->user_id;

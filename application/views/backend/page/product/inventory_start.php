@@ -45,6 +45,9 @@
 
             $(".no-li-data").addClass("hide");
         }
+
+
+        refresh_table($(".counted_btn.active").data("type"));
      
     });
 
@@ -62,9 +65,7 @@
         var c = $(".product-count-li").find(".list-li").length;
 
         if( !$("_li_"+product_variant_id).length ){
-            $('#_'+product_variant_id).removeClass("counted").addClass("uncounted");
             $('#_'+product_variant_id).find("._counted_hidden").val(counted);
-            $('#_'+product_variant_id).find("._status_hidden").val("uncounted");
         }
 
         if(c == 0){
@@ -96,11 +97,47 @@
             }
         });
     });
+
+    $(document).ready(function(){
+        refresh_table("all");
+    });
+
+    $(document).on("click" , ".counted_btn" , function(){
+        var type = $(this).data("type");
+
+        $(".counted_btn").removeClass("active");
+        $(this).addClass("active");
+
+        refresh_table(type);
+    });
+    function refresh_table(type){
+        var all_count = $(".all_count");
+        var uncounted_count = $(".uncounted_count");
+        var counted_count = $(".counted_count");
+
+        if(type == "all"){
+            $(".customer-table > tbody").find("tr").removeClass("hide");
+        }
+
+        if(type == "counted"){
+            $(".customer-table > tbody").find("tr.uncounted").addClass("hide");
+            $(".customer-table > tbody").find("tr.counted").removeClass("hide");
+        }
+
+        if(type == "uncounted"){
+            $(".customer-table > tbody").find("tr.counted").addClass("hide");
+            $(".customer-table > tbody").find("tr.uncounted").removeClass("hide");
+        }
+
+        all_count.text( $(".customer-table > tbody").find("tr").length );
+        uncounted_count.text( $(".customer-table > tbody").find("tr.uncounted").length );
+        counted_count.text( $(".customer-table > tbody").find("tr.counted").length );
+    }
 </script>
 <div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
         <div class="row" id="inventory_count_page">
-            <form id="start_count_form" action="#">
+            <form id="start_count_form" action="<?php echo site_url('app/product/inventory-count/review/'.$inventory_information->stock_control_id); ?>" method="POST">
                 <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
                 <input type="hidden" name="stock_control_id" value="<?php echo $inventory_information->stock_control_id;?>">
                 <div class="col-xs-12 col-lg-9 col-md-8 col-sm-7">
@@ -123,7 +160,7 @@
                                 </div>
                                 <div class="col-xs-12 col-lg-4 text-right no-margin-bottom">
                                     <a href="javascript:void(0);" class="btn btn-success btn-same-size form-pause">Pause</a>
-                                    <a href="javascript:void(0);" class="btn btn-success btn-same-size">Review</a>
+                                    <input type="submit" class="btn btn-success btn-same-size" value="Review" name="submit">
                                 </div>
                             </div>
                         </div>
@@ -162,9 +199,9 @@
                     <div>
                         <div class="customer-table-showing">
                             <span class="pull-left">
-                                <a href="javascript:void(0);" class="btn btn-link">All (0)</a>
-                                <a href="javascript:void(0);" class="btn btn-link">Counted (0)</a>
-                                <a href="javascript:void(0);" class="btn btn-link">Uncounted (0)</a>
+                                <a href="javascript:void(0);" class="btn btn-link active counted_btn" data-type="all">All (<span class="all_count">0</span>)</a>
+                                <a href="javascript:void(0);" class="btn btn-link counted_btn" data-type="counted">Counted (<span class="counted_count">0</span>)</a>
+                                <a href="javascript:void(0);" class="btn btn-link counted_btn" data-type="uncounted">Uncounted (<span class="uncounted_count">0</span>)</a>
                             </span>
                         </div>
                         <table class="customer-table">
@@ -201,21 +238,19 @@
                         <ul>
                             <li class="li-head"><strong>Your last counted items</strong></li>
 
-                                <?php foreach($inventory_information->last_counted as $key => $row) : ?>
-                                    <li class="list-li _li_<?php echo $row->product_variant_id; ?>" >
-                                        <?php echo $row->quantity.' '.$row->product_name.' '.$row->variant_name; ?>
-                                        <input type="hidden" name="stock[stock_count_id][]" value="<?php echo $row->stock_count_id; ?>">
-                                        <input type="hidden" name="stock[quantity][]" value="<?php echo $row->quantity; ?>">
-                                        <a href="javascript:void(0);" class="pull-right remove-li" style="padding-left: 20px" data-count="<?php echo $row->quantity; ?>" data-id="<?php  echo $row->product_variant_id; ?>"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                                    </li>
-                                <?php endforeach; ?>
-
-                                 <li class="no-li-data  text-center <?php echo ($inventory_information->last_counted) ? "hide" : "";  ?>">
-                                    <img src="<?php echo site_url("public/img/packing.png"); ?>" class="img" width="100px;">
-                                    <p class="help-block">Items that you count will appear here one-by-one <br>to help you keep track.</p>
+                            <?php foreach($inventory_information->last_counted as $key => $row) : ?>
+                                <li class="list-li _li_<?php echo $row->product_variant_id; ?>" >
+                                    <?php echo $row->quantity.' '.$row->product_name.' '.$row->variant_name; ?>
+                                    <input type="hidden" name="stock[stock_count_id][]" value="<?php echo $row->stock_count_id; ?>">
+                                    <input type="hidden" name="stock[quantity][]" value="<?php echo $row->quantity; ?>">
+                                    <a href="javascript:void(0);" class="pull-right remove-li" style="padding-left: 20px" data-count="<?php echo $row->quantity; ?>" data-id="<?php  echo $row->product_variant_id; ?>"><i class="fa fa-trash" aria-hidden="true"></i></a>
                                 </li>
+                            <?php endforeach; ?>
 
-                            
+                            <li class="no-li-data  text-center <?php echo ($inventory_information->last_counted) ? "hide" : "";  ?>">
+                                <img src="<?php echo site_url("public/img/packing.png"); ?>" class="img" width="100px;">
+                                <p class="help-block">Items that you count will appear here one-by-one <br>to help you keep track.</p>
+                            </li>
                         </ul>
                     </nav>
                 </div>

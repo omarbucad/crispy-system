@@ -289,6 +289,38 @@ class Product extends MY_Controller {
 		$this->load->view('backend/master' , $this->data);
 	}
 
+	public function inventory_count_review($count_id){
+		$count_id = $this->hash->decrypt($count_id);
+
+		//SAVE COUNT
+		$this->inventory_stock_save(false);
+
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Inventory Count";
+		$this->data['main_page'] = "backend/page/product/inventory_review";
+		$this->data['inventory_information'] = $this->product->get_stock_count_by_id_review($count_id);
+		
+
+		$this->load->view('backend/master' , $this->data);
+
+	}
+
+	public function abandon_inventory_control($id){
+		$id = $this->hash->decrypt($id);
+
+		if($this->product->update_stock_control($id , "CANCELLED")){
+			echo json_encode([
+				"status" => true ,
+				"message" => "Successfully Updated the Stock Control"
+			]);
+		}else{
+			echo json_encode([
+				"status" => false ,
+				"message" => "Saving Failed. Please Try again Later"
+			]);
+		}
+	}
+
 	public function getOrderNumber(){
 		$outlet_id = $this->input->post("outlet_id");
 		$type = $this->input->post("type");
@@ -332,19 +364,23 @@ class Product extends MY_Controller {
 
 	}
 
-	public function inventory_stock_save(){
+	public function inventory_stock_save($echo_json = true){
 
 		if($this->input->post()){
 			if($this->product->save_stock_count()){
-				echo json_encode([
-					"status" => true ,
-					"message" => "Successfully Updated the Stock Control"
-				]);
+				if($echo_json){
+					echo json_encode([
+						"status" => true ,
+						"message" => "Successfully Updated the Stock Control"
+					]);
+				}
 			}else{
-				echo json_encode([
-					"status" => false ,
-					"message" => "Saving Failed. Please Try again Later"
-				]);
+				if($echo_json){
+					echo json_encode([
+						"status" => false ,
+						"message" => "Saving Failed. Please Try again Later"
+					]);
+				}
 			}
 		}
 	}

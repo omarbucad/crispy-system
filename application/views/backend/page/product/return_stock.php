@@ -19,7 +19,6 @@
 			method : "POST" ,
 			data : {outlet_id : outlet_id , type : "return"} ,
 			success : function(response){
-				console.log(response);
 				order_no.val(response);
 			}
 		});

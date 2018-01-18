@@ -390,3 +390,49 @@ tr.counted{
 tr.counted > td , tr.counted > td > small{
 	color: #48b553 !important;
 }
+.counted_btn.active{
+	font-weight: bold;
+	text-decoration: none;
+}
+.tab-parent{
+	padding: 5px 0px;
+}
+.tab-parent .tab-link{
+	margin: 5px 0px 30px 0px;
+}
+.tab-parent .tab-link a{
+	font-weight: bold;
+	padding: 10px 3px;
+	margin: 0px 10px;
+	text-decoration: none;
+}
+.tab-parent .tab-link a:first-child{
+	margin-left: 0px;
+}
+.tab-parent .tab-link{
+	border-bottom: 1px solid rgba(0,0,0,0.2);
+	padding-bottom: 10px;
+}
+.tab-parent .tab-link a.active{
+	color:#41af4b;
+	border-bottom: 2px solid #41af4b;
+}
+.tab-parent .tab-container > div:not(.active){
+	display: none;
+}
+.border-left{
+	border-left: 1px solid #EAEAEA;
+}
+.border-right{
+	border-left: 1px solid #EAEAEA;
+}
+.inventory-count-table thead > tr:first-child , .inventory-count-table tfoot > tr:first-child{
+	background-color: #efefef;
+}
+.inventory-count-table thead > tr:last-child > td{
+	padding: 10px;
+	color : #8a8888;
+}
+.inventory-count-table tbody > tr > td > span{
+	line-height: 40px;
+}
