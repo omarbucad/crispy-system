@@ -20,9 +20,9 @@
         var stock_count_id = $('#_'+product_variant_id).data("stockid");
 
         if(!product_variant_id){
-            alert("Please Select a product");
-        }else if(product_quantity <= 0){
-            alert("Product Quantity must be greater than 0");
+            $.notify("Please Select a product" , { className:  "error" , position : "top center"});
+        }else if(product_quantity < 0){
+            $.notify("Product Quantity must be greater than -1" , { className:  "error" , position : "top center"});
         }else{
             var li = $("<li>" , { text : product_quantity+" "+product_name , class : "list-li _li_"+product_variant_id} );
             

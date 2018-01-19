@@ -730,38 +730,40 @@ class Product_model extends CI_Model {
     public function get_stock_count_by_id($stock_id){
         $stock_information = $this->get_stock_count($stock_id);
 
-        $stock_information->created = convert_timezone($stock_information->created , true);
-        $stock_information->schedule_time = convert_timezone($stock_information->schedule_time , true);
-        $stock_information->stock_control_id = $this->hash->encrypt($stock_information->stock_control_id);
+        if($stock_information){
+            $stock_information->created = convert_timezone($stock_information->created , true);
+            $stock_information->schedule_time = convert_timezone($stock_information->schedule_time , true);
+            $stock_information->stock_control_id = $this->hash->encrypt($stock_information->stock_control_id);
 
-        $this->db->select("pv.sku , pv.variant_name , pv.supply_price , pv.markup_price , pv.retail_price_wot , pv.product_variant_id");
-        $this->db->select("p.product_name , p.product_handle");
-        $this->db->select("i.expected , i.counted , i.status , i.reorder_amount , i.stock_count_id");
-        $this->db->join("product p" , "p.product_id = pv.product_id");
-        $this->db->join("inventory_stock_count i" , "i.product_variant_id = pv.product_variant_id");
-        $this->db->where("stock_control_id" , $stock_id);
-        $stock_information->products = $this->db->get("product_variants pv")->result();
+            $this->db->select("pv.sku , pv.variant_name , pv.supply_price , pv.markup_price , pv.retail_price_wot , pv.product_variant_id");
+            $this->db->select("p.product_name , p.product_handle");
+            $this->db->select("i.expected , i.counted , i.status , i.reorder_amount , i.stock_count_id");
+            $this->db->join("product p" , "p.product_id = pv.product_id");
+            $this->db->join("inventory_stock_count i" , "i.product_variant_id = pv.product_variant_id");
+            $this->db->where("stock_control_id" , $stock_id);
+            $stock_information->products = $this->db->get("product_variants pv")->result();
 
-        foreach($stock_information->products as $key => $row){
-            $stock_information->products[$key]->product_variant_id = $this->hash->encrypt($row->product_variant_id);     
-            $stock_information->products[$key]->stock_count_id = $this->hash->encrypt($row->stock_count_id);     
+            foreach($stock_information->products as $key => $row){
+                $stock_information->products[$key]->product_variant_id = $this->hash->encrypt($row->product_variant_id);     
+                $stock_information->products[$key]->stock_count_id = $this->hash->encrypt($row->stock_count_id);     
+            }
+
+            $this->db->select("p.product_name , pv.variant_name , pv.product_variant_id , lc.stock_count_id , lc.quantity");
+
+            $last_counted = $this->db
+            ->join("inventory_stock_count sc" , "sc.stock_count_id = lc.stock_count_id")
+            ->join("product_variants pv" , "pv.product_variant_id = sc.product_variant_id")
+            ->join("product p" , "p.product_id = pv.product_id")
+            ->where("lc.stock_control_id" , $this->hash->decrypt($stock_information->stock_control_id))
+            ->get("inventory_stock_last_counted lc")->result();
+
+            foreach($last_counted as $key => $row){
+                $last_counted[$key]->stock_count_id = $this->hash->encrypt($row->stock_count_id);
+                $last_counted[$key]->product_variant_id = $this->hash->encrypt($row->product_variant_id);
+            }
+
+            $stock_information->last_counted = $last_counted;
         }
-
-        $this->db->select("p.product_name , pv.variant_name , pv.product_variant_id , lc.stock_count_id , lc.quantity");
-
-        $last_counted = $this->db
-        ->join("inventory_stock_count sc" , "sc.stock_count_id = lc.stock_count_id")
-        ->join("product_variants pv" , "pv.product_variant_id = sc.product_variant_id")
-        ->join("product p" , "p.product_id = pv.product_id")
-        ->where("lc.stock_control_id" , $this->hash->decrypt($stock_information->stock_control_id))
-        ->get("inventory_stock_last_counted lc")->result();
-
-        foreach($last_counted as $key => $row){
-            $last_counted[$key]->stock_count_id = $this->hash->encrypt($row->stock_count_id);
-            $last_counted[$key]->product_variant_id = $this->hash->encrypt($row->product_variant_id);
-        }
-
-        $stock_information->last_counted = $last_counted;
 
         return $stock_information;
     }
@@ -784,7 +786,8 @@ class Product_model extends CI_Model {
                 "total"                        => $row->counted ,
                 "unit"                         => $row->counted - $row->expected ,
                 "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
-                "product_variant_id"           => $row->product_variant_id
+                "product_variant_id"           => $row->product_variant_id ,
+                "sku"                          => $row->sku
             );
 
             if($row->expected == $row->counted){
@@ -794,7 +797,8 @@ class Product_model extends CI_Model {
                     "total"                        => $row->counted ,
                     "unit"                         => $row->counted - $row->expected ,
                     "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
-                    "product_variant_id"           => $row->product_variant_id
+                    "product_variant_id"           => $row->product_variant_id,
+                    "sku"                          => $row->sku
                 );
             }
 
@@ -805,7 +809,8 @@ class Product_model extends CI_Model {
                     "total"                        => $row->counted ,
                     "unit"                         => $row->counted - $row->expected ,
                     "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
-                    "product_variant_id"           => $row->product_variant_id
+                    "product_variant_id"           => $row->product_variant_id,
+                    "sku"                          => $row->sku
                 );
             }
 
@@ -816,7 +821,8 @@ class Product_model extends CI_Model {
                     "total"                        => $row->counted ,
                     "unit"                         => $row->counted - $row->expected ,
                     "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
-                    "product_variant_id"           => $row->product_variant_id
+                    "product_variant_id"           => $row->product_variant_id,
+                    "sku"                          => $row->sku
                 );
             }
 
@@ -827,7 +833,8 @@ class Product_model extends CI_Model {
                     "total"                        => $row->counted ,
                     "unit"                         => $row->counted - $row->expected ,
                     "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
-                    "product_variant_id"           => $row->product_variant_id
+                    "product_variant_id"           => $row->product_variant_id,
+                    "sku"                          => $row->sku
                 );
             }
 
@@ -876,6 +883,12 @@ class Product_model extends CI_Model {
             $result[$key]->created = fromNow($row->created);
             $result[$key]->count_type = ucwords($row->count_type);
             $result[$key]->stock_control_id = $this->hash->encrypt($row->stock_control_id);
+
+            if($status == "CANCELLED"){
+                $result[$key]->stock_control_link = site_url("app/product/inventory-count/$row->stock_control_id");
+            }else{
+                $result[$key]->stock_control_link = site_url("app/product/inventory-count/start/$row->stock_control_id");
+            }
         }
 
         return $result;

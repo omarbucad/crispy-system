@@ -38,7 +38,7 @@
                         <?php foreach($result as $row) : ?>
                             <tr class="customer-row">
                                 <td>
-                                    <a href="<?php echo site_url("app/product/inventory-count/start/$row->stock_control_id" ); ?>"><?php echo $row->count_name; ?> <span class="label label-success"><?php echo $row->status; ?></span></a><br>
+                                    <a href="<?php echo $row->stock_control_link; ?>"><?php echo $row->count_name; ?> <span class="label label-success"><?php echo $row->status; ?></span></a><br>
                                     <small><?php echo $row->created; ?></small>
                                 </td>
                                 <td><a href="javascript:void(0);"><?php echo $row->outlet_name; ?></a></td>

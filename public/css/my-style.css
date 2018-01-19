@@ -414,8 +414,8 @@ tr.counted > td , tr.counted > td > small{
 	padding-bottom: 10px;
 }
 .tab-parent .tab-link a.active{
-	color:#41af4b;
-	border-bottom: 2px solid #41af4b;
+	color:#1ABC9C;
+	border-bottom: 2px solid #1ABC9C;
 }
 .tab-parent .tab-container > div:not(.active){
 	display: none;
@@ -433,6 +433,6 @@ tr.counted > td , tr.counted > td > small{
 	padding: 10px;
 	color : #8a8888;
 }
-.inventory-count-table tbody > tr > td > span{
-	line-height: 40px;
+.inventory-count-table tbody > tr > td > span , .inventory-count-table thead > tr > td > span{
+	line-height: 40px !important;
 }

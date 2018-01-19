@@ -214,6 +214,18 @@ class Product extends MY_Controller {
 		$this->load->view('backend/master' , $this->data);
 	}
 
+	public function inventory_count_view($count_id){
+		$count_id = $this->hash->decrypt($count_id);
+
+		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['page_name'] = "Inventory Count";
+		$this->data['main_page'] = "backend/page/product/inventory_view";
+		$this->data['inventory_information'] = $this->product->get_stock_count_by_id_review($count_id);
+		
+
+		$this->load->view('backend/master' , $this->data);
+	}
+
 	public function inventory_count_upcoming(){
 		$this->data['website_title'] = "Stock Control | Accounts Package";
 		$this->data['page_name'] = "Inventory Count";
@@ -232,6 +244,8 @@ class Product extends MY_Controller {
 		$this->data['main_page'] = "backend/page/product/inventory_count";
 		$this->data['no_result_found'] = "You have no upcoming inventory counts";
 		$this->data['result'] = $this->product->get_stock_control_list("COMPLETED");
+		$this->data['due_count'] = count($this->product->get_stock_control_list("DUE"));
+		$this->data['upcoming_count']  = count($this->product->get_stock_control_list("UPCOMING"));
 
 		$this->load->view('backend/master' , $this->data);
 	}
@@ -242,6 +256,8 @@ class Product extends MY_Controller {
 		$this->data['main_page'] = "backend/page/product/inventory_count";
 		$this->data['no_result_found'] = "You have no upcoming inventory counts";
 		$this->data['result'] = $this->product->get_stock_control_list("CANCELLED");
+		$this->data['due_count'] = count($this->product->get_stock_control_list("DUE"));
+		$this->data['upcoming_count']  = count($this->product->get_stock_control_list("UPCOMING"));
 
 		$this->load->view('backend/master' , $this->data);
 	}
@@ -286,6 +302,10 @@ class Product extends MY_Controller {
 		$this->data['main_page'] = "backend/page/product/inventory_start";
 		$this->data['inventory_information'] = $this->product->get_stock_count_by_id($count_id);
 
+		if(!$this->data['inventory_information']){
+			$this->error_404();
+		}
+
 		$this->load->view('backend/master' , $this->data);
 	}
 
@@ -302,11 +322,10 @@ class Product extends MY_Controller {
 		
 
 		$this->load->view('backend/master' , $this->data);
-
 	}
 
-	public function abandon_inventory_control($id){
-		$id = $this->hash->decrypt($id);
+	public function abandon_inventory_control(){
+		$id = $this->hash->decrypt($this->input->post("id"));
 
 		if($this->product->update_stock_control($id , "CANCELLED")){
 			echo json_encode([
@@ -334,8 +353,7 @@ class Product extends MY_Controller {
 			$outlet_information = $this->store->get_outlet_by_id($this->hash->decrypt($outlet_id), ["supplier_return" , "supplier_return_prefixes"]);
 
 			echo ($outlet_information->supplier_return_prefixes) ? $outlet_information->supplier_return_prefixes ." - ". ($outlet_information->supplier_return + 1) : ($outlet_information->supplier_return + 1);	
-		}
-			
+		}		
 	}
 
 	public function edit_order_stock($type , $id){
@@ -361,7 +379,6 @@ class Product extends MY_Controller {
 			}
 
 		}
-
 	}
 
 	public function inventory_stock_save($echo_json = true){
@@ -384,6 +401,8 @@ class Product extends MY_Controller {
 			}
 		}
 	}
+
+
 	// PRODUCT TAGS
 	public function tags(){
 		$this->data['website_title'] = "Product - Tags | Accounts Package";
