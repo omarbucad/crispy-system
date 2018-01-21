@@ -27,22 +27,20 @@
         }
     });
 </script>
-
 <div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
 
         <div class="container">
-        	<h1>Customers</h1>
+            <h1>Staff</h1>
         </div>
         <div class="grey-bg">
             <div class="container ">
                 <div class="row no-margin-bottom">
                     <div class="col-xs-12 col-lg-8 no-margin-bottom">
-                        <span>Manage your customers and their balances, or segment them by demographics and spending habits. <a href="#" class="text-underline">need help?</a></span>
+                        <span>Manage your staff and their time balances, or segment them by demographics. <a href="#" class="text-underline">need help?</a></span>
                     </div>
                     <div class="col-xs-12 col-lg-4 text-right no-margin-bottom">
-                        <a href="<?php echo site_url('app/customer/import-customer'); ?>" class="btn btn-info ">Import Customers</a>
-                        <a href="<?php echo site_url('app/customer/add-customer'); ?>" class="btn btn-success ">Add Customers</a>
+                        <a href="<?php echo site_url('app/timetracker/staff/add'); ?>" class="btn btn-success ">Add Staff</a>
                     </div>
                 </div>
             </div>
@@ -54,17 +52,27 @@
                         <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
                         <input type="hidden" name="_advance_search_value" id="_advance_search_value" value="false">
                         <div class="row">
-                            <div class="col-xs-12 col-lg-6 no-margin-bottom">
+                            <div class="col-xs-12 col-lg-3 no-margin-bottom">
                                 <div class="form-group">
-                                    <label for="s_name">Search customers by name, customer code, or contact details</label>
-                                    <input type="text" name="name" class="form-control" id="s_name" placeholder="Enter customers by name, customer code, or contact details">
+                                    <label for="s_name">Search Staff by name</label>
+                                    <input type="text" name="name" class="form-control" id="s_name" placeholder="Enter customers by name">
                                 </div>
                             </div>
                             <div class="col-xs-12 col-lg-3 no-margin-bottom">
                                 <div class="form-group">
-                                    <label for="s_roles">Customer Group</label>
+                                    <label for="s_outlet">Outlet</label>
+                                    <select class="form-control" id="s_outlet">
+                                        <?php foreach($outlet_list as $row) : ?>
+                                            <option value="<?php echo $row->outlet_id; ?>"><?php echo $row->outlet_name; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-lg-3 no-margin-bottom">
+                                <div class="form-group">
+                                    <label for="s_roles">Staff Group</label>
                                     <select class="form-control" id="s_roles">
-                                        <?php foreach($customer_group_list as $row) : ?>
+                                        <?php foreach($staff_group_list as $row) : ?>
                                             <option value="<?php echo $row->group_id; ?>"><?php echo $row->group_name; ?></option>
                                         <?php endforeach; ?>
                                     </select>
@@ -99,8 +107,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        
                     </form>
                 </div>
             </div>
@@ -108,7 +114,7 @@
         <div class="container">
             <div class="customer-table-showing">
                 <span class="pull-left">
-                    <small >Showing <?php echo count($customer_list); ?> customer</small>
+                    <small >Showing <?php echo count($staff_list); ?> customer</small>
                 </span>
                 <a href="#" class="btn btn-primary pull-right"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export List</a>
             </div>
@@ -116,25 +122,28 @@
                 <thead>
                     <tr>
                         <th width="40%">
-                            <a href="#">Customer <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></a>
+                            <a href="#">Staff <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></a>
                         </th>
-                        <th width="25%">Location</th>
-                        <th width="15%" class="text-right">Store Credit</th>
-                        <th width="15%" class="text-right">Account</th>
+                        <th width="35%">Location</th>
+                        <th width="20%">Outlet</th>
                         <th width="5%" class="text-right"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($customer_list as $key => $row) : ?>
+                    <?php foreach($staff_list as $key => $row) : ?>
                         <tr class="customer-row">
                             <td>
-                                <div>
-                                    <span class="customer-name"><?php echo ($row->company) ? $row->company.' , ' : "" ; ?><?php echo $row->display_name; ?> </span>
-                                    <span class="label label-success"><?php echo $row->group_name; ?></span>
+                                 <div class="pull-right">
+                                    <img src="<?php echo site_url("thumbs/images/staff/$row->image_path/80/80/$row->image_name"); ?>" class="img img-responsive thumbnail no-margin-bottom" width="80">
                                 </div>
                                 <div>
-                                    <small><?php echo $row->customer_code; ?> <?php echo ($row->email) ? ' | '.$row->email : "" ; ?></small>
+                                    <span class="customer-name"><?php echo $row->display_name; ?> </span>
+                                    <span class="label label-success" style="background-color: <?php echo $row->group_color; ?>"><?php echo $row->group_name; ?></span>
                                 </div>
+                                <div>
+                                    <small><?php echo $row->staff_code; ?> <?php echo ($row->email) ? ' | '.$row->email : "" ; ?></small>
+                                </div>
+                               
                             </td>
                             <td>
                                 <span>
@@ -150,11 +159,8 @@
                                     <?php echo $row->physical_country; ?>
                                 </span>
                             </td>
-                            <td class="text-right">
-                                <span>0.00</span>
-                            </td>
-                            <td class="text-right">
-                                <span>0.00</span>
+                            <td>
+                                <span><?php echo $row->outlet_name; ?></span>
                             </td>
                             <td class="text-center">
                                 <a href="#"><i class="fa fa-pencil" aria-hidden="true"></i></a>
@@ -164,7 +170,7 @@
                             <td colspan="5">
                                 <div class="row">
                                     <div class="col-xs-12 col-lg-5">
-                                        <legend class="text-uppercase">CUSTOMER PROFILE</legend>
+                                        <legend class="text-uppercase">STAFF PROFILE</legend>
                                          <dl class="dl-horizontal">
                                         <?php if($row->gender OR $row->date_of_birth ) : ?>
                                             <?php if($row->gender) : ?>
@@ -210,8 +216,8 @@
                                             <?php endif; ?>
 
                                         <?php else : ?>
-                                            <h5 class="text-center">You have no records to help you target this customer. <br>
-                                                <small>Enter custom notes about a customer – like preferences, common requests, and important requirements – so staff can create a tailored service or shopping experience.</small>
+                                            <h5 class="text-center">You have no records to help you target this staff. <br>
+                                                <small>Enter custom notes about a staff</small>
                                             </h5>
                                         <?php endif; ?>
 
@@ -300,45 +306,24 @@
                                         <?php endif; ?>
                                     </div>
                                     <div class="col-xs-12 col-lg-4">
-                                        <legend class="text-uppercase">BALANCE</legend>
-                                        <table style="width: 100%;margin-bottom: 10px;">
-                                            <tr>
-                                                <th>Account</th>
-                                                <th class="text-right">0.00</th>
-                                            </tr>
-                                            <tr>
-                                                <td>Total Spent</td>
-                                                <td class="text-right">0.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Last 12 Months</td>
-                                                <td class="text-right">0.00</td>
-                                            </tr>
-                                        </table>
-                                        <table style="width: 100%;margin-bottom: 10px;">
-                                            <tr>
-                                                <th>Store Credit</th>
-                                                <th class="text-right">0.00</th>
-                                            </tr>
-                                            <tr>
-                                                <td>Total Issued</td>
-                                                <td class="text-right">0.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Total Redeemed</td>
-                                                <td class="text-right">0.00</td>
-                                            </tr>
-                                        </table>
+                                        <?php if($row->staff_files) : ?>
+                                            <legend class="text-uppercase">OTHER FILES</legend>
+                                            <ol>
+                                            <?php foreach($row->staff_files as $r): ?>
+                                                <li><a href="<?php echo $r->full_path; ?>" style="word-wrap: break-word;"><?php echo $r->file_name; ?></a></li>
+                                            <?php endforeach; ?>
+                                            </ol>
+                                        <?php endif; ?>
+                                        
                                     </div>
                                     <div class="col-xs-12 col-lg-3 text-left last">
-                                        <a href="#" class="row"><i class="fa fa-pencil" aria-hidden="true"></i> Edit Customer</a>
+                                        <a href="#" class="row"><i class="fa fa-pencil" aria-hidden="true"></i> Edit Staff</a>
                                     </div>
-                                    
                                 </div>
                                 <div class="text-left col-xs-12 col-lg-3 col-lg-offset-9">
                                     <div class="btn-edit-container">
-                                        <a href="#"><i class="fa fa-print" aria-hidden="true"></i> Print Customer</a>
-                                        <a href="#"><i class="fa fa-list-ul" aria-hidden="true"></i> View Sales History</a>
+                                        <a href="#"><i class="fa fa-print" aria-hidden="true"></i> Print Staff</a>
+                                        <a href="#"><i class="fa fa-list-ul" aria-hidden="true"></i> View Shift History</a>
                                         <a href="#"><i class="fa fa-trash" aria-hidden="true"></i> Delete</a>
                                     </div>
                                 </div>
@@ -348,12 +333,9 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="2" width="65%">
-                            All Customers (<?php echo $config['total_rows']; ?>)
+                        <th colspan="4" width="65%">
+                            All Staff (<?php echo $config['total_rows']; ?>)
                         </th>
-                        <th width="15%" class="text-right">0.00</th>
-                        <th width="15%" class="text-right">0.00</th>
-                        <th width="5%"></th>
                     </tr>
                 </tfoot>
             </table>
@@ -367,7 +349,7 @@
                         }
 
                     ?>
-                    <small>Displaying <?php echo $x; ?> – <?php echo ($x-1) + count($customer_list) ; ?> of <?php echo $config['total_rows']; ?></small>
+                    <small>Displaying <?php echo $x; ?> – <?php echo ($x-1) + count($staff_list) ; ?> of <?php echo $config['total_rows']; ?></small>
                 </span>
                 <div class="pull-right">
                     <nav aria-label="Page navigation">

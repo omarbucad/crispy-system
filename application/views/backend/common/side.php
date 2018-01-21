@@ -103,8 +103,9 @@
                             <ul class="nav navbar-nav">
                                 <li><a href="<?php echo site_url("app/timetracker"); ?>">Dashboard</a></li>
                                 <li><a href="<?php echo site_url("app/timetracker/shift-management"); ?>">Shift Management</a></li>
-                                <li><a href="<?php echo site_url("app/timetracker/employee"); ?>">Employee</a></li>
-                                <li><a href="<?php echo site_url("app/timetracker/payslip"); ?>">Payslip</a></li>
+                                <li><a href="<?php echo site_url("app/timetracker/staff"); ?>">Staff</a></li>
+                                <li><a href="<?php echo site_url("app/timetracker/position"); ?>">Position</a></li>
+                                <li><a href="<?php echo site_url("app/timetracker/shift-templates"); ?>">Shift Templates</a></li>
                             </ul>
                         </div>
                     </div>

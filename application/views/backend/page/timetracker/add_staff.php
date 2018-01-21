@@ -1,23 +1,47 @@
+<script type="text/javascript">
+    $(document).on('change' , '#profile_image' , function(){
+        readURL(this , ".image-preview" , 'background');
+    });
+    $(document).on("click" , '.btn-addmore' , function(){
+    	var clone = $(this).parent().prev().clone();
+    	$(this).parent().before(clone);
 
+    	$(".remove-file").removeClass("hide");
+    });
+
+    $(document).on('click' , '.remove-file' , function(){
+    	var dd = $(this).closest("dd");
+    	var le = dd.find(".form-group").length;
+
+    	if(le > 1){
+    		$(this).closest(".form-group").remove();
+    		if(le == 2){
+    			dd.find(".remove-file").addClass("hide");
+    		}
+    	}
+
+    });
+</script>
 <div class="container margin-bottom">
     <div class="side-body padding-top">
     	<ol class="breadcrumb">
-    		<li><a href="<?php echo site_url('app/customer'); ?>">Customer</a></li>
-    		<li class="active">New Customer</li>
+    		<li><a href="<?php echo site_url('app/timetracker/staff'); ?>">Staff</a></li>
+    		<li class="active">New Staff</li>
     	</ol>	
-    	<h3>New Customer</h3>
-    	<form class="form-horizontal" action="<?php echo site_url("app/customer/add-customer"); ?>" method="POST">
+    	<h3>New Staff</h3>
+    	<form class="form-horizontal" action="<?php echo site_url("app/timetracker/staff/add"); ?>" method="POST" enctype="multipart/form-data">
     		<input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
     		<!-- STORE SETTINGS -->
     		<div class="card margin-bottom">
 	    		<div class="card-header">
 	    			<div class="card-title">
-	    				<div class="title">Customer Details</div>
+	    				<div class="title">Staff Details</div>
 	    			</div>
 	    		</div>
 	    		<div class="card-body">
 	    			<div class="row no-margin-bottom">
 	    				<div class="col-xs-12 col-lg-6">
+	    					<label for="">&nbsp;</label>
 	    					<dl class="dl-horizontal text-left">
 	    						<dt>Contact Name</dt>
 	    						<dd class="form-horizontale">
@@ -30,32 +54,37 @@
 	    								</div>
 	    							</div>
 	    						</dd>
-	    						<dt>Company</dt>
+	    						<dt>Staff code</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="company" value="<?php echo set_value("company"); ?>" class="form-control">
+	    								<input type="text" name="staff_code" value="<?php echo set_value("staff_code"); ?>" class="form-control">
 	    							</div>
 	    						</dd>
-	    						<dt>Customer code</dt>
+	    						<dt>Position</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<input type="text" name="customer_code" value="<?php echo set_value("customer_code"); ?>" class="form-control">
+	    								<div class="input-group">
+										  <select class="form-control" name="staff_group">
+										  	<?php foreach($staff_group_list as $row) : ?>
+										  		<option value="<?php echo $row->group_id; ?>"><?php echo $row->group_name; ?></option>
+										  	<?php endforeach; ?>
+										  </select>
+										  <span class="input-group-btn">
+										  	<button class="btn btn-link add-tag-btn" style="margin: 0px !important;" type="button">Add Position</button>
+										  </span>
+										</div>
 	    							</div>
 	    						</dd>
-	    						<dt>Customer Group</dt>
+	    						<dt>Outlet</dt>
 	    						<dd>
 	    							<div class="form-group">
-	    								<select class="form-control" name="customer_group">
-	    									<?php foreach($customer_group_list as $row) : ?>
-	    										<option value="<?php echo $row->group_id; ?>"><?php echo $row->group_name; ?></option>
-	    									<?php endforeach; ?>
-	    								</select>
+	    								<select class="form-control" name="outlet_id">
+	                                        <?php foreach($outlet_list as $row) : ?>
+	                                            <option value="<?php echo $row->outlet_id; ?>"><?php echo $row->outlet_name; ?></option>
+	                                        <?php endforeach; ?>
+	                                    </select>
 	    							</div>
 	    						</dd>
-	    					</dl>
-	    				</div>
-	    				<div class="col-xs-12 col-lg-6">
-	    					<dl class="dl-horizontal">
 	    						<dt>Date of birth</dt>
 	    						<dd class="form-horizontale">
 	    							<div class="form-group">
@@ -80,6 +109,66 @@
 	    							</div>
 	    						</dd>
 	    					</dl>
+	    				</div>
+	    				<div class="col-xs-12 col-lg-6">
+	    					<div class="container-fluid">
+	    						<div class="form-group">
+	                                <label for="">Profile Image</label>
+	                                <div class="image-preview">
+	                                    
+	                                </div>
+	                                <input type="file" name="file" id="profile_image" class="btn btn-default">
+	                            </div>
+	    					</div>
+	    				</div>
+	    			</div>
+	    		</div>
+	    	</div>
+
+	    	<!-- CONTACT INFORMATION -->
+	    	<div class="card margin-bottom">
+	    		<div class="card-header">
+	    			<div class="card-title">
+	    				<div class="title">Payroll / Wage</div>
+	    			</div>
+	    		</div>
+	    		<div class="card-body">
+	  
+	    			<div class="row no-margin-bottom">
+	    				<div class="col-xs-12 col-lg-6">
+	    					<dl class="dl-horizontal text-left">
+	    						
+	    						<dt>Max Hours / Week</dt>
+	    						<dd>
+	    							<div class="form-group">
+	    								<input type="number" name="max_hour_per_week" value="<?php echo set_value("max_hour_per_week"); ?>" placeholder="Hours" class="form-control">
+	    							</div>
+	    						</dd>
+	    						<dt>Hourly Rate</dt>
+	    						<dd>
+	    							<div class="form-group">
+	    								<div class="input-group">
+										  <span class="input-group-addon" id="basic-addon1"><?php echo $this->session->userdata("user")->currency_symbol;?></span>
+										  <input type="text" name="hourly_rate" class="form-control" value="<?php echo set_value("hourly_rate"); ?>" placeholder="0.00" aria-describedby="basic-addon1">
+										</div>
+	    							</div>
+	    						</dd>
+	    						<dt>Preferred Time</dt>
+	    						<dd class="form-horizontale">
+	    							<div class="form-group">
+	    								<div class="col-xs-6 no-padding-left">
+	    									<input type="time" name="pre_time_start" class="form-control" value="<?php echo set_value("pre_time_start"); ?>" placeholder="12:00 AM">
+	    								</div>
+	    								<div class="col-xs-6 no-padding-right">
+	    									<input type="time" name="pre_time_end" class="form-control" value="<?php echo set_value("pre_time_end"); ?>" placeholder="06:00 PM">
+	    								</div>
+	    								<p class="help-block">Set preferred Start and End Time of your staff</p>
+	    							</div>
+	    						</dd>
+	    					</dl>
+	    				</div>
+	    				<div class="col-xs-12 col-lg-6">
+	    	
 	    				</div>
 	    			</div>
 	    		</div>
@@ -137,15 +226,6 @@
 	    							<div class="form-group">
 	    								<input type="text" name="field2" value="<?php echo set_value("field2"); ?>"  class="form-control">
 	    							</div>
-	    						</dd>
-	    						<dt></dt>
-	    						<dd>
-	    							<div class="checkbox">
-									  <label>
-									    <input type="checkbox" value="1" name="direct_email">
-									    This customer has opted out of direct mail communications.
-									  </label>
-									</div>
 	    						</dd>
 	    					</dl>
 	    				</div>
@@ -305,6 +385,16 @@
 	    						<dd>
 	    							<div class="form-group">
 	    								<input type="text" name="field4" class="form-control">
+	    							</div>
+	    						</dd>
+	    						<dt>Other Files</dt>
+	    						<dd>
+	    							<div class="form-group" style="margin-top: 4px;">
+	    								<input type="file" name="other_file[]" style="display: inline;">
+	    								<a href="javascript:void(0);" class="pull-right hide remove-file"><i class="fa fa-times" aria-hidden="true"></i></a>
+	    							</div>
+	    							<div class="row text-right">
+	    								<a href="javascript:void(0);" class="btn btn-primary btn-sm btn-addmore">Add More Files</a>
 	    							</div>
 	    						</dd>
 	    					</dl>

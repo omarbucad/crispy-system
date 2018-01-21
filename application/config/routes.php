@@ -84,6 +84,11 @@ $route['app/product/supplier/add'] = 'app/product/add_supplier';
 $route['app/product/supplier/view/(:any)'] = 'app/product/view_supplier/$1';
 
 
+$route['app/timetracker/staff/add'] = 'app/timetracker/add_staff';
+$route['app/timetracker/shift-management'] = 'app/timetracker/shift_management';
+$route['app/timetracker/shift-templates'] = 'app/timetracker/shift_templates';
+
+
 
 
 $route['app/customer/add-customer'] = 'app/customer/add';

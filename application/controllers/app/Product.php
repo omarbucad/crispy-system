@@ -220,7 +220,7 @@ class Product extends MY_Controller {
 		$this->data['website_title'] = "Stock Control | Accounts Package";
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_view";
-		$this->data['inventory_information'] = $this->product->get_stock_count_by_id_review($count_id);
+		$this->data['inventory_information'] = $this->product->get_stock_count_by_id_review($count_id , true);
 		
 
 		$this->load->view('backend/master' , $this->data);
@@ -300,7 +300,7 @@ class Product extends MY_Controller {
 		$this->data['website_title'] = "Stock Control | Accounts Package";
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_start";
-		$this->data['inventory_information'] = $this->product->get_stock_count_by_id($count_id);
+		$this->data['inventory_information'] = $this->product->get_stock_count_by_id($count_id );
 
 		if(!$this->data['inventory_information']){
 			$this->error_404();
@@ -320,6 +320,9 @@ class Product extends MY_Controller {
 		$this->data['main_page'] = "backend/page/product/inventory_review";
 		$this->data['inventory_information'] = $this->product->get_stock_count_by_id_review($count_id);
 		
+		if(!$this->data['inventory_information']){
+			$this->error_404();
+		}
 
 		$this->load->view('backend/master' , $this->data);
 	}
@@ -328,6 +331,21 @@ class Product extends MY_Controller {
 		$id = $this->hash->decrypt($this->input->post("id"));
 
 		if($this->product->update_stock_control($id , "CANCELLED")){
+			echo json_encode([
+				"status" => true ,
+				"message" => "Successfully Updated the Stock Control"
+			]);
+		}else{
+			echo json_encode([
+				"status" => false ,
+				"message" => "Saving Failed. Please Try again Later"
+			]);
+		}
+	}
+
+	public function complete_inventory_control(){
+
+		if($this->product->complete_stock_control()){
 			echo json_encode([
 				"status" => true ,
 				"message" => "Successfully Updated the Stock Control"

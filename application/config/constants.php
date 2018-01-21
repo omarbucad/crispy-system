@@ -86,5 +86,5 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 
 
-defined('DOMAIN_IP')      		OR define('DOMAIN_IP', "192.168.1.147");
+defined('DOMAIN_IP')      		OR define('DOMAIN_IP', "192.168.100.10");
 defined('COOKIE_EXPIRE')      	OR define('COOKIE_EXPIRE', 2629746);

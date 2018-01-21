@@ -18,30 +18,31 @@
 
     });
 
-    $(document).on("click" , ".abandon-inventory-count" , function(){
-        var id = $(this).data("id");
+    $(document).ready(function(){
+        var table = $('.tab-container .count-diff');
 
-        var modal = $("#abandon_modal").modal("show");
+        $.each(table , function(k , v){
 
-        modal.find(".btn-abandon").data("id" , id);
-    });
+            var tr = $(v).find("tbody > tr:not(.excluded)");
+            var unit = 0;
+            var cost = 0;
 
-    $(document).on("click" , ".btn-abandon" , function(){
-        var id = $(this).data("id");
-        var url = "<?php echo site_url('app/product/abandon_inventory_control/'); ?>";
+            $.each(tr , function(a , b){
+                unit += parseInt($(b).find(".td-unit").data("unit"));
+                cost += parseFloat($(b).find(".td-cost").data("cost"));
+            });
 
-        $.ajax({
-            url : url ,
-            data : {id : id},
-            method : "POST" ,
-            success : function(response){
-                $('#abandon_modal').modal("hide");
-                window.location.replace("<?php echo site_url("app/product/inventory-count"); ?>");
+            $(v).find("tfoot > tr > td:eq(1) > span").text(unit);
+            
+            if(cost.toFixed(2) > 0){
+                $(v).find("tfoot > tr > td:eq(2)").css("color" , "#1ABC9C").find("span").text(cost.toFixed(2));
+            }else{
+                $(v).find("tfoot > tr > td:eq(2)").css("color" , "red").find("span").text(cost.toFixed(2));
             }
+           
         });
-
-        
     });
+
 </script>
 <div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
@@ -84,7 +85,7 @@
                             </div>
                             <div class="tab-container">
                                 <div id="tab_all" class="active">
-                                    <table class="table inventory-count-table">
+                                    <table class="table inventory-count-table count-diff">
                                         <thead>
                                             <tr>
                                                 <th class="text-center" width="50%"><small>COUNT LIST</small></th>
@@ -99,17 +100,17 @@
                                                         </label>
                                                     </div>
                                                 </td>
-                                                <td class="text-right border-left">Expected</td>
-                                                <td class="text-right">Total</td>
-                                                <td class="text-right border-left">Unit</td>
-                                                <td class="text-right">Cost</td>
+                                                <td class="text-right border-left"><span>Expected</span></td>
+                                                <td class="text-right"><span>Total</span></td>
+                                                <td class="text-right border-left"><span>Unit</span></td>
+                                                <td class="text-right"><span>Cost</span></td>
                                             </tr>
                                         </thead>
                                         <tfoot>
                                             <tr>
                                                 <td colspan="3">Total</td>
-                                                <td class="text-right">0</td>
-                                                <td class="text-right">0</td>
+                                                <td class="text-right"><span>0</span></td>
+                                                <td class="text-right"><?php echo $this->session->userdata("user")->currency_symbol;?> <span>0</span></td>
                                             </tr>
                                         </tfoot>
                                         <tbody>
@@ -125,8 +126,8 @@
                                                     </td>
                                                     <td class="text-right border-left"><span><?php echo $row["expected"]; ?></span></td>
                                                     <td class="text-right"><span><?php echo $row["total"]; ?></span></td>
-                                                    <td class="text-right border-left"><span><?php echo $row["unit"]; ?></span></td>
-                                                    <td class="text-right"><span><?php echo custom_money_format($row["cost"]); ?></span></td>
+                                                    <td class="text-right border-left td-unit" data-unit="<?php echo $row["unit"]; ?>"><span><?php echo $row["unit"]; ?></span></td>
+                                                    <td class="text-right td-cost" data-cost="<?php echo $row["cost"]; ?>"><span><?php echo custom_money_format($row["cost"]); ?></span></td> 
                                                 </tr>
                                             <?php endforeach; ?>
                                             
@@ -150,8 +151,8 @@
                                                             </label>
                                                         </div>
                                                     </td>
-                                                    <td class="text-right border-left">Expected</td>
-                                                    <td class="text-right">Total</td>
+                                                    <td class="text-right border-left"><span>Expected</span></td>
+                                                    <td class="text-right"><span>Total</span></td>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -180,7 +181,7 @@
 
                                     <?php if($inventory_information->products["unmatched"]) : ?>
                                         <p class="help-block">The amount you counted was more or less than expected. You might like to double-check items in this list</p>
-                                        <table class="table inventory-count-table">
+                                        <table class="table inventory-count-table count-diff">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" width="50%"><small>COUNT LIST</small></th>
@@ -195,17 +196,17 @@
                                                           </label>
                                                         </div>
                                                     </td>
-                                                    <td class="text-right border-left">Expected</td>
-                                                    <td class="text-right">Total</td>
-                                                    <td class="text-right border-left">Unit</td>
-                                                    <td class="text-right">Cost</td>
+                                                    <td class="text-right border-left"><span>Expected</span></td>
+                                                    <td class="text-right"><span>Total</span></td>
+                                                    <td class="text-right border-left"><span>Unit</span></td>
+                                                    <td class="text-right"><span>Cost</span></td>
                                                 </tr>
                                             </thead>
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="3">Total</td>
-                                                    <td class="text-right">0</td>
-                                                    <td class="text-right">0</td>
+                                                    <td class="text-right"><span>0</span></td>
+                                                    <td class="text-right"><?php echo $this->session->userdata("user")->currency_symbol;?> <span>0</span></td>
                                                 </tr>
                                             </tfoot>
                                             <tbody>
@@ -221,8 +222,8 @@
                                                         </td>
                                                         <td class="text-right border-left"><span><?php echo $row["expected"]; ?></span></td>
                                                         <td class="text-right"><span><?php echo $row["total"]; ?></span></td>
-                                                        <td class="text-right border-left"><span><?php echo $row["unit"]; ?></span></td>
-                                                        <td class="text-right"><span><?php echo custom_money_format($row["cost"]); ?></span></td> 
+                                                        <td class="text-right border-left td-unit" data-unit="<?php echo $row["unit"]; ?>"><span><?php echo $row["unit"]; ?></span></td>
+                                                        <td class="text-right td-cost" data-cost="<?php echo $row["cost"]; ?>"><span><?php echo custom_money_format($row["cost"]); ?></span></td> 
                                                     </tr>
                                                 <?php endforeach; ?>
                                                 

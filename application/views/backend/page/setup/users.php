@@ -77,7 +77,7 @@
                             <td>
                                 <div class="row">
                                     <div class="col-xs-6 col-lg-4 no-margin-bottom">
-                                        <img src="<?php echo site_url("thumbs/users/$row->image_path/80/80/$row->image_name"); ?>" class="img img-responsive thumbnail no-margin-bottom">
+                                        <img src="<?php echo site_url("thumbs/images/user/$row->image_path/80/80/$row->image_name"); ?>" class="img img-responsive thumbnail no-margin-bottom">
                                     </div>
                                     <div class="col-xs-6 col-lg-8 no-margin-bottom">
                                         <a href="<?php echo site_url("app/setup/users/view/?id=$row->user_id"); ?>"><?php echo $row->username; ?> (<?php echo $row->display_name; ?>)</a><br>

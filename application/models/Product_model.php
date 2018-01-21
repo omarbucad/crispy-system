@@ -689,7 +689,7 @@ class Product_model extends CI_Model {
         }
     }
 
-    public function get_stock_count($stock_type = ""){
+    public function get_stock_count($stock_type = "" , $view = false){
         $store_id = $this->data['session_data']->store_id;
         $current_time = time();
 
@@ -714,7 +714,11 @@ class Product_model extends CI_Model {
                 $this->db->where("status" , "CANCELLED");
                 break;
             default:
-                return $this->db->where("stock_control_id" , $stock_type)->get("inventory_stock_control i ")->row();
+                if($view){
+                    return $this->db->where("stock_control_id" , $stock_type)->get("inventory_stock_control i ")->row();
+                }else{
+                    return $this->db->where("i.status !=" , "COMPLETED")->where("stock_control_id" , $stock_type)->get("inventory_stock_control i ")->row();
+                }
                 break;
         }
 
@@ -727,8 +731,8 @@ class Product_model extends CI_Model {
         return $result;
     }
 
-    public function get_stock_count_by_id($stock_id){
-        $stock_information = $this->get_stock_count($stock_id);
+    public function get_stock_count_by_id($stock_id , $view = false){
+        $stock_information = $this->get_stock_count($stock_id , $view);
 
         if($stock_information){
             $stock_information->created = convert_timezone($stock_information->created , true);
@@ -768,85 +772,95 @@ class Product_model extends CI_Model {
         return $stock_information;
     }
 
-    public function get_stock_count_by_id_review($stock_id){
-        $inventory_information = $this->get_stock_count_by_id($stock_id);
-        $product_list = $inventory_information->products;
-        $result = array();
-        $all = array();
-        $uncounted = array();
-        $excluded = array();
-        $unmatched = array();
-        $matched = array();
+    public function get_stock_count_by_id_review($stock_id , $view = false){
+        $inventory_information = $this->get_stock_count_by_id($stock_id , $view);
 
-        //ALL TAB
-        foreach($product_list as $row){
-            $all[] = array(
-                "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
-                "expected"                     => $row->expected ,
-                "total"                        => $row->counted ,
-                "unit"                         => $row->counted - $row->expected ,
-                "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
-                "product_variant_id"           => $row->product_variant_id ,
-                "sku"                          => $row->sku
+        if($inventory_information){
+            $product_list = $inventory_information->products;
+            $result = array();
+            $all = array();
+            $uncounted = array();
+            $excluded = array();
+            $unmatched = array();
+            $matched = array();
+
+            //ALL TAB
+            foreach($product_list as $row){
+                $all[] = array(
+                    "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
+                    "expected"                     => $row->expected ,
+                    "total"                        => $row->counted ,
+                    "unit"                         => $row->counted - $row->expected ,
+                    "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
+                    "product_variant_id"           => $row->product_variant_id ,
+                    "sku"                          => $row->sku ,
+                    "stock_count_id"               => $row->stock_count_id
+                );
+
+                if($row->expected == $row->counted){
+                    $matched[] = array(
+                        "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
+                        "expected"                     => $row->expected ,
+                        "total"                        => $row->counted ,
+                        "unit"                         => $row->counted - $row->expected ,
+                        "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
+                        "product_variant_id"           => $row->product_variant_id,
+                        "sku"                          => $row->sku ,
+                        "stock_count_id"               => $row->stock_count_id
+                    );
+                }
+
+                 if($row->expected != $row->counted){
+                    $unmatched[] = array(
+                        "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
+                        "expected"                     => $row->expected ,
+                        "total"                        => $row->counted ,
+                        "unit"                         => $row->counted - $row->expected ,
+                        "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
+                        "product_variant_id"           => $row->product_variant_id,
+                        "sku"                          => $row->sku ,
+                        "stock_count_id"               => $row->stock_count_id
+                    );
+                }
+
+                if($row->status == "uncounted"){
+                    $uncounted[] = array(
+                        "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
+                        "expected"                     => $row->expected ,
+                        "total"                        => $row->counted ,
+                        "unit"                         => $row->counted - $row->expected ,
+                        "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
+                        "product_variant_id"           => $row->product_variant_id,
+                        "sku"                          => $row->sku ,
+                        "stock_count_id"               => $row->stock_count_id
+                    );
+                }
+
+                if($row->status == "excluded"){
+                    $excluded[] = array(
+                        "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
+                        "expected"                     => $row->expected ,
+                        "total"                        => $row->counted ,
+                        "unit"                         => $row->counted - $row->expected ,
+                        "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
+                        "product_variant_id"           => $row->product_variant_id,
+                        "sku"                          => $row->sku ,
+                        "stock_count_id"               => $row->stock_count_id
+                    );
+                }
+
+            }
+
+            $inventory_information->products = array(
+                "all" => $all ,
+                "excluded" => $excluded ,
+                "uncounted" => $uncounted ,
+                "unmatched" => $unmatched, 
+                "matched" => $matched 
             );
-
-            if($row->expected == $row->counted){
-                $matched[] = array(
-                    "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
-                    "expected"                     => $row->expected ,
-                    "total"                        => $row->counted ,
-                    "unit"                         => $row->counted - $row->expected ,
-                    "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
-                    "product_variant_id"           => $row->product_variant_id,
-                    "sku"                          => $row->sku
-                );
-            }
-
-             if($row->expected != $row->counted){
-                $unmatched[] = array(
-                    "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
-                    "expected"                     => $row->expected ,
-                    "total"                        => $row->counted ,
-                    "unit"                         => $row->counted - $row->expected ,
-                    "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
-                    "product_variant_id"           => $row->product_variant_id,
-                    "sku"                          => $row->sku
-                );
-            }
-
-            if($row->status == "uncounted"){
-                $uncounted[] = array(
-                    "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
-                    "expected"                     => $row->expected ,
-                    "total"                        => $row->counted ,
-                    "unit"                         => $row->counted - $row->expected ,
-                    "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
-                    "product_variant_id"           => $row->product_variant_id,
-                    "sku"                          => $row->sku
-                );
-            }
-
-            if($row->status == "excluded"){
-                $excluded[] = array(
-                    "product_name"                 => ($row->variant_name) ? $row->product_name.' - '.$row->variant_name : $row->product_name,
-                    "expected"                     => $row->expected ,
-                    "total"                        => $row->counted ,
-                    "unit"                         => $row->counted - $row->expected ,
-                    "cost"                         => ($row->counted - $row->expected) * $row->supply_price,
-                    "product_variant_id"           => $row->product_variant_id,
-                    "sku"                          => $row->sku
-                );
-            }
-
+        }else{
+            return false;
         }
-
-        $inventory_information->products = array(
-            "all" => $all ,
-            "excluded" => $excluded ,
-            "uncounted" => $uncounted ,
-            "unmatched" => $unmatched, 
-            "matched" => $matched 
-        );
 
         return $inventory_information;
     }
@@ -884,7 +898,7 @@ class Product_model extends CI_Model {
             $result[$key]->count_type = ucwords($row->count_type);
             $result[$key]->stock_control_id = $this->hash->encrypt($row->stock_control_id);
 
-            if($status == "CANCELLED"){
+            if($status == "CANCELLED" OR $status == "COMPLETED"){
                 $result[$key]->stock_control_link = site_url("app/product/inventory-count/$row->stock_control_id");
             }else{
                 $result[$key]->stock_control_link = site_url("app/product/inventory-count/start/$row->stock_control_id");
@@ -893,6 +907,59 @@ class Product_model extends CI_Model {
 
         return $result;
 
+    }
+
+    public function complete_stock_control(){
+
+        $stock_control_id = $this->hash->decrypt($this->input->post("stock_control_id"));
+        $excluded_product = $this->input->post("excluded_product");
+
+        $this->db->trans_start();
+
+        //IF THERE IS A EXCLUDED PRODUCT UPDATE THE STOCK CONTROL STATUS TO EXCLUDED
+        if($excluded_product){
+            
+            $product = array();
+            
+            foreach ($excluded_product as $value) {
+                $product[] = $this->hash->decrypt($value);  
+            }
+
+            $this->db->where_in("stock_count_id" , $product)->update("inventory_stock_count" , ["status" => "excluded"]);
+        }
+
+        $stock_count_list = $this->db->select("sc.product_variant_id , sc.counted , sc.status , ic.outlet_id , ic.store_id")
+        ->join("inventory_stock_control ic" , "ic.stock_control_id = sc.stock_control_id")
+        ->where("sc.stock_control_id" , $stock_control_id)
+        ->where("sc.status != " , "excluded")
+        ->get("inventory_stock_count sc")->result();
+
+        foreach($stock_count_list as $row){
+
+            if($row->status == "uncounted"){
+                $counted = 0;
+            }else{
+                $counted = $row->counted;
+            }
+
+            $this->db->where([
+                "store_id" => $row->store_id ,
+                "product_variant_id" => $row->product_variant_id ,
+                "outlet_id" => $row->outlet_id
+            ])->update("inventory" , ["current_inventory" => $counted]);
+
+        }
+
+        //UPDATE THE STOCK CONTROL TO COMPLETE
+        $this->db->where("stock_control_id" , $stock_control_id)->update("inventory_stock_control" , ["status" => "COMPLETED"]);
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     public function update_stock_control($id , $status){
