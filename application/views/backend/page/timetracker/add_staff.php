@@ -153,18 +153,6 @@
 										</div>
 	    							</div>
 	    						</dd>
-	    						<dt>Preferred Time</dt>
-	    						<dd class="form-horizontale">
-	    							<div class="form-group">
-	    								<div class="col-xs-6 no-padding-left">
-	    									<input type="time" name="pre_time_start" class="form-control" value="<?php echo set_value("pre_time_start"); ?>" placeholder="12:00 AM">
-	    								</div>
-	    								<div class="col-xs-6 no-padding-right">
-	    									<input type="time" name="pre_time_end" class="form-control" value="<?php echo set_value("pre_time_end"); ?>" placeholder="06:00 PM">
-	    								</div>
-	    								<p class="help-block">Set preferred Start and End Time of your staff</p>
-	    							</div>
-	    						</dd>
 	    					</dl>
 	    				</div>
 	    				<div class="col-xs-12 col-lg-6">

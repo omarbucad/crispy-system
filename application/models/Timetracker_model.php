@@ -51,8 +51,6 @@ class Timetracker_model extends CI_Model {
             "notes"                     => $this->input->post("note") ,
             "max_hours"					=> $this->input->post("max_hour_per_week"),
             "hourly_rate"				=> $this->input->post("hourly_rate"),
-            "preferred_time_start"		=> $this->input->post("pre_time_start"),
-            "preferred_time_end"		=> $this->input->post("pre_time_end"),
             "status"                    => 1 ,
             "created"                   => time(),
         ]);
@@ -267,9 +265,106 @@ class Timetracker_model extends CI_Model {
 		$store_id = $this->data['session_data']->store_id;
 		$outlet_id = $this->hash->decrypt($this->input->post("outlet_id"));
 
-		$this->db->select("ts.max_hours , ts.image_path , ts.image_name , sc.first_name , sc.last_name , ts.preferred_time_start , ts.preferred_time_end");
+		$this->db->select("ts.max_hours , ts.image_path , ts.image_name , sc.first_name , sc.last_name , ts.staff_id");
 		$this->db->join("store_contact sc" , "sc.store_contact_id = ts.contact_id");
 		$result = $this->db->where("store_id" , $store_id)->where("ts.outlet_id" , $outlet_id)->get("timetracker_staff ts")->result();
+
+        foreach($result as $key => $row){
+            $result[$key]->staff_id = $this->hash->encrypt($row->staff_id);
+        }
 		return $result;
 	}
+
+    public function get_preferred_shift(){
+        $store_id = $this->data['session_data']->store_id;
+        $staff_id = $this->hash->decrypt($this->input->post("staff_id"));
+        $outlet_id = $this->hash->decrypt($this->input->post("outlet_id"));
+
+        $staff_information = $this->db->select("sc.first_name , sc.last_name")->where("staff_id" , $staff_id)->join("store_contact sc" , "sc.store_contact_id = ts.contact_id")->get("timetracker_staff ts")->row();
+
+        $this->db->select("sb.shift_blocks_id , sb.start_time , sb.end_time , sb.block_color , sg.group_name , sg.group_color");
+        $this->db->join("timetracker_staff_group sg" , "sg.group_id = sb.position");
+        $this->db->where("sb.store_id" , $store_id)->where("sb.outlet_id" , $outlet_id)->where("sb.custom_block" , 0)->where("sb.deleted IS NULL");
+
+        $result = $this->db->get("timetracker_shift_blocks sb")->result();
+
+        $shift = array();
+
+        foreach($result as $key => $row){
+            $result[$key]->start_time = substr(date("h:ia" , strtotime($row->start_time)) , 0, -1);
+            $result[$key]->end_time =  substr(date("h:ia" , strtotime($row->end_time)) , 0, -1);
+            $result[$key]->shift_blocks_id = $this->hash->encrypt($row->shift_blocks_id);
+
+            $shift["QUALIFIED"][] = $result[$key];
+        }
+
+        return [
+            "staff" => $staff_information ,
+            "shift" => $shift ,
+            "date"  =>  ucfirst(strtolower($this->input->post("date")))
+        ];   
+    }
+
+    public function assign_shift_to_staff(){
+        $store_id = $this->data['session_data']->store_id;
+        $staff_id = $this->hash->decrypt($this->input->post("staff_id"));
+        $date     = $this->input->post("date_name");
+        $shift_id = $this->hash->decrypt($this->input->post("shift_id"));
+        $outlet_id= $this->hash->decrypt($this->input->post("outlet_id"));
+        $user_id  = $this->data['session_data']->user_id;
+
+        $this->db->trans_start();
+
+        //CHECK THE UNPUBLISHED TABLE IF IT HAS AN UNPUBLISHED DATA IF NOT CREATE A NEW ONE
+
+        $check = $this->db->where([
+            "store_id"              =>  $store_id ,
+            "schedule_published"    =>  0 ,
+            "outlet_id"             =>  $outlet_id
+        ])->get("timetracker_shift_schedule_unpublished")->row();
+
+        if(!$check){
+
+            $this->db->insert("timetracker_shift_schedule_unpublished" , [
+                "store_id"           => $store_id ,
+                "outlet_id"          => $outlet_id ,
+                "schedule_published" => 0 ,
+                "account_id"         => $user_id ,
+                "created"            => time()
+            ]);
+
+            $unpublished_shift_id = $this->db->insert_id();
+
+        }else{
+
+            $unpublished_shift_id = $check->schedule_id;
+    
+        }
+
+
+        //SAVE SHIFT ID ON UNPUBLISHED TABLE
+        $shift_information = $this->db->where("shift_blocks_id" , $shift_id)->get("timetracker_shift_blocks")->row();
+
+        $this->db->insert("timetracker_shift_date" , [
+            "schedule_id"       => $unpublished_shift_id ,
+            "shift_template_id" => $shift_id ,
+            "start_time"        => $shift_information->start_time,
+            "end_time"          => $shift_information->end_time,
+            "block_color"       => $shift_information->block_color,
+            "unpaid_break"      => $shift_information->unpaid_break,
+            "position_id"       => $shift_information->position,
+            "staff_id"          => $staff_id,
+            "schedule_date"     => $date
+        ]);
+
+        $last_id = $this->db->insert_id();
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return $last_id;
+        }
+    }
 }

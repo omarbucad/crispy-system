@@ -134,7 +134,7 @@ class Timetracker extends MY_Controller {
 		if ($this->form_validation->run() == FALSE){  
 
 			$this->data['website_title'] = "Timetracker | Accounts Package";
-			$this->data['page_name'] = "Shift Blocks";
+			$this->data['page_name'] = "Shift Templates";
 			$this->data['main_page'] = "backend/page/timetracker/shift_blocks";
 			$this->data['staff_group_list']	= $this->timetracker->get_group();
 			$this->data['outlet_list'] = $this->store->get_outlet();
@@ -191,6 +191,25 @@ class Timetracker extends MY_Controller {
 		}
 	}
 
+	public function get_preferred_shift(){
+		echo json_encode($this->timetracker->get_preferred_shift());
+
+	}
+
+	public function save_shift(){
+		if($last_id = $this->timetracker->assign_shift_to_staff()){
+			echo json_encode([
+				"status" => true ,
+				"id" => $last_id
+			]);
+		}else{
+			echo json_encode([
+				"status" => false ,
+				"message" => "Saving Failed. Please Try again Later"
+			]);
+		}
+	}
+
 	private function loop_date($start , $end){
 		$begin = new DateTime( $start );
 		$end = new DateTime( $end .'+1 day');
@@ -200,7 +219,10 @@ class Timetracker extends MY_Controller {
 		$period = new DatePeriod($begin, $interval, $end);
 
 		foreach ( $period as $dt ){
-			$tmp[$dt->format( "D" )] = strtoupper($dt->format("D j"));
+			$tmp[$dt->format( "D" )] = [
+				"value" => strtoupper($dt->format("D j")) ,
+				"date"  => strtoupper($dt->format("F j Y"))
+			];
 		}
 
 		return $tmp;

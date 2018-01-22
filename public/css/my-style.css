@@ -436,3 +436,131 @@ tr.counted > td , tr.counted > td > small{
 .inventory-count-table tbody > tr > td > span , .inventory-count-table thead > tr > td > span{
 	line-height: 40px !important;
 }
+.scheduler-nav > ul{
+	list-style-type: none;
+	padding: 0px;
+}
+.scheduler-nav  li.bglabel{
+	background-color: #f0f0f0;
+	padding: 5px;
+	font-size: 10px;
+	font-weight: bold;
+	overflow: hidden;
+}
+.scheduler-nav li.lilocation{
+	padding: 20px 5px;
+}
+
+.scheduler-nav li.listaffposition > div{
+	margin: 0px !important;
+}
+.scheduler-nav li.listaffposition{
+	padding: 2px 5px;
+}
+.scheduler-nav li.listaffposition  input[type="checkbox"]{
+	margin-right: 10px;
+}
+.scheduler-nav li.listaffposition  span{
+	font-size: 11px;
+	font-weight: bold;
+}
+.scheduler-table{
+	width: calc(100% - 2px);
+	margin: auto;
+}
+.scheduler-table .table-header , .scheduler-table .table-header2{
+	background-color: #f0f0f0;
+}
+.scheduler-table .table-header > td{
+	padding: 5px;
+}
+.scheduler-table .table-header > td > *:not(:last-child){
+	margin-right: 15px;
+}
+.scheduler-table .table-header #scheduler-name{
+	font-weight: bold;
+}
+.border-left{
+	border-left:1px solid rgba(0,0,0,0.1);
+}
+.border-top{
+	border-top:1px solid rgba(0,0,0,0.1);
+}
+.border-right{
+	border-right:1px solid rgba(0,0,0,0.1);
+}
+.border-bottom{
+	border-bottom:1px solid rgba(0,0,0,0.1);
+}
+.scheduler-table .table-header2 > td{
+	padding: 5px;
+	width: calc(100% / 8);
+	font-size: 10px;
+	font-weight: bold;
+}
+.scheduler-table tbody > tr > td{
+	overflow: hidden;
+	padding: 5px;
+}
+.scheduler-table tbody > tr > td > div{
+	float: left;
+}
+.scheduler-table tbody > tr > td > div:first-child{
+	width: 40px;
+	margin:5px auto;
+	text-align: center;
+}
+.scheduler-table tbody > tr > td > div:last-child{ 
+	width: calc(100% - 40px);
+	line-height: 12px;
+	padding-top: 7px;
+}
+.scheduler-table tbody > tr > td > div:last-child > span{
+	font-weight: bold;
+	font-size: 12px;
+	display: block;
+}
+.scheduler-table tbody > tr > td > a{
+	display: block;
+	background-color: red;
+	font-size: 11px;
+	font-weight: bold;
+	color:white;
+	padding: 0px 5px;
+}
+.scheduler-table tbody > tr > td > a:hover{
+	color:white;
+}
+.scheduler-table tbody > tr > td > a > span{
+	background-color: rgba(0,0,0,0.3);
+	padding: 5px;
+	margin: 5px;
+}
+.td_open_shift > td{
+	height: 40px;
+}
+.td_open_shift > td > span{
+	font-weight: bold;
+}
+
+.scheduler-table tbody > tr > td:hover:not(:first-child){
+	cursor: pointer;
+	background-color: #d5eaff;
+}
+.shift-list-a{
+	text-align:left;
+	color:white !important;
+}
+.shift-list-a > span{
+	padding: 5px;
+    background-color: rgba(255,255,255,0.1);
+    margin-left: 10px;
+    line-height: 30px;
+    font-size: 9px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+#assign_shift_modal .modal-body{
+	max-height: 500px;
+	overflow: auto;
+}

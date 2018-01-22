@@ -33,49 +33,48 @@
 		var site_url = "<?php echo site_url('thumbs/images/staff/'); ?>";
 		var tr = $("<tr>");
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-staff" : v.staff_id});
 		var div = $("<div>").append($("<img>" , {src : site_url+v.image_path+"/60/60/"+v.image_name , style : "width:30px;"}) );
-		var div2 = $("<div>").append('<span>'+v.first_name+'</span><small title="Preferred Hours / Scheduled Hours / Max Hours"><i class="fa fa-clock-o" aria-hidden="true"></i> <span>'+v.max_hours+' / 0 / 0</span></small>');
+		var div2 = $("<div>").append('<span>'+v.first_name+' '+v.last_name+'</span><small title="Preferred Hours / Scheduled Hours / Max Hours"><i class="fa fa-clock-o" aria-hidden="true"></i> <span>0 / 0 / '+v.max_hours+'</span></small>');
 
 		td.append(div);
 		td.append(div2);
 
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
-
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_monday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_tuesday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_wednesday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_thursday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_friday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom border-right"});
+		var td = $("<td>" , {class : "border-left border-bottom border-right" , "data-dateid" : "#td_saturday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom border-right"});
+		var td = $("<td>" , {class : "border-left border-bottom border-right" , "data-dateid" : "#td_sunday"});
 		tr.append(td);
 
 		$(".scheduler-table tbody").append(tr);
 	}
-	function scheduler_builder(json){
 
+	function scheduler_builder(json){
 		$('#scheduler-name').data("date" , json.scheduler_name_date).text(json.scheduler_name);
-		$(".table-header2").find('#td_sunday').text(json.loop_date["Sun"]);
-		$(".table-header2").find('#td_monday').text(json.loop_date["Mon"]);
-		$(".table-header2").find('#td_tuesday').text(json.loop_date["Tue"]);
-		$(".table-header2").find('#td_wednesday').text(json.loop_date["Wed"]);
-		$(".table-header2").find('#td_thursday').text(json.loop_date["Thu"]);
-		$(".table-header2").find('#td_friday').text(json.loop_date["Fri"]);
-		$(".table-header2").find('#td_saturday').text(json.loop_date["Sat"]);
+		$(".table-header2").find('#td_sunday').data("date" , json.loop_date["Sun"].date).text(json.loop_date["Sun"].value);
+		$(".table-header2").find('#td_monday').data("date" , json.loop_date["Mon"].date).text(json.loop_date["Mon"].value);
+		$(".table-header2").find('#td_tuesday').data("date" , json.loop_date["Tue"].date).text(json.loop_date["Tue"].value);
+		$(".table-header2").find('#td_wednesday').data("date" , json.loop_date["Wed"].date).text(json.loop_date["Wed"].value);
+		$(".table-header2").find('#td_thursday').data("date" , json.loop_date["Thu"].date).text(json.loop_date["Thu"].value);
+		$(".table-header2").find('#td_friday').data("date" , json.loop_date["Fri"].date).text(json.loop_date["Fri"].value);
+		$(".table-header2").find('#td_saturday').data("date" , json.loop_date["Sat"].date).text(json.loop_date["Sat"].value);
 
 		var staff_list = json.staff_list;
 		
@@ -88,26 +87,25 @@
 
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
-
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_monday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_tuesday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_wednesday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_thursday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom"});
+		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_friday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom border-right"});
+		var td = $("<td>" , {class : "border-left border-bottom border-right" , "data-dateid" : "#td_saturday"});
 		tr.append(td);
 
-		var td = $("<td>" , {class : "border-left border-bottom border-right"});
+		var td = $("<td>" , {class : "border-left border-bottom border-right" , "data-dateid" : "#td_sunday"});
 		tr.append(td);
 
 		$(".scheduler-table tbody").append(tr);
@@ -117,114 +115,105 @@
 		});
 	}
 
+	$(document).on("click" , ".scheduler-table tbody > tr > td:not(:first-child)" , function(e){
+		var dateid = $(this).data("dateid");
+		var datename = $(dateid).data("date");
+		var staff_id = $(this).parent().find("td").first().data("staff");
+		var selected_outlet = $("#select_locations").val();
+		var url = "<?php echo site_url('app/timetracker/get_preferred_shift'); ?>";
+		var a = $(this);
+
+		if(e.target !== e.currentTarget){
+			return false;
+		}
+
+		$.ajax({
+			url : url ,
+			data : {staff_id : staff_id , outlet_id : selected_outlet , date : datename},
+			method : "POST",
+			success : function(response){
+
+				var modal = $('#assign_shift_modal').modal("show");
+				var json = jQuery.parseJSON(response);
+
+				modal.data("click" , a);
+				modal.data("staffid" , staff_id);
+				
+
+				modal.find(".modal-body > div").html(" ");
+
+				var staff_name = json.staff.first_name+" "+json.staff.last_name;
+				var datename = json.date;
+
+				modal.data("datename" , datename);
+
+				modal.find('.modal-title').html("Assign Shift to "+staff_name+" on "+datename);
+
+				$.each(json.shift , function(k , v){
+
+					var section = $("<section>");
+					section.append($("<label>" , {text : k}));
+
+					var div = $("<div>" , {class : "row"});
+
+					$.each(v , function(a , b){
+		
+						var a = $("<a>" , {href: "javascript:void(0);" , "data-blockid" : b.shift_blocks_id, class: "shift-list-a btn btn-block" , style : "background-color : "+b.block_color , text : b.start_time+" - "+b.end_time});
+						var span = $("<span>").html(b.group_name);
+						a.append(span);
+
+						var div1 = $("<div>" , {class : "col-lg-4"});
+						div1.append(a);
+						div.append(div1);
+					});
+
+					section.append(div);
+					modal.find(".modal-body > div").append(section);
+				});
+				
+			}
+		});
+
+	});
+
+	$(document).on("click" , ".modal .shift-list-a" , function(){
+		var modal = $(this).closest(".modal");
+		var clone = $(this).clone();
+		var td = modal.data("click");
+		var staff_id = modal.data("staffid");
+		var datename = modal.data("datename");
+		var shift_id = $(this).data("blockid");
+		var selected_outlet = $("#select_locations").val();
+		var url = "<?php echo site_url('app/timetracker/save_shift'); ?>";
+
+		$.ajax({
+			url : url ,
+			method : "POST" ,
+			data : {staff_id : staff_id , date_name : datename , shift_id : shift_id , outlet_id : selected_outlet },
+			success : function(response){
+				var json = jQuery.parseJSON(response);
+
+				if(json.status){
+					clone.data("shift_id" , json.id);
+					clone.addClass("tdShift");
+					td.append(clone);
+					modal.modal("hide");
+				}
+
+				console.log(response);
+			}
+		});
+
+		
+	});
+	$(document).on("click" , ".tdShift" , function(){
+		var id = $(this).data("shift_id");
+
+		alert(id);
+	});
 </script>
 <style type="text/css">
-	.scheduler-nav > ul{
-		list-style-type: none;
-		padding: 0px;
-	}
-	.scheduler-nav  li.bglabel{
-		background-color: #f0f0f0;
-		padding: 5px;
-		font-size: 10px;
-		font-weight: bold;
-		overflow: hidden;
-	}
-	.scheduler-nav li.lilocation{
-		padding: 20px 5px;
-	}
-
-	.scheduler-nav li.listaffposition > div{
-		margin: 0px !important;
-	}
-	.scheduler-nav li.listaffposition{
-		padding: 2px 5px;
-	}
-	.scheduler-nav li.listaffposition  input[type="checkbox"]{
-		margin-right: 10px;
-	}
-	.scheduler-nav li.listaffposition  span{
-		font-size: 11px;
-    	font-weight: bold;
-	}
-	.scheduler-table{
-		width: calc(100% - 2px);
-    	margin: auto;
-	}
-	.scheduler-table .table-header , .scheduler-table .table-header2{
-		background-color: #f0f0f0;
-	}
-	.scheduler-table .table-header > td{
-		padding: 5px;
-	}
-	.scheduler-table .table-header > td > *:not(:last-child){
-		margin-right: 15px;
-	}
-	.scheduler-table .table-header #scheduler-name{
-		font-weight: bold;
-	}
-	.border-left{
-		border-left:1px solid rgba(0,0,0,0.1);
-	}
-	.border-top{
-		border-top:1px solid rgba(0,0,0,0.1);
-	}
-	.border-right{
-		border-right:1px solid rgba(0,0,0,0.1);
-	}
-	.border-bottom{
-		border-bottom:1px solid rgba(0,0,0,0.1);
-	}
-	.scheduler-table .table-header2 > td{
-		padding: 5px;
-		width: calc(100% / 8);
-		font-size: 10px;
-		font-weight: bold;
-	}
-	.scheduler-table tbody > tr > td{
-		overflow: hidden;
-		padding: 5px;
-	}
-	.scheduler-table tbody > tr > td > div{
-		float: left;
-	}
-	.scheduler-table tbody > tr > td > div:first-child{
-		width: 40px;
-		margin:5px auto;
-		text-align: center;
-	}
-	.scheduler-table tbody > tr > td > div:last-child{ 
-		width: calc(100% - 40px);
-		line-height: 12px;
-		padding-top: 7px;
-	}
-	.scheduler-table tbody > tr > td > div:last-child > span{
-		font-weight: bold;
-		font-size: 12px;
-		display: block;
-	}
-	.scheduler-table tbody > tr > td > a{
-		display: block;
-		background-color: red;
-		font-size: 11px;
-		font-weight: bold;
-		color:white;
-		padding: 7px 5px;
-	}
-	.scheduler-table tbody > tr > td > a:hover{
-		color:white;
-	}
-	.scheduler-table tbody > tr > td > a > span{
-		background-color: rgba(0,0,0,0.3);
-		padding: 5px;
-		margin: 5px;
-	}
-	.td_open_shift > td{
-		height: 40px;
-	}
-	.td_open_shift > td > span{
-		font-weight: bold;
-	}
+	
 </style>
 <div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
@@ -279,7 +268,7 @@
 									  <button type="button" class="btn btn-primary"><i class="fa fa-calendar" aria-hidden="true"></i></button>
 									  <button type="button" class="btn btn-primary btn-click" data-type="NEXT"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
 									</div>
-									<span id="scheduler-name" data-date="JANUARY 21 2018">JANUARY 21 2018 - JANUARY 28 2018</span>
+									<span id="scheduler-name" data-date=""></span>
 									<div class="pull-right dropdown">
 										<a href="javascript:void(0);" class="btn btn-primary btn-xs"><i class="fa fa-print" aria-hidden="true"></i></a>
 										<a id="dLabel" data-target="#" class="btn btn-primary btn-xs" href="http://example.com" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools<span class="caret"></span> </a>
@@ -311,19 +300,49 @@
 	    				</tbody>
 	    				<tfoot>
 	    					<tr class="text-center table-header2">
-		    					<td class="text-left border-left border-top border-bottom" id="td_total_1">100 hrs</td>
-		    					<td class="border-left border-top border-bottom" id="td_total_2">100 hrs</td>
-		    					<td class="border-left border-top border-bottom" id="td_total_3">100 hrs</td>
-		    					<td class="border-left border-top border-bottom" id="td_total_4">100 hrs</td>
-		    					<td class="border-left border-top border-bottom" id="td_total_5">100 hrs</td>
-		    					<td class="border-left border-top border-bottom" id="td_total_6">100 hrs</td>
-		    					<td class="border-left border-top border-bottom" id="td_total_7">100 hrs</td>
-		    					<td class="border-left border-top border-bottom border-right" id="td_total_8">100 hrs</td>
+		    					<td class="text-left border-left border-top border-bottom" id="td_total_1"></td>
+		    					<td class="border-left border-top border-bottom" id="td_total_2"></td>
+		    					<td class="border-left border-top border-bottom" id="td_total_3"></td>
+		    					<td class="border-left border-top border-bottom" id="td_total_4"></td>
+		    					<td class="border-left border-top border-bottom" id="td_total_5"></td>
+		    					<td class="border-left border-top border-bottom" id="td_total_6"></td>
+		    					<td class="border-left border-top border-bottom" id="td_total_7"></td>
+		    					<td class="border-left border-top border-bottom border-right" id="td_total_8"></td>
 		    				</tr>
 	    				</tfoot>
 	    			</table>
     			</div>
     		</div>
     	</div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="assign_shift_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <small>
+                	<a href="javascript:void(0);"></a>
+                </small>
+
+                <div></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                	<div class="col-lg-6 text-left no-margin-bottom">
+                		 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                	</div>
+                	<div class="col-lg-6 text-right no-margin-bottom">
+                		<button type="button" class="btn btn-success">Custom Shift</button>
+                		<button type="button" class="btn btn-primary">Time-off</button>
+                	</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
