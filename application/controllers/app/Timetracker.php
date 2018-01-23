@@ -128,6 +128,7 @@ class Timetracker extends MY_Controller {
 	}
 
 	public function shift_templates(){
+
 		$this->form_validation->set_rules('pre_time_start'		, 'Start Time'	, 'trim|required');
 		$this->form_validation->set_rules('pre_time_end'		, 'End Time'	, 'trim|required');
 
@@ -143,15 +144,31 @@ class Timetracker extends MY_Controller {
 			$this->load->view('backend/master' , $this->data);
 		}else{
 
-			if($group_id = $this->timetracker->add_shift_block()){
-				$this->session->set_flashdata('status' , 'success');	
-				$this->session->set_flashdata('message' , 'Successfully Added a Shift Block');	
+			if($this->input->post("shift_template")){
+				if($group_id = $this->timetracker->add_shift_block()){ 
+					echo json_encode([
+						"status" => true ,
+						"id" => $group_id ,
+						"data" => $this->input->post()
+					]);
+				}else{
+					echo json_encode([
+						"status" => false ,
+						"message" => "Saving Failed. Please Try again Later"
+					]);
+				}
 			}else{
-				$this->session->set_flashdata('status' , 'error');
-				$this->session->set_flashdata('message' , 'Something went wrong');	
-			}
+				if($group_id = $this->timetracker->add_shift_block()){
+					$this->session->set_flashdata('status' , 'success');	
+					$this->session->set_flashdata('message' , 'Successfully Added a Shift Block');	
+				}else{
+					$this->session->set_flashdata('status' , 'error');
+					$this->session->set_flashdata('message' , 'Something went wrong');	
+				}
 
-			redirect("app/timetracker/shift-templates" , 'refresh');
+				redirect("app/timetracker/shift-templates" , 'refresh');
+			}
+			
 		}
 
 		
@@ -169,22 +186,22 @@ class Timetracker extends MY_Controller {
 			switch ($click) {
 				case 'NEXT':
 					$from =  strtoupper(date('F j Y', strtotime('next monday 12:00:00 '.  $today)));
-					$to =  strtoupper(date('F j Y', strtotime('sunday 23:59:59 '.  $from)));
+					$to =  strtoupper(date('F j Y', strtotime('+7 days - 1 seconds '.  $from)));
 					break;
 				case 'PREV':
-					$from =  strtoupper(date('F j Y', strtotime('last monday 12:00:00 '.  $today)));
-					$to =  strtoupper(date('F j Y', strtotime('sunday 23:59:59 '.  $from)));
+					$from =  strtoupper(date('F j Y', strtotime('monday last week 12:00:00 '.  $today)));
+					$to =  strtoupper(date('F j Y', strtotime('+7 days - 1 seconds'.  $from)));
 					break;
 				default:
-					$from =  strtoupper(date('F j Y', strtotime('this monday 12:00:00 ')));
-					$to =  strtoupper(date('F j Y', strtotime('next sunday 23:59:59 ')));
+					$from =  strtoupper(date('F j Y', strtotime('monday this week 12:00:00')));
+					$to =  strtoupper(date('F j Y', strtotime('+7 days - 1 seconds ' . $from)));
 					break;
 			}
 
 			$data['scheduler_name'] = $from .' - '.$to;
 			$data['scheduler_name_date'] = $from;
 			$data['loop_date'] = $this->loop_date($from , $to);
-			$data['staff_list'] = $this->timetracker->get_staff_by_outlet();
+			$data['staff_list'] = $this->timetracker->get_staff_by_outlet($data['loop_date']);
 
 
 			echo json_encode($data);
@@ -193,7 +210,6 @@ class Timetracker extends MY_Controller {
 
 	public function get_preferred_shift(){
 		echo json_encode($this->timetracker->get_preferred_shift());
-
 	}
 
 	public function save_shift(){

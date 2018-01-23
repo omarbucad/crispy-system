@@ -261,19 +261,66 @@ class Timetracker_model extends CI_Model {
         }
 	}
 
-	public function get_staff_by_outlet(){
-		$store_id = $this->data['session_data']->store_id;
-		$outlet_id = $this->hash->decrypt($this->input->post("outlet_id"));
+    public function get_staff_by_outlet($date_range){
+        $store_id = $this->data['session_data']->store_id;
+        $outlet_id = $this->hash->decrypt($this->input->post("outlet_id"));
+        $date_range = $this->get_only_date($date_range);
 
-		$this->db->select("ts.max_hours , ts.image_path , ts.image_name , sc.first_name , sc.last_name , ts.staff_id");
-		$this->db->join("store_contact sc" , "sc.store_contact_id = ts.contact_id");
-		$result = $this->db->where("store_id" , $store_id)->where("ts.outlet_id" , $outlet_id)->get("timetracker_staff ts")->result();
+
+        $this->db->join("timetracker_shift_date sd" , "sd.schedule_id = su.schedule_id");
+        $this->db->join("timetracker_staff_group sg" , "sg.group_id = sd.position_id");
+        $this->db->where("su.store_id" , $store_id);
+        $this->db->where("su.outlet_id" , $outlet_id);
+        $this->db->where("su.schedule_published" , 0);
+        $this->db->where_in("sd.schedule_date" , $date_range);
+        $unpublished = $this->db->get("timetracker_shift_schedule_unpublished su")->result();
+
+
+
+        $this->db->join("timetracker_staff_group sg" , "sg.group_id = sp.position_id");
+        $this->db->where("sp.store_id" , $store_id);
+        $this->db->where("sp.outlet_id" , $outlet_id);
+        $this->db->where_in("sp.date_schedule" , $date_range);
+        $published = $this->db->get("timetracker_shift_schedule_published sp")->result();
+
+
+        $this->db->select("ts.max_hours , ts.image_path , ts.image_name , sc.first_name , sc.last_name , ts.staff_id");
+        $this->db->join("store_contact sc" , "sc.store_contact_id = ts.contact_id");
+        $result = $this->db->where("store_id" , $store_id)->where("ts.outlet_id" , $outlet_id)->get("timetracker_staff ts")->result();
 
         foreach($result as $key => $row){
+            $result[$key]->schedule_list = array();
+
+            foreach($published as $r){
+                if($row->staff_id == $r->staff_id){
+                    $tmp = $r;
+                    $tmp->published = "published";
+                    $tmp->start_time = substr(date("h:ia" , strtotime($r->start_time)) , 0, -1);
+                    $tmp->end_time = substr(date("h:ia" , strtotime($r->end_time)) , 0, -1);
+                    $result[$key]->schedule_list[ date("D" , strtotime($r->date_schedule)) ][$r->date_id] = $r;
+                }
+            }
+
+            foreach($unpublished as $r){
+                if($row->staff_id == $r->staff_id){
+                    $tmp = $r;
+                    $tmp->published = "unpublished";
+                    $tmp->start_time = substr(date("h:ia" , strtotime($r->start_time)) , 0, -1);
+                    $tmp->end_time = substr(date("h:ia" , strtotime($r->end_time)) , 0, -1);
+                    $result[$key]->schedule_list[date("D" , strtotime($r->schedule_date))][$r->date_id] = $r;
+                }
+            }
+
             $result[$key]->staff_id = $this->hash->encrypt($row->staff_id);
         }
-		return $result;
-	}
+
+
+        return [
+            "result" => $result ,
+            "unpublished" => ($unpublished) ? true : false
+        ];
+    }
+
 
     public function get_preferred_shift(){
         $store_id = $this->data['session_data']->store_id;
@@ -341,7 +388,6 @@ class Timetracker_model extends CI_Model {
     
         }
 
-
         //SAVE SHIFT ID ON UNPUBLISHED TABLE
         $shift_information = $this->db->where("shift_blocks_id" , $shift_id)->get("timetracker_shift_blocks")->row();
 
@@ -366,5 +412,15 @@ class Timetracker_model extends CI_Model {
         }else{
             return $last_id;
         }
+    }
+
+    private function get_only_date($data){
+        $tmp = array();
+
+        foreach($data as $row){
+            $tmp[] = ucfirst(strtolower($row['date']));
+        }
+
+        return $tmp;
     }
 }

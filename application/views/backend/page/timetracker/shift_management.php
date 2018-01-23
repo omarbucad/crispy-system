@@ -2,9 +2,7 @@
 	var url = "<?php echo site_url('app/timetracker/get_shift_information'); ?>";
 
 	$(document).ready(function(){
-
 		load_data("TODAY");
-		
 	});
 
 	$(document).on("click" , ".btn-click" , function(){
@@ -31,7 +29,9 @@
 	}
 	function table_builder(v){
 		var site_url = "<?php echo site_url('thumbs/images/staff/'); ?>";
+		var schedule_list = v.schedule_list;
 		var tr = $("<tr>");
+
 
 		var td = $("<td>" , {class : "border-left border-bottom" , "data-staff" : v.staff_id});
 		var div = $("<div>").append($("<img>" , {src : site_url+v.image_path+"/60/60/"+v.image_name , style : "width:30px;"}) );
@@ -43,24 +43,74 @@
 		tr.append(td);
 
 		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_monday"});
+
+		if(schedule_list["Mon"]){
+			$.each(schedule_list["Mon"] , function(a , b){
+				td.append(build_shift(b));
+			});
+		}
+		
 		tr.append(td);
 
 		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_tuesday"});
+
+		if(schedule_list["Tue"]){
+			$.each(schedule_list["Tue"] , function(a , b){
+				td.append(build_shift(b));
+			});
+		}
+
 		tr.append(td);
 
 		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_wednesday"});
+
+		if(schedule_list["Wed"]){
+			$.each(schedule_list["Wed"] , function(a , b){
+				td.append(build_shift(b));
+				
+			});
+		}
+
 		tr.append(td);
 
 		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_thursday"});
+
+		if(schedule_list["Thu"]){
+			$.each(schedule_list["Thu"] , function(a , b){
+				td.append(build_shift(b));
+			});
+		}
+
 		tr.append(td);
 
 		var td = $("<td>" , {class : "border-left border-bottom" , "data-dateid" : "#td_friday"});
+
+		if(schedule_list["Fri"]){
+			$.each(schedule_list["Fri"] , function(a , b){
+				td.append(build_shift(b));
+			});
+		}
+
 		tr.append(td);
 
 		var td = $("<td>" , {class : "border-left border-bottom border-right" , "data-dateid" : "#td_saturday"});
+
+		if(schedule_list["Sat"]){
+			$.each(schedule_list["Sat"] , function(a , b){
+				td.append(build_shift(b));
+			});
+		}
+
 		tr.append(td);
 
 		var td = $("<td>" , {class : "border-left border-bottom border-right" , "data-dateid" : "#td_sunday"});
+
+		if(schedule_list["Sun"]){
+			$.each(schedule_list["Sun"] , function(a , b){
+				td.append(build_shift(b));
+			});
+		}
+
 		tr.append(td);
 
 		$(".scheduler-table tbody").append(tr);
@@ -76,9 +126,15 @@
 		$(".table-header2").find('#td_friday').data("date" , json.loop_date["Fri"].date).text(json.loop_date["Fri"].value);
 		$(".table-header2").find('#td_saturday').data("date" , json.loop_date["Sat"].date).text(json.loop_date["Sat"].value);
 
-		var staff_list = json.staff_list;
-		
+		var staff_list = json.staff_list.result;
+		var btn = $(".btn-publish");
 
+		if(json.staff_list.unpublished){
+			btn.data("submit" , true).removeClass("btn-default").addClass("btn-success").html('Publish & Notify <br><small>Entire Schedule</small>');
+		}else{
+			btn.data("submit" , false).removeClass("btn-success").addClass("btn-default").html('Everything Published <br><small>No Changes</small>');
+		}
+		
 		$(".scheduler-table tbody").html("");
 
 		var tr = $("<tr>" , {class : "td_open_shift" , style : "background-color:#e0ffd3;"});
@@ -115,6 +171,16 @@
 		});
 	}
 
+	function build_shift(b){
+		var a = $("<a>" , {href: "javascript:void(0);" , "data-shift_id" : b.date_id , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+b.block_color , text : b.start_time+" - "+b.end_time});
+		var span = $("<span>").html(b.group_name);
+		a.append(span);
+		var div = $("<div>" , { class : "shift_container " , style : "display:block;width:100%;margin:0px;padding:0px;border-radius:10px;"});
+		div.append(a);
+		div.append($("<div>" , {class : b.published}));
+		return div;
+	}
+
 	$(document).on("click" , ".scheduler-table tbody > tr > td:not(:first-child)" , function(e){
 		var dateid = $(this).data("dateid");
 		var datename = $(dateid).data("date");
@@ -139,7 +205,6 @@
 				modal.data("click" , a);
 				modal.data("staffid" , staff_id);
 				
-
 				modal.find(".modal-body > div").html(" ");
 
 				var staff_name = json.staff.first_name+" "+json.staff.last_name;
@@ -196,31 +261,99 @@
 				if(json.status){
 					clone.data("shift_id" , json.id);
 					clone.addClass("tdShift");
-					td.append(clone);
+
+					var div = $("<div>" , { class : "shift_container " , style : "display:block;width:100%;margin:0px;padding:0px;border-radius:10px;"});
+					div.append(clone);
+					div.append($("<div>" , {class : "unpublished"}));
+
+					td.append(div);
 					modal.modal("hide");
+
+					var btn = $(".btn-publish");
+					btn.data("submit" , true).removeClass("btn-default").addClass("btn-success").html('Publish & Notify <br><small>Entire Schedule</small>');
 				}
 
-				console.log(response);
 			}
 		});
 
 		
 	});
-	$(document).on("click" , ".tdShift" , function(){
-		var id = $(this).data("shift_id");
+	$(document).on("click" , ".tdShift , .shift_container .unpublished" , function(e){
 
+		if($(this).hasClass("unpublished")){
+			var $me = $(this).parent().find("a");
+		}else{
+			var $me = $(this);
+		}
+
+		var id = $me.data("shift_id");
 		alert(id);
+	});
+
+	$(document).on('hidden.bs.modal' , '#assign_custom_shift_modal' , function () {
+		if(!$(this).data("noshow")){
+			var modal = $("#assign_shift_modal").modal("show");
+		}
+		
+	});
+
+	$(document).on("click" , ".btn-custom-shift" , function(){
+		var last_modal = $(this).closest(".modal").modal("hide");
+
+		var modal = $("#assign_custom_shift_modal").modal("show");
+		modal.find('.modal-title').html(last_modal.find('.modal-title').html());
+		modal.data("noshow" , false);
+	});
+
+	$(document).on("click" , ".btn-create-shift" , function(){
+		var modal = $(this).closest(".modal");
+		var form = modal.find("form");
+		var data = form.serialize();
+
+		modal.data("noshow" , true);
+
+		$.ajax({
+			url : form.attr("action") ,
+			data : data ,
+			method : "POST" ,
+			success : function(response){
+				var json = jQuery.parseJSON(response);
+				console.log(json);
+				var a = $("<a>" , { href: "javascript:void(0);" , "data-shift_id" : json.id , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+json.data.group_color , text : json.data.pre_time_start+" - "+json.data.pre_time_end});
+				var span = $("<span>").html("WALA PA");
+				a.append(span);
+				var div = $("<div>" , { class : "shift_container " , style : "display:block;width:100%;margin:0px;padding:0px;border-radius:10px;"});
+				div.append(a);
+				div.append($("<div>" , {class : "unpublished"}));
+				
+				var td = $("#assign_shift_modal").data("click");
+
+				td.append(div);
+
+				modal.modal("hide");
+			}
+		});
 	});
 </script>
 <style type="text/css">
-	
+	.shift_container  > .unpublished{
+	    float: right;
+	    width: 100%;
+	    height: 34px;
+	    border-radius: 10px;
+	    margin-top: -35px;
+	    background-image: url(<?php echo base_url("public/img/striped.png")?>);
+	    background-repeat: no-repeat;
+	    background-size: cover;
+	    margin-right: -2px;
+	}
 </style>
 <div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
     	<div class="row">
     		<!-- SIDE MENU -->
     		<div class="col-lg-2 ">
-    			<a href="javascript:void(0);" class="btn btn-success btn-block " style="text-align: left;line-height: 11px">Publish & Notify <br><small>Entire Schedule</small></a>
+    			<a href="javascript:void(0);" class="btn btn-success btn-block btn-publish" style="text-align: left;line-height: 11px"></a>
     			<div class="text-right">
     				<div class="btn-group" role="group" aria-label="...">
 					  <button type="button" class="btn btn-default active">Shift</button>
@@ -338,8 +471,78 @@
                 		 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                 	</div>
                 	<div class="col-lg-6 text-right no-margin-bottom">
-                		<button type="button" class="btn btn-success">Custom Shift</button>
+                		<button type="button" class="btn btn-success btn-custom-shift">Custom Shift</button>
                 		<button type="button" class="btn btn-primary">Time-off</button>
+                	</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="assign_custom_shift_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form action="<?php echo site_url("app/timetracker/shift-templates"); ?>" id="add_group_form" method="POST">
+                    <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
+                    <input type="hidden" name="shift_template" value="true">
+                    <div class="form-group">
+                        <label for="group_name">Time</label>
+                        <div class="form-group">
+                            <div class="col-xs-6 no-padding-left">
+                                <input type="time" name="pre_time_start" class="form-control" value="<?php echo set_value("pre_time_start"); ?>" placeholder="12:00 AM">
+                            </div>
+                            <div class="col-xs-6 no-padding-right">
+                                <input type="time" name="pre_time_end" class="form-control" value="<?php echo set_value("pre_time_end"); ?>" placeholder="06:00 PM">
+                            </div>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <label for="group_name">Unpaid Break</label>
+                        <input type="text" name="unpaid_break" class="form-control" >
+                    </div>
+                     <div class="form-group">
+                        <label for="s_outlet">Outlet</label>
+                        <select class="form-control" id="s_outlet" name="outlet_id">
+                            <?php foreach($outlet_list as $row) : ?>
+                                <option value="<?php echo $row->outlet_id; ?>"><?php echo $row->outlet_name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="s_roles">Staff Position</label>
+                        <select class="form-control" id="s_roles" name="position">
+                            <?php foreach($staff_group_list as $row) : ?>
+                                <option value="<?php echo $row->group_id; ?>"><?php echo $row->group_name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="group_color">Color</label>
+                        <input type="color" name="group_color" class="form-control" id="group_color" style="width:70px">
+                    </div>
+
+                    <div class="checkbox">
+                    	<label>
+                    		<input type="checkbox" name="save_template" value="1"> Save as "Shift Template" also , so i can use it later
+                    	</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                	<div class="col-lg-6 text-left no-margin-bottom">
+                		 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                	</div>
+                	<div class="col-lg-6 text-right no-margin-bottom">
+                		<button type="button" class="btn btn-primary btn-create-shift">Create</button>
                 	</div>
                 </div>
             </div>
