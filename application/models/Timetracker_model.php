@@ -248,16 +248,18 @@ class Timetracker_model extends CI_Model {
 			"position"       => $this->hash->decrypt($this->input->post("position")),
 			"block_color"    => $this->input->post("group_color"),
 			"unpaid_break"   => $this->input->post("unpaid_break"),
-			"custom_block" => $custom ,
+			"custom_block"   => $custom ,
 			"created"        => time()
  		]);
+        
+        $last_id = $this->db->insert_id();
 
 		$this->db->trans_complete();
 
         if ($this->db->trans_status() === FALSE){
             return false;
         }else{
-            return true;
+            return $last_id;
         }
 	}
 
@@ -352,11 +354,11 @@ class Timetracker_model extends CI_Model {
         ];   
     }
 
-    public function assign_shift_to_staff(){
+    public function assign_shift_to_staff($shift_id = false){
         $store_id = $this->data['session_data']->store_id;
         $staff_id = $this->hash->decrypt($this->input->post("staff_id"));
         $date     = $this->input->post("date_name");
-        $shift_id = $this->hash->decrypt($this->input->post("shift_id"));
+        $shift_id = ($shift_id) ? $shift_id : $this->hash->decrypt($this->input->post("shift_id"));
         $outlet_id= $this->hash->decrypt($this->input->post("outlet_id"));
         $user_id  = $this->data['session_data']->user_id;
 

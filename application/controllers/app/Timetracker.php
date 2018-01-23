@@ -143,13 +143,22 @@ class Timetracker extends MY_Controller {
 
 			$this->load->view('backend/master' , $this->data);
 		}else{
-
+		
 			if($this->input->post("shift_template")){
-				if($group_id = $this->timetracker->add_shift_block()){ 
+				$save_template = ($this->input->post("save_template")) ? 0 : 1;
+
+				if($shift_id = $this->timetracker->add_shift_block($save_template)){ 
+
+					$post = $this->input->post();
+					$post['pre_time_start'] = substr(date("h:ia" , strtotime($post['pre_time_start'])) , 0, -1);
+					$post['pre_time_end'] = substr(date("h:ia" , strtotime($post['pre_time_end'])) , 0, -1);
+
+					$schedule_id = $this->timetracker->assign_shift_to_staff($shift_id);
+
 					echo json_encode([
 						"status" => true ,
-						"id" => $group_id ,
-						"data" => $this->input->post()
+						"id" => $schedule_id ,
+						"data" => $post
 					]);
 				}else{
 					echo json_encode([

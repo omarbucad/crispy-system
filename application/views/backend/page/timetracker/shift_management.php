@@ -299,7 +299,7 @@
 
 	$(document).on("click" , ".btn-custom-shift" , function(){
 		var last_modal = $(this).closest(".modal").modal("hide");
-
+		
 		var modal = $("#assign_custom_shift_modal").modal("show");
 		modal.find('.modal-title').html(last_modal.find('.modal-title').html());
 		modal.data("noshow" , false);
@@ -308,6 +308,15 @@
 	$(document).on("click" , ".btn-create-shift" , function(){
 		var modal = $(this).closest(".modal");
 		var form = modal.find("form");
+		
+		var staff_id = $("#assign_shift_modal").data("staffid");
+		var datename = $("#assign_shift_modal").data("datename");
+		var selected_outlet = $("#select_locations").val();
+
+		modal.find('input[name="staff_id"]').val(staff_id);
+		modal.find('input[name="date_name"]').val(datename);
+		modal.find('input[name="outlet_id"]').val(selected_outlet);
+
 		var data = form.serialize();
 
 		modal.data("noshow" , true);
@@ -317,10 +326,11 @@
 			data : data ,
 			method : "POST" ,
 			success : function(response){
+				
 				var json = jQuery.parseJSON(response);
-				console.log(json);
+				var group_name = modal.find('select[name="position"] option[value="'+json.data.position+'"]').text();
 				var a = $("<a>" , { href: "javascript:void(0);" , "data-shift_id" : json.id , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+json.data.group_color , text : json.data.pre_time_start+" - "+json.data.pre_time_end});
-				var span = $("<span>").html("WALA PA");
+				var span = $("<span>").html(group_name);
 				a.append(span);
 				var div = $("<div>" , { class : "shift_container " , style : "display:block;width:100%;margin:0px;padding:0px;border-radius:10px;"});
 				div.append(a);
@@ -493,6 +503,9 @@
                 <form action="<?php echo site_url("app/timetracker/shift-templates"); ?>" id="add_group_form" method="POST">
                     <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
                     <input type="hidden" name="shift_template" value="true">
+                    <input type="hidden" name="staff_id" value="true">
+                    <input type="hidden" name="date_name" value="true">
+                    <input type="hidden" name="outlet_id" value="true">
                     <div class="form-group">
                         <label for="group_name">Time</label>
                         <div class="form-group">
