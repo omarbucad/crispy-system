@@ -130,7 +130,10 @@
                      </div>
                      <div class="form-group">
                         <label for="group_name">Unpaid Break</label>
-                        <input type="text" name="unpaid_break" class="form-control" >
+                       <div class="input-group">
+                          <input type="text" class="form-control" name="unpaid_break" placeholder="Hours" aria-describedby="basic-addon2">
+                          <span class="input-group-addon" id="basic-addon2">Hours</span>
+                        </div>
                     </div>
                      <div class="form-group">
                         <label for="s_outlet">Outlet</label>

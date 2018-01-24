@@ -525,10 +525,12 @@ tr.counted > td , tr.counted > td > small{
 	font-size: 11px;
 	font-weight: bold;
 	color:white;
-	border-radius: 10px;
+	border-radius: 5px;
 	padding: 0px 5px;
-	margin:2px;
 	z-index: 1;
+}
+.scheduler-table tbody > tr > td > div > a:not(:last-child){
+	margin-bottom: 2px;
 }
 .scheduler-table tbody > tr > td > div > a:hover{
 	color:white;

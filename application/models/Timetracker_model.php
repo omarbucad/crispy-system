@@ -296,20 +296,24 @@ class Timetracker_model extends CI_Model {
             foreach($published as $r){
                 if($row->staff_id == $r->staff_id){
                     $tmp = $r;
+                    $tmp->date_id = $this->hash->encrypt($tmp->date_id);
                     $tmp->published = "published";
-                    $tmp->start_time = substr(date("h:ia" , strtotime($r->start_time)) , 0, -1);
-                    $tmp->end_time = substr(date("h:ia" , strtotime($r->end_time)) , 0, -1);
-                    $result[$key]->schedule_list[ date("D" , strtotime($r->date_schedule)) ][$r->date_id] = $r;
+                    $tmp->start_time = substr(date("h:ia" , strtotime($tmp->start_time)) , 0, -1);
+                    $tmp->end_time = substr(date("h:ia" , strtotime($tmp->end_time)) , 0, -1);
+                    $result[$key]->schedule_list[ date("D" , strtotime($tmp->date_schedule)) ][$tmp->date_id] = $tmp;
                 }
             }
 
             foreach($unpublished as $r){
                 if($row->staff_id == $r->staff_id){
+
                     $tmp = $r;
+                    $tmp->date_id = $this->hash->encrypt($tmp->date_id);
                     $tmp->published = "unpublished";
-                    $tmp->start_time = substr(date("h:ia" , strtotime($r->start_time)) , 0, -1);
-                    $tmp->end_time = substr(date("h:ia" , strtotime($r->end_time)) , 0, -1);
-                    $result[$key]->schedule_list[date("D" , strtotime($r->schedule_date))][$r->date_id] = $r;
+                    $tmp->start_time = substr(date("h:ia" , strtotime($tmp->start_time)) , 0, -1);
+                    $tmp->end_time = substr(date("h:ia" , strtotime($tmp->end_time)) , 0, -1);
+
+                    $result[$key]->schedule_list[date("D" , strtotime($tmp->schedule_date))][$tmp->date_id] = $tmp;
                 }
             }
 
@@ -414,6 +418,26 @@ class Timetracker_model extends CI_Model {
         }else{
             return $last_id;
         }
+    }
+
+
+    public function get_shift_information_by_id($id , $published){
+        $date_id = $this->hash->decrypt($id);
+
+        if($published == "published"){
+
+        }else{
+            $this->db->join("timetracker_shift_date sd" , "sd.schedule_id = su.schedule_id");
+            $this->db->join("timetracker_staff_group sg" , "sg.group_id = sd.position_id");
+            $this->db->where("sd.date_id" , $date_id);
+            $result = $this->db->get("timetracker_shift_schedule_unpublished su")->row();
+        }
+
+        if($result){
+            $result->position_id = $this->hash->encrypt($result->position_id);
+        }
+        
+        return $result;
     }
 
     private function get_only_date($data){

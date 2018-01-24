@@ -172,7 +172,7 @@
 	}
 
 	function build_shift(b){
-		var a = $("<a>" , {href: "javascript:void(0);" , "data-shift_id" : b.date_id , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+b.block_color , text : b.start_time+" - "+b.end_time});
+		var a = $("<a>" , {href: "javascript:void(0);" , "data-shift_id" : b.date_id  , "data-published" : b.published , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+b.block_color , text : b.start_time+" - "+b.end_time});
 		var span = $("<span>").html(b.group_name);
 		a.append(span);
 		var div = $("<div>" , { class : "shift_container " , style : "display:block;width:100%;margin:0px;padding:0px;border-radius:10px;"});
@@ -287,7 +287,30 @@
 		}
 
 		var id = $me.data("shift_id");
-		alert(id);
+		var published = $me.data("published");
+		var url = '<?php echo site_url("app/timetracker/get_shift_information_by_id"); ?>';
+		var dateid = $(this).closest("td").data("dateid");
+		var datename = $(dateid).data("date");
+		var staff_id = $(this).closest("tr").find("td").first().data("staff");
+
+		$.ajax({
+			url : url ,
+			method : "POST" ,
+			data : { date_id : id , published : published , staff_id : staff_id , date : datename},
+			success : function(response){
+				var modal = $('#edit_shift_modal').modal("show");
+				modal.find('.modal-title').html("Assign Shift to on "+datename);
+				var json = jQuery.parseJSON(response);
+
+				modal.find("input[name='staff_id']").val(json.position_id);
+				modal.find("input[name='unpaid_break']").val(json.unpaid_break);
+				modal.find("input[name='pre_time_start']").val(json.start_time);
+				modal.find("input[name='pre_time_end']").val(json.end_time);
+				modal.find("input[name='group_color']").val(json.block_color);
+
+				console.log(response);
+			}
+		});
 	});
 
 	$(document).on('hidden.bs.modal' , '#assign_custom_shift_modal' , function () {
@@ -329,12 +352,14 @@
 				
 				var json = jQuery.parseJSON(response);
 				var group_name = modal.find('select[name="position"] option[value="'+json.data.position+'"]').text();
-				var a = $("<a>" , { href: "javascript:void(0);" , "data-shift_id" : json.id , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+json.data.group_color , text : json.data.pre_time_start+" - "+json.data.pre_time_end});
+				
+				var a = $("<a>" , { href: "javascript:void(0);" , "data-shift_id" : json.id , "data-published" : json.published , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+json.data.group_color , text : json.data.pre_time_start+" - "+json.data.pre_time_end});
 				var span = $("<span>").html(group_name);
 				a.append(span);
+
 				var div = $("<div>" , { class : "shift_container " , style : "display:block;width:100%;margin:0px;padding:0px;border-radius:10px;"});
 				div.append(a);
-				div.append($("<div>" , {class : "unpublished"}));
+				div.append($("<div>" , {class : json.published}));
 				
 				var td = $("#assign_shift_modal").data("click");
 
@@ -344,34 +369,42 @@
 			}
 		});
 	});
+
 </script>
 <style type="text/css">
 	.shift_container  > .unpublished{
 	    float: right;
 	    width: 100%;
 	    height: 34px;
-	    border-radius: 10px;
+	    border-radius: 5px;
 	    margin-top: -35px;
 	    background-image: url(<?php echo base_url("public/img/striped.png")?>);
 	    background-repeat: no-repeat;
 	    background-size: cover;
-	    margin-right: -2px;
+	    border: 1px solid #cccccc;
 	}
 </style>
+
 <div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
     	<div class="row">
     		<!-- SIDE MENU -->
     		<div class="col-lg-2 ">
     			<a href="javascript:void(0);" class="btn btn-success btn-block btn-publish" style="text-align: left;line-height: 11px"></a>
-    			<div class="text-right">
-    				<div class="btn-group" role="group" aria-label="...">
-					  <button type="button" class="btn btn-default active">Shift</button>
-					  <button type="button" class="btn btn-default">Position</button>
-					</div>
-    			</div>
     			<nav class="card scheduler-nav">
     				<ul>
+    					<li class="bglabel">COLOR</li>
+    					<li class="lilocation">
+    						<div class="input-group">
+    							<select class="form-control" id="select_color">
+    								<option value="Shift">Shift</option>
+    								<option value="Position">Position</option>
+    							</select>
+    							<span class="input-group-btn">
+    								<button class="btn btn-success" type="button" style="margin: 0px !important;"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+    							</span>
+    						</div><!-- /input-group -->
+    					</li>
     					<li class="bglabel">LOCATIONS</li>
     					<li class="lilocation">
     						<div class="input-group">
@@ -460,7 +493,6 @@
     </div>
 </div>
 
-
 <div class="modal fade" id="assign_shift_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -490,10 +522,8 @@
     </div>
 </div>
 
-
-
 <div class="modal fade" id="assign_custom_shift_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -507,21 +537,24 @@
                     <input type="hidden" name="date_name" value="true">
                     <input type="hidden" name="outlet_id" value="true">
                     <div class="form-group">
-                        <label for="group_name">Time</label>
-                        <div class="form-group">
-                            <div class="col-xs-6 no-padding-left">
-                                <input type="time" name="pre_time_start" class="form-control" value="<?php echo set_value("pre_time_start"); ?>" placeholder="12:00 AM">
-                            </div>
-                            <div class="col-xs-6 no-padding-right">
-                                <input type="time" name="pre_time_end" class="form-control" value="<?php echo set_value("pre_time_end"); ?>" placeholder="06:00 PM">
-                            </div>
-                        </div>
-                     </div>
-                     <div class="form-group">
-                        <label for="group_name">Unpaid Break</label>
-                        <input type="text" name="unpaid_break" class="form-control" >
+                    	<label for="group_name">Time</label>
+                    	<div style="overflow: hidden;">
+                    		<div class="col-xs-6 no-padding-left">
+                    			<input type="time" name="pre_time_start" class="form-control" placeholder="12:00 AM">
+                    		</div>
+                    		<div class="col-xs-6 no-padding-right">
+                    			<input type="time" name="pre_time_end" class="form-control" placeholder="06:00 PM">
+                    		</div>
+                    	</div>
                     </div>
                      <div class="form-group">
+                        <label for="group_name">Unpaid Break</label>
+                        <div class="input-group">
+						  <input type="text" class="form-control" name="unpaid_break" placeholder="Hours" aria-describedby="basic-addon2">
+						  <span class="input-group-addon" id="basic-addon2">Hours</span>
+						</div>
+                    </div>
+                    <div class="form-group">
                         <label for="s_outlet">Outlet</label>
                         <select class="form-control" id="s_outlet" name="outlet_id">
                             <?php foreach($outlet_list as $row) : ?>
@@ -542,20 +575,86 @@
                         <input type="color" name="group_color" class="form-control" id="group_color" style="width:70px">
                     </div>
 
-                    <div class="checkbox">
-                    	<label>
-                    		<input type="checkbox" name="save_template" value="1"> Save as "Shift Template" also , so i can use it later
-                    	</label>
-                    </div>
+                   
                 </form>
             </div>
             <div class="modal-footer">
                 <div class="row">
                 	<div class="col-lg-6 text-left no-margin-bottom">
-                		 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                		<div class="checkbox no-margin">
+	                    	<label>
+	                    		<input type="checkbox" name="save_template" value="1"> Save as "Shift Template" also , so i can use it later
+	                    	</label>
+	                    </div>
                 	</div>
                 	<div class="col-lg-6 text-right no-margin-bottom">
-                		<button type="button" class="btn btn-primary btn-create-shift">Create</button>
+                		<button type="button" class="btn btn-primary btn-create-shift" data-publish="true">Create & Publish</button>
+                		<button type="button" class="btn btn-primary btn-create-shift" data-publish="false">Create</button>
+                	</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="edit_shift_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form action="<?php echo site_url("app/timetracker/edit_shift_template"); ?>" id="add_group_form" method="POST">
+                    <input type="hidden" name="<?php echo $csrf_token_name; ?>" value="<?php echo $csrf_hash; ?>">
+                    <input type="hidden" name="staff_id">
+                    <input type="hidden" name="date_id">
+                    <div class="form-group">
+                    	<label for="group_name">Time</label>
+                    	<div style="overflow: hidden;">
+                    		<div class="col-xs-6 no-padding-left">
+                    			<input type="time" name="pre_time_start" class="form-control" placeholder="12:00 AM">
+                    		</div>
+                    		<div class="col-xs-6 no-padding-right">
+                    			<input type="time" name="pre_time_end" class="form-control" placeholder="06:00 PM">
+                    		</div>
+                    	</div>
+                    </div>
+                     <div class="form-group">
+                        <label for="group_name">Unpaid Break</label>
+                        <div class="input-group">
+						  <input type="text" class="form-control" name="unpaid_break" placeholder="Hours" aria-describedby="basic-addon2">
+						  <span class="input-group-addon" id="basic-addon2">Hours</span>
+						</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="s_roles">Staff Position</label>
+                        <select class="form-control" id="s_roles" name="position2">
+                            <?php foreach($staff_group_list as $row) : ?>
+                                <option value="<?php echo $row->group_id; ?>"><?php echo $row->group_name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea class="form-control" maxlength="255" rows="4" placeholder="Notes" name="notes" id="notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="group_color">Color</label>
+                        <input type="color" name="group_color" class="form-control" id="group_color2" style="width:70px">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                	<div class="col-lg-3 text-left no-margin-bottom">
+                		 <button type="button" class="btn btn-danger btn-remove-shift">Delete</button>
+                	</div>
+                	<div class="col-lg-9 text-right no-margin-bottom">
+                		<button type="button" class="btn btn-primary" >Replace</button>
+                		<button type="button" class="btn btn-success" >Save</button>
                 	</div>
                 </div>
             </div>

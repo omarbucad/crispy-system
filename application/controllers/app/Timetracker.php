@@ -158,7 +158,8 @@ class Timetracker extends MY_Controller {
 					echo json_encode([
 						"status" => true ,
 						"id" => $schedule_id ,
-						"data" => $post
+						"data" => $post ,
+						"published" => "unpublished"
 					]);
 				}else{
 					echo json_encode([
@@ -217,6 +218,17 @@ class Timetracker extends MY_Controller {
 		}
 	}
 
+	public function get_shift_information_by_id(){
+		if($this->input->post()){
+			$date_id = $this->input->post("date_id");
+			$published = $this->input->post("published");
+
+			$result = $this->timetracker->get_shift_information_by_id($date_id , $published);
+
+			echo json_encode($result);
+		}
+	}
+
 	public function get_preferred_shift(){
 		echo json_encode($this->timetracker->get_preferred_shift());
 	}
@@ -225,7 +237,7 @@ class Timetracker extends MY_Controller {
 		if($last_id = $this->timetracker->assign_shift_to_staff()){
 			echo json_encode([
 				"status" => true ,
-				"id" => $last_id
+				"id" => $this->hash->encrypt($last_id)
 			]);
 		}else{
 			echo json_encode([
