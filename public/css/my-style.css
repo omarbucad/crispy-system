@@ -568,3 +568,14 @@ tr.counted > td , tr.counted > td > small{
 	max-height: 500px;
 	overflow: auto;
 }
+.shift_container  > .unpublished{
+	float: right;
+	width: 100%;
+	height: 34px;
+	border-radius: 5px;
+	margin-top: -35px;
+	background-image: url(../img/striped.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	border: 1px solid #cccccc;
+}

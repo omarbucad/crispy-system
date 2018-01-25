@@ -300,7 +300,7 @@ class Timetracker_model extends CI_Model {
                     $tmp->published = "published";
                     $tmp->start_time = substr(date("h:ia" , strtotime($tmp->start_time)) , 0, -1);
                     $tmp->end_time = substr(date("h:ia" , strtotime($tmp->end_time)) , 0, -1);
-                    $result[$key]->schedule_list[ date("D" , strtotime($tmp->date_schedule)) ][$tmp->date_id] = $tmp;
+                    $result[$key]->schedule_list[ date("D" , strtotime($tmp->date_schedule)) ][$tmp->shift_template_id] = $tmp;
                 }
             }
 
@@ -313,7 +313,7 @@ class Timetracker_model extends CI_Model {
                     $tmp->start_time = substr(date("h:ia" , strtotime($tmp->start_time)) , 0, -1);
                     $tmp->end_time = substr(date("h:ia" , strtotime($tmp->end_time)) , 0, -1);
 
-                    $result[$key]->schedule_list[date("D" , strtotime($tmp->schedule_date))][$tmp->date_id] = $tmp;
+                    $result[$key]->schedule_list[date("D" , strtotime($tmp->schedule_date))][$tmp->shift_template_id] = $tmp;
                 }
             }
 
@@ -321,9 +321,15 @@ class Timetracker_model extends CI_Model {
         }
 
 
+        $this->db->join("timetracker_shift_date sd" , "sd.schedule_id = su.schedule_id");
+        $this->db->where("su.store_id" , $store_id);
+        $this->db->where("su.outlet_id" , $outlet_id);
+        $this->db->where("su.schedule_published" , 0);
+        $unpublished_row = $this->db->get("timetracker_shift_schedule_unpublished su")->num_rows();
+
         return [
             "result" => $result ,
-            "unpublished" => ($unpublished) ? true : false
+            "unpublished" => ($unpublished_row > 0) ? true : false
         ];
     }
 
@@ -425,7 +431,9 @@ class Timetracker_model extends CI_Model {
         $date_id = $this->hash->decrypt($id);
 
         if($published == "published"){
-
+            $this->db->join("timetracker_staff_group sg" , "sg.group_id = sp.position_id");
+            $this->db->where("sp.date_id" , $date_id);
+            $result = $this->db->get("timetracker_shift_schedule_published sp")->row();   
         }else{
             $this->db->join("timetracker_shift_date sd" , "sd.schedule_id = su.schedule_id");
             $this->db->join("timetracker_staff_group sg" , "sg.group_id = sd.position_id");
@@ -438,6 +446,131 @@ class Timetracker_model extends CI_Model {
         }
         
         return $result;
+    }
+
+    public function edit_shift_template(){
+        $store_id = $this->data['session_data']->store_id;
+        $outlet_id = $this->hash->decrypt($this->input->post("outlet_id"));
+        $user_id  = $this->data['session_data']->user_id; 
+        $shift_id = $this->hash->decrypt($this->input->post("date_id"));   
+
+        $this->db->trans_start();
+
+        $check = $this->db->where([
+            "store_id"              =>  $store_id ,
+            "schedule_published"    =>  0 ,
+            "outlet_id"             =>  $outlet_id
+        ])->get("timetracker_shift_schedule_unpublished")->row();
+
+        if(!$check){
+
+            $this->db->insert("timetracker_shift_schedule_unpublished" , [
+                "store_id"           => $store_id ,
+                "outlet_id"          => $outlet_id ,
+                "schedule_published" => 0 ,
+                "account_id"         => $user_id ,
+                "created"            => time()
+            ]);
+
+            $unpublished_shift_id = $this->db->insert_id();
+
+        }else{
+
+            $unpublished_shift_id = $check->schedule_id;
+    
+        }
+
+        if($this->input->post("published") == "published"){
+
+            //SAVE SHIFT ID ON UNPUBLISHED TABLE
+            $shift_information = $this->db->where("shift_blocks_id" , $shift_id)->get("timetracker_shift_blocks")->row();
+
+            $this->db->insert("timetracker_shift_date" , [
+                "schedule_id"       => $unpublished_shift_id ,
+                "shift_template_id" => $shift_id ,
+                "start_time"        => $shift_information->start_time,
+                "end_time"          => $shift_information->end_time,
+                "block_color"       => $shift_information->block_color,
+                "unpaid_break"      => $shift_information->unpaid_break,
+                "position_id"       => $shift_information->position,
+                "staff_id"          => $staff_id,
+                "schedule_date"     => $date
+            ]);
+
+            $last_id = $this->db->insert_id();   
+
+        }else{
+            $this->db->where("date_id" , $shift_id)->update('timetracker_shift_date' , [
+                "start_time"        => $this->input->post("pre_time_start"),
+                "end_time"          => $this->input->post("pre_time_end"),
+                "block_color"       => $this->input->post("group_color"),
+                "unpaid_break"      => $this->input->post("unpaid_break"),
+                "position_id"       => $this->hash->decrypt($this->input->post("position"))
+            ]);
+
+            $last_id = $shift_id;
+        }
+
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return $last_id;
+        }
+    }
+
+    public function publish_shift(){
+        $store_id = $this->data['session_data']->store_id;
+        $user_id  = $this->data['session_data']->user_id; 
+        $outlet_id = $this->hash->decrypt($this->input->post("outlet_id"));
+
+        $this->db->trans_start();
+
+
+        //GET LIST OF UNPUBLISHED RESULT
+        $this->db->join("timetracker_shift_date sd" , "sd.schedule_id = su.schedule_id");
+        $this->db->where("su.store_id" , $store_id);
+        $this->db->where("su.outlet_id" , $outlet_id);
+        $this->db->where("su.schedule_published" , 0);
+        $unpublish_result = $this->db->get("timetracker_shift_schedule_unpublished su")->result();
+
+        $schedule_id = $unpublish_result[0]->schedule_id;
+       
+        //UPDATE THE UNPUBLISHED TABLE
+        $this->db->where("schedule_id" , $schedule_id)->update("timetracker_shift_schedule_unpublished" , [
+            "schedule_published" => 1 ,
+            "published_date"     => time()
+        ]);
+
+        $publish_insert_array = array();
+
+        foreach($unpublish_result as $key => $row){
+            $publish_insert_array[] = array(
+                "store_id"          => $store_id ,
+                "outlet_id"         => $outlet_id ,
+                "date_id"           => $row->date_id ,
+                "shift_template_id" => $row->shift_template_id ,
+                "start_time"        => $row->start_time ,
+                "end_time"          => $row->end_time ,
+                "block_color"       => $row->block_color ,
+                "unpaid_break"      => $row->unpaid_break ,
+                "position_id"       => $row->position_id ,
+                "staff_id"          => $row->staff_id ,
+                "date_schedule"     => $row->schedule_date
+            );
+        }
+
+        $this->db->insert_batch("timetracker_shift_schedule_published" , $publish_insert_array);
+        
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     private function get_only_date($data){

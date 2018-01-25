@@ -10,7 +10,11 @@ class Timetracker extends MY_Controller {
     }
 
 	public function index(){
-		
+		$this->data['website_title'] = "Timetracker | Accounts Package";
+		$this->data['page_name'] = "Dashboard";
+		$this->data['main_page'] = "backend/page/timetracker/dashboard";
+
+		$this->load->view('backend/master' , $this->data);
 	}
 
 	public function shift_management(){
@@ -124,7 +128,6 @@ class Timetracker extends MY_Controller {
 
 			redirect("app/timetracker/position" , 'refresh');
 		}
-
 	}
 
 	public function shift_templates(){
@@ -157,7 +160,7 @@ class Timetracker extends MY_Controller {
 
 					echo json_encode([
 						"status" => true ,
-						"id" => $schedule_id ,
+						"id" => $this->hash->encrypt($schedule_id) ,
 						"data" => $post ,
 						"published" => "unpublished"
 					]);
@@ -180,8 +183,6 @@ class Timetracker extends MY_Controller {
 			}
 			
 		}
-
-		
 	}
 
 	public function get_shift_information(){
@@ -244,6 +245,68 @@ class Timetracker extends MY_Controller {
 				"status" => false ,
 				"message" => "Saving Failed. Please Try again Later"
 			]);
+		}
+	}
+
+	public function edit_shift_template(){
+
+		if($date_id = $this->timetracker->edit_shift_template()){
+
+			$post = $this->input->post();
+			$post['pre_time_start'] = substr(date("h:ia" , strtotime($post['pre_time_start'])) , 0, -1);
+			$post['pre_time_end'] = substr(date("h:ia" , strtotime($post['pre_time_end'])) , 0, -1);
+
+			echo json_encode([
+				"status" => true ,
+				"id" =>  $this->hash->encrypt($date_id) ,
+				"data" => $post ,
+				"published" => "unpublished"
+			]);
+
+		}else{
+			echo json_encode([
+				"status" => false ,
+				"message" => "Saving Failed. Please Try again Later"
+			]);
+		}
+	}
+
+	public function remove_shift(){
+		if($this->input->post()){
+			$date_id = $this->hash->decrypt($this->input->post("date_id"));
+			
+			$this->db->trans_start();	
+
+			if($this->input->post("published") == "unpublished"){
+				$info = $this->db->select("schedule_id")->where("date_id" , $date_id)->get("timetracker_shift_date")->row();
+
+				$this->db->where("date_id" , $date_id)->delete("timetracker_shift_date");
+				$check_row = $this->db->where("schedule_id" , $info->schedule_id)->get("timetracker_shift_date")->num_rows(); 
+
+				if($check_row == 0){
+					$this->db->where("schedule_id" , $info->schedule_id)->delete("timetracker_shift_schedule_unpublished");
+				}
+
+			}else{
+				$this->db->where("date_id" , $date_id)->delete("timetracker_shift_schedule_published");
+			}
+
+			$this->db->trans_complete();	
+
+
+			if($check_row == 0){
+				echo json_encode(["published" => true]);
+			}else{
+				echo json_encode(["published" => false]);
+			}
+		}
+	}
+
+	public function publish_shift(){
+		if($this->timetracker->publish_shift()){
+			echo json_encode(["status" => true]);
+		}else{
+			echo json_encode(["status" => false]);
 		}
 	}
 
