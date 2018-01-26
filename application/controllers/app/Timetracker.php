@@ -13,7 +13,8 @@ class Timetracker extends MY_Controller {
 		$this->data['website_title'] = "Timetracker | Accounts Package";
 		$this->data['page_name'] = "Dashboard";
 		$this->data['main_page'] = "backend/page/timetracker/dashboard";
-
+		$this->data['outlet_list'] = $this->store->get_outlet();
+		
 		$this->load->view('backend/master' , $this->data);
 	}
 
