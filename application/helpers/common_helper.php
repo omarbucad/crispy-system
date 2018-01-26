@@ -184,3 +184,96 @@ if ( ! function_exists('custom_money_format'))
         return $money < 0 ? "({$formatted})" : "{$formatted}";
     }   
 }
+
+
+if ( ! function_exists('build_today_td'))
+{
+    function build_today_td($data)
+    {
+        $arr = array();
+
+        $start = strtotime("04:30");
+        $end   = strtotime("13:00");
+
+        if($start > $end){
+            $end = $end + 86400;
+        }
+
+        $total = abs($end - $start);
+        $total = ($total / 60) / 60;
+
+        $arr['total_number'] = floor($total);
+        $arr['total_hrs'] = round($total , 1);
+        $arr['start'] = date("H" , $start);
+        $arr['end'] = $arr['start'] + $arr['total_number'];
+
+        $arr['a'] = (check_number($arr["start"]) + $arr['total_number']);
+        $total_number = (check_number($arr["start"]) + $arr['total_number']);
+
+        if($total_number > 24 ){
+
+            $arr['shift'][0] = array(
+                "colspan" => abs($total_number - 24),
+                "start"   => check_number("06")
+            );
+
+            $arr['shift'][1] = array(
+                "colspan" => abs(check_number($arr["start"]) - 24),
+                "start"   => check_number($arr["start"])
+            );
+
+            
+        }else{
+            $arr['shift'][0] = array(
+                "colspan" => $total_number ,
+                "start"   => check_number($arr['start'])
+            );
+        }
+
+
+        if(count($arr['shift']) == 1){
+
+        }else{
+
+        }
+
+        print_r_die($arr);
+    }   
+}
+
+
+if ( ! function_exists('check_number'))
+{
+    function check_number($index)
+    {
+        $arr = array();
+
+        $arr["06"] = 1; 
+        $arr["07"] = 2; 
+        $arr["08"] = 3; 
+        $arr["09"] = 4; 
+        $arr["10"] = 5; 
+        $arr["11"] = 6; 
+        $arr["12"] = 7; 
+        $arr["13"] = 8; 
+        $arr["14"] = 9; 
+        $arr["15"] = 10; 
+        $arr["16"] = 11; 
+        $arr["17"] = 12; 
+        $arr["18"] = 13; 
+        $arr["19"] = 14; 
+        $arr["20"] = 15; 
+        $arr["21"] = 16; 
+        $arr["22"] = 17; 
+        $arr["23"] = 18; 
+        $arr["0"]  = 19; 
+        $arr["01"]  = 20; 
+        $arr["02"]  = 21; 
+        $arr["03"]  = 22; 
+        $arr["04"]  = 23; 
+        $arr["05"]  = 24; 
+        
+        return $arr[$index];
+    }   
+}
+

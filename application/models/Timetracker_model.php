@@ -364,6 +364,26 @@ class Timetracker_model extends CI_Model {
         ];   
     }
 
+    public function get_shift_information_today(){
+        $store_id = $this->data['session_data']->store_id;
+        $outlet_id = 1;
+        //$today = date("F d Y");
+        $today = "January 22 2018";
+
+        $this->db->select("ts.max_hours , ts.image_path , ts.image_name , sc.first_name , sc.last_name , ts.staff_id");
+        $this->db->join("store_contact sc" , "sc.store_contact_id = ts.contact_id");
+        $result = $this->db->where("ts.store_id" , $store_id)->where("ts.outlet_id" , $outlet_id)->get("timetracker_staff ts")->result();
+
+        foreach($result as $key => $row){
+            $shift_information = $this->db->where("date_schedule" , $today)->where("staff_id" , $row->staff_id)->get("timetracker_shift_schedule_published")->row();
+
+            $result[$key]->shift_information = $shift_information;
+            $result[$key]->td_list = build_today_td($result[$key]);
+        }
+
+        return $result;
+    }
+
     public function assign_shift_to_staff($shift_id = false){
         $store_id = $this->data['session_data']->store_id;
         $staff_id = $this->hash->decrypt($this->input->post("staff_id"));

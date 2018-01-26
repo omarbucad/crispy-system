@@ -234,6 +234,9 @@ class Timetracker extends MY_Controller {
 	public function get_preferred_shift(){
 		echo json_encode($this->timetracker->get_preferred_shift());
 	}
+	public function get_shift_information_today(){
+		echo json_encode($this->timetracker->get_shift_information_today());
+	}
 
 	public function save_shift(){
 		if($last_id = $this->timetracker->assign_shift_to_staff()){
