@@ -18,28 +18,18 @@
     				<ul>
     					<li class="bglabel">COLOR</li>
     					<li class="lilocation">
-    						<div class="input-group">
-    							<select class="form-control" id="select_color">
-    								<option value="Shift">Shift</option>
-    								<option value="Position">Position</option>
-    							</select>
-    							<span class="input-group-btn">
-    								<button class="btn btn-success" type="button" style="margin: 0px !important;"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
-    							</span>
-    						</div><!-- /input-group -->
+    						<select class="form-control" id="select_color">
+                                <option value="Shift">Shift</option>
+                                <option value="Position">Position</option>
+                            </select>
     					</li>
     					<li class="bglabel">LOCATIONS</li>
     					<li class="lilocation">
-    						<div class="input-group">
-    							<select class="form-control" id="select_locations">
-    								<?php foreach($outlet_list as $row) : ?>
-    									<option value="<?php echo $row->outlet_id; ?>"><?php echo $row->outlet_name; ?></option>
-    								<?php endforeach; ?>
-    							</select>
-    							<span class="input-group-btn">
-    								<button class="btn btn-success" type="button" style="margin: 0px !important;"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
-    							</span>
-    						</div><!-- /input-group -->
+    						<select class="form-control" id="select_locations">
+                                <?php foreach($outlet_list as $row) : ?>
+                                    <option value="<?php echo $row->outlet_id; ?>"><?php echo $row->outlet_name; ?></option>
+                                <?php endforeach; ?>
+                            </select>
     					</li>
     					<li class="bglabel" style="line-height: 17px;">POSITIONS <a href="javascript:void(0);" class="btn btn-primary btn-xs pull-right" style="font-size: 10px;margin: 0px;">Show all</a></li>
     					<?php foreach($staff_group_list as $row) : ?>

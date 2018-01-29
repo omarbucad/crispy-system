@@ -3,12 +3,12 @@
     var today_url = "<?php echo site_url('app/timetracker/get_shift_information_today'); ?>";
 
     $(document).ready(function(){
-        var selected_location = $('#select_locations option:eq(1)').attr("selected" , "selected").val();
+        var selected_location = $('#select_locations option:eq(0)').attr("selected" , "selected").val();
         load_data(selected_location);
     });
 
-    $(document).on("click" , ".btn-load-data" , function(){
-        var selected_location = $('#select_locations').val();
+    $(document).on("change" , "#select_locations" , function(){
+        var selected_location = $(this).val();
         load_data(selected_location);
     });
 
@@ -96,17 +96,12 @@
                     <strong style="line-height: 35px;" id="welcome_message"></strong>
                 </div>
                 <div class="col-lg-2">
-                   <div class="input-group">
-                        <select class="form-control" id="select_locations">
-                            <option value="ALL_OUTLET">All Outlet</option>
-                            <?php foreach($outlet_list as $row) : ?>
-                                <option value="<?php echo $row->outlet_id; ?>"><?php echo $row->outlet_name; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                        <span class="input-group-btn">
-                            <button class="btn btn-success btn-load-data" style="margin: 0px !important;" type="button"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
-                        </span>
-                    </div>
+                   <select class="form-control" id="select_locations">
+                        <option value="ALL_OUTLET">All Outlet</option>
+                        <?php foreach($outlet_list as $row) : ?>
+                            <option value="<?php echo $row->outlet_id; ?>"><?php echo $row->outlet_name; ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </div>
             <div id="dashboard_timetracker_div">

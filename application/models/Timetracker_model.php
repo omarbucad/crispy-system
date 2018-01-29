@@ -604,6 +604,103 @@ class Timetracker_model extends CI_Model {
         }
     }
 
+    public function create_pay_period(){
+        $store_id  = $this->data['session_data']->store_id;
+        $user_id   = $this->data['session_data']->user_id; 
+        $daterange = $this->input->post("daterange");
+        $daterange = explode("-", $daterange);
+
+        $this->db->trans_start();
+
+
+        //CREATE PAY PERIOD
+        $this->db->insert("timetracker_pay" , [
+            "store_id"          => $store_id ,
+            "account_id"        => $user_id ,
+            "from_date"         => date("F j Y" , strtotime($daterange[0])),
+            "to_date"           => date("F j Y" , strtotime($daterange[1])),
+            "pay_name"          => date("F j" , strtotime($daterange[0])).' - '.date("F j, Y" , strtotime($daterange[1])),
+            "created"           => time()
+        ]);
+
+        $pay_id = $this->db->insert_id();
+
+
+        //THEN INSERT EACH STAFF A SUMMARY
+        $staff_list = $this->db->select("ts.staff_id")->where("store_id" , $store_id)->get("timetracker_staff ts")->result();
+        $s_list = array();
+
+        foreach($staff_list as $r){
+            $s_list[] = array(
+                "staff_id" => $r->staff_id ,
+                "pay_id"   => $pay_id 
+            );
+        }
+
+        $this->db->insert_batch("timetracker_summary" , $s_list);
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public function get_pay_period_list(){
+        $store_id = $this->data['session_data']->store_id;
+
+        $result = $this->db->select("pay_name , pay_id")->distinct("pay_name")->where("store_id" , $store_id)->order_by("created" , "DESC")->limit(20)->get("timetracker_pay")->result();
+        
+        foreach($result as $key => $r){
+            $result[$key]->pay_id = $this->hash->encrypt($r->pay_id);
+        }
+
+        return $result;
+    }
+
+    public function get_attendance_staff(){
+        $store_id = $this->data['session_data']->store_id;
+        $outlet_id = $this->hash->decrypt($this->input->post("outlet_id"));
+        $pay_period_id = $this->hash->decrypt($this->input->post("pay_period_id"));
+
+        $this->db->select("ts.image_path , ts.image_name , sc.first_name , sc.last_name , ts.staff_id");
+        $this->db->join("timetracker_staff ts" , "ts.staff_id = tsm.staff_id");
+        $this->db->join("store_contact sc" , "sc.store_contact_id = ts.contact_id");
+        
+
+        if($this->input->post("outlet_id") != "ALL_OUTLET"){
+            $this->db->where("ts.outlet_id" , $outlet_id);
+        }
+
+        $result = $this->db->where("ts.store_id" , $store_id)->where("tsm.pay_id" , $pay_period_id)->get("timetracker_summary tsm")->result();
+
+        foreach($result as $key => $row){
+            $result[$key]->staff_id = $this->hash->encrypt($row->staff_id);
+        }
+
+        return $result;
+    }
+
+    public function get_summary_by_id(){
+        $staff_id = $this->hash->decrypt($this->input->post("staff_id"));
+        $pay_period_id = $this->hash->decrypt($this->input->post("pay_period_id"));
+
+        $this->db->select("tsm.summary_id , tsm.staff_id , tsm.approved , tsm.field_1 , tsm.field_2 , tsm.field_3 , tsm.field_4 , tsm.field_5  , sc.first_name , sc.last_name , tp.pay_name");
+        $this->db->join("timetracker_staff ts" , "ts.staff_id = tsm.staff_id");
+        $this->db->join("store_contact sc" , "sc.store_contact_id = ts.contact_id");
+        $this->db->join("timetracker_pay tp" , "tp.pay_id = tsm.pay_id");
+        $result = $this->db->where("tsm.staff_id" , $staff_id)->where("tsm.pay_id" , $pay_period_id)->get("timetracker_summary tsm")->row();
+
+        if($result){
+            $result->staff_id = $this->hash->encrypt($result->staff_id);
+            $result->summary_id = $this->hash->encrypt($result->summary_id);
+        }
+
+        return $result;
+    }
+
     private function get_only_date($data){
         $tmp = array();
 

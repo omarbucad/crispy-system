@@ -322,12 +322,59 @@ class Timetracker extends MY_Controller {
 	}
 
 	public function attendance(){
-		$this->data['website_title'] = "Timetracker | Accounts Package";
-		$this->data['page_name'] = "Staff Attendance";
-		$this->data['main_page'] = "backend/page/timetracker/attendance";
 
-		$this->load->view('backend/master' , $this->data);
+		$this->form_validation->set_rules('daterange'		, 'Date'	, 'trim|required');
+
+		if ($this->form_validation->run() == FALSE){  
+
+			$this->data['website_title'] = "Timetracker | Accounts Package";
+			$this->data['page_name'] = "Staff Attendance";
+			$this->data['main_page'] = "backend/page/timetracker/attendance";
+			$this->data['outlet_list'] = $this->store->get_outlet();
+			$this->data['pay_period_list'] = $this->timetracker->get_pay_period_list();
+
+			$this->load->view('backend/master' , $this->data);
+
+		}else{
+
+			if($this->timetracker->create_pay_period()){
+				$this->session->set_flashdata('status' , 'success');	
+				$this->session->set_flashdata('message' , 'Successfully Added a Pay Period');	
+			}else{
+				$this->session->set_flashdata('status' , 'error');
+				$this->session->set_flashdata('message' , 'Something went wrong');	
+			}
+
+			redirect("app/timetracker/attendance" , 'refresh');
+		}
+
+		
 	}
+
+	public function get_staff(){
+
+		$result = $this->timetracker->get_attendance_staff();
+
+		if($result){
+			echo json_encode([
+				"status" => true ,
+				"result" => $result
+			]);
+		}else{
+			echo json_encode([
+				"status" => false
+			]);
+		}
+
+	}
+
+
+	public function get_staff_summary(){
+		$data['summary_result'] = $this->timetracker->get_summary_by_id();
+
+		echo json_encode($data);
+	}
+
 
 	private function loop_date($start , $end){
 		$begin = new DateTime( $start );
