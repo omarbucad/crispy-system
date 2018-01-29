@@ -298,6 +298,7 @@ class Timetracker_model extends CI_Model {
                     $tmp = $r;
                     $tmp->date_id = $this->hash->encrypt($tmp->date_id);
                     $tmp->published = "published";
+                    $tmp->total_hours = compute_time_hours($tmp->start_time , $tmp->end_time);
                     $tmp->start_time = substr(date("h:ia" , strtotime($tmp->start_time)) , 0, -1);
                     $tmp->end_time = substr(date("h:ia" , strtotime($tmp->end_time)) , 0, -1);
                     $result[$key]->schedule_list[ date("D" , strtotime($tmp->date_schedule)) ][$tmp->shift_template_id] = $tmp;
@@ -310,6 +311,7 @@ class Timetracker_model extends CI_Model {
                     $tmp = $r;
                     $tmp->date_id = $this->hash->encrypt($tmp->date_id);
                     $tmp->published = "unpublished";
+                    $tmp->total_hours = compute_time_hours($tmp->start_time , $tmp->end_time);
                     $tmp->start_time = substr(date("h:ia" , strtotime($tmp->start_time)) , 0, -1);
                     $tmp->end_time = substr(date("h:ia" , strtotime($tmp->end_time)) , 0, -1);
 
@@ -366,16 +368,22 @@ class Timetracker_model extends CI_Model {
 
     public function get_shift_information_today(){
         $store_id = $this->data['session_data']->store_id;
-        $outlet_id = 1;
-        //$today = date("F d Y");
-        $today = "January 22 2018";
+        $outlet_id = $this->hash->decrypt($this->input->post("outlet_id"));
+        $today = date("F d Y");
 
         $this->db->select("ts.max_hours , ts.image_path , ts.image_name , sc.first_name , sc.last_name , ts.staff_id");
         $this->db->join("store_contact sc" , "sc.store_contact_id = ts.contact_id");
-        $result = $this->db->where("ts.store_id" , $store_id)->where("ts.outlet_id" , $outlet_id)->get("timetracker_staff ts")->result();
+
+        if($this->input->post("outlet_id") != "ALL_OUTLET"){
+            $this->db->where("ts.outlet_id" , $outlet_id);
+        }
+
+        $result = $this->db->where("ts.store_id" , $store_id)->get("timetracker_staff ts")->result();
 
         foreach($result as $key => $row){
-            $shift_information = $this->db->where("date_schedule" , $today)->where("staff_id" , $row->staff_id)->get("timetracker_shift_schedule_published")->row();
+            $this->db->join("store_outlet o" , "o.outlet_id = sp.outlet_id");
+            $this->db->join("timetracker_staff_group sg" , "sg.group_id = sp.position_id");
+            $shift_information = $this->db->where("sp.date_schedule" , $today)->where("sp.staff_id" , $row->staff_id)->get("timetracker_shift_schedule_published sp")->row();
 
             $result[$key]->shift_information = $shift_information;
             $result[$key]->td_list = build_today_td($result[$key]);
@@ -442,7 +450,10 @@ class Timetracker_model extends CI_Model {
         if ($this->db->trans_status() === FALSE){
             return false;
         }else{
-            return $last_id;
+            return [
+                "id" => $last_id ,
+                "total_hours" => compute_time_hours($shift_information->start_time , $shift_information->end_time)
+            ];
         }
     }
 

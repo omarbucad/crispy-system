@@ -185,15 +185,12 @@ if ( ! function_exists('custom_money_format'))
     }   
 }
 
-
-if ( ! function_exists('build_today_td'))
+if ( ! function_exists('compute_time_hours'))
 {
-    function build_today_td($data)
+    function compute_time_hours($start , $end)
     {
-        $arr = array();
-
-        $start = strtotime("04:30");
-        $end   = strtotime("13:00");
+        $start = strtotime($start);
+        $end   = strtotime($end);
 
         if($start > $end){
             $end = $end + 86400;
@@ -202,7 +199,43 @@ if ( ! function_exists('build_today_td'))
         $total = abs($end - $start);
         $total = ($total / 60) / 60;
 
-        $arr['total_number'] = floor($total);
+        return $total;
+    }   
+}
+
+
+
+if ( ! function_exists('build_today_td'))
+{
+    function build_today_td($data)
+    {
+        $arr = array();
+        $td = "";
+        
+        if(!$data->shift_information){
+
+            for($x = 0 ; $x < 24 ; $x++){
+                $td .= "<td></td>";
+            }
+
+            return $td;
+        }
+
+
+        $start = strtotime($data->shift_information->start_time);
+        $end   = strtotime($data->shift_information->end_time);
+
+        if($start > $end){
+            $end = $end + 86400;
+        }
+
+        $start_time = substr(date("h:ia" , $start) , 0, -1);
+        $end_time = substr(date("h:ia" , $end) , 0, -1);
+
+        $total = abs($end - $start);
+        $total = ($total / 60) / 60;
+
+        $arr['total_number'] = ceil($total);
         $arr['total_hrs'] = round($total , 1);
         $arr['start'] = date("H" , $start);
         $arr['end'] = $arr['start'] + $arr['total_number'];
@@ -218,26 +251,73 @@ if ( ! function_exists('build_today_td'))
             );
 
             $arr['shift'][1] = array(
-                "colspan" => abs(check_number($arr["start"]) - 24),
+                "colspan" => abs(check_number($arr["start"]) - 24)+1,
                 "start"   => check_number($arr["start"])
             );
 
             
         }else{
             $arr['shift'][0] = array(
-                "colspan" => $total_number ,
+                "colspan" => $arr['total_number'] ,
                 "start"   => check_number($arr['start'])
             );
         }
 
 
-        if(count($arr['shift']) == 1){
+        if(count($arr['shift']) == 2){
+            $td .= "<td colspan='".$arr['shift'][0]['colspan']."'>";
 
+               if($arr['shift'][0]['colspan'] > $arr['shift'][1]['colspan']){
+                    $td .= '<a href="javascript:void(0);" style="background-color: '.$data->shift_information->block_color.'" data-shiftcolor="'.$data->shift_information->block_color.'" data-positioncolor="'.$data->shift_information->block_color.'">'.$start_time.' - '.$end_time.'<small> @ '.$data->shift_information->outlet_name.'</small> <span> '.$data->shift_information->group_name.'</span></a>';
+               }else{
+                    $td .= '<a href="javascript:void(0);" style="background-color: '.$data->shift_information->block_color.';" data-shiftcolor="'.$data->shift_information->block_color.'" data-positioncolor="'.$data->shift_information->block_color.'" >&nbsp;</a>';
+               }
+
+            $td .= "</td>";
+
+            $each = abs($arr['shift'][0]['colspan'] - ($arr['shift'][1]['start'] - 1));
+
+            for($x = 0 ; $x < $each ; $x++){
+                $td .= "<td></td>";
+            }
+
+            $td .= "<td colspan='".$arr['shift'][1]['colspan']."'>";
+                if($arr['shift'][0]['colspan'] > $arr['shift'][1]['colspan']){
+                    $td .= '<a href="javascript:void(0);" style="background-color: '.$data->shift_information->block_color.';" data-shiftcolor="'.$data->shift_information->block_color.'" data-positioncolor="'.$data->shift_information->block_color.'" >&nbsp;</a>';
+                }else{
+                    $td .= '<a href="javascript:void(0);" style="background-color: '.$data->shift_information->block_color.'" data-shiftcolor="'.$data->shift_information->block_color.'" data-positioncolor="'.$data->shift_information->block_color.'">'.$start_time.' - '.$end_time.'<small> @ '.$data->shift_information->outlet_name.'</small> <span> '.$data->shift_information->group_name.'</span></a>';
+                }
+                
+            $td .= "</td>";
         }else{
+
+            if($arr['shift'][0]['start'] != 1){
+                
+                $each = ($arr['shift'][0]['start'] - 1);
+
+                for($x = 0 ; $x < $each ; $x++){
+                    $td .= "<td></td>";
+                }
+            }
+
+            $td .= "<td colspan='".$arr['shift'][0]['colspan']."'>";
+                $td .= '<a href="javascript:void(0);" style="background-color: '.$data->shift_information->block_color.'" data-shiftcolor="'.$data->shift_information->block_color.'" data-positioncolor="'.$data->shift_information->block_color.'">'.$start_time.' - '.$end_time.'<small> @ '.$data->shift_information->outlet_name.'</small> <span> '.$data->shift_information->group_name.'</span></a>';
+            $td .= "</td>";
+
+            $each =  $arr['shift'][0]['colspan'] + ($arr['shift'][0]['start'] - 1 ) ;
+            
+            if($each  != 24){
+
+                $each = abs($each - 24);
+
+                for($x = 0 ; $x < $each ; $x++){
+                    $td .= "<td></td>";
+                }
+            }
 
         }
 
-        print_r_die($arr);
+        return $td;
     }   
 }
 

@@ -154,6 +154,7 @@ class Timetracker extends MY_Controller {
 				if($shift_id = $this->timetracker->add_shift_block($save_template)){ 
 
 					$post = $this->input->post();
+					$post['total_hours'] = compute_time_hours($post['pre_time_start'] , $post['pre_time_end']);
 					$post['pre_time_start'] = substr(date("h:ia" , strtotime($post['pre_time_start'])) , 0, -1);
 					$post['pre_time_end'] = substr(date("h:ia" , strtotime($post['pre_time_end'])) , 0, -1);
 
@@ -161,7 +162,8 @@ class Timetracker extends MY_Controller {
 
 					echo json_encode([
 						"status" => true ,
-						"id" => $this->hash->encrypt($schedule_id) ,
+						"id" => $this->hash->encrypt($schedule_id['id']) ,
+						"total_hours" => $schedule_id['total_hours'],
 						"data" => $post ,
 						"published" => "unpublished"
 					]);
@@ -235,14 +237,19 @@ class Timetracker extends MY_Controller {
 		echo json_encode($this->timetracker->get_preferred_shift());
 	}
 	public function get_shift_information_today(){
-		echo json_encode($this->timetracker->get_shift_information_today());
+		$data['result'] = $this->timetracker->get_shift_information_today();
+		$data['my_name'] = strtoupper($this->session->userdata("user")->display_name);
+		$data['store_name'] = strtoupper($this->session->userdata("user")->store_name);
+
+		echo json_encode($data);
 	}
 
 	public function save_shift(){
 		if($last_id = $this->timetracker->assign_shift_to_staff()){
 			echo json_encode([
 				"status" => true ,
-				"id" => $this->hash->encrypt($last_id)
+				"id" => $this->hash->encrypt($last_id['id']),
+				"total_hours" => $last_id['total_hours']
 			]);
 		}else{
 			echo json_encode([
@@ -312,6 +319,14 @@ class Timetracker extends MY_Controller {
 		}else{
 			echo json_encode(["status" => false]);
 		}
+	}
+
+	public function attendance(){
+		$this->data['website_title'] = "Timetracker | Accounts Package";
+		$this->data['page_name'] = "Staff Attendance";
+		$this->data['main_page'] = "backend/page/timetracker/attendance";
+
+		$this->load->view('backend/master' , $this->data);
 	}
 
 	private function loop_date($start , $end){

@@ -21,13 +21,14 @@ function load_data(btn_click){
 		success : function(response){
 			var json = jQuery.parseJSON(response);
 			scheduler_builder(json);
+			load_total_hours();
 		}
 	});
 }
+
 function table_builder(v){
 	var schedule_list = v.schedule_list;
 	var tr = $("<tr>");
-
 
 	var td = $("<td>" , {class : "border-left border-bottom" , "data-staff" : v.staff_id});
 	var div = $("<div>").append($("<img>" , {src : site_url+v.image_path+"/60/60/"+v.image_name , style : "width:30px;"}) );
@@ -168,7 +169,7 @@ function scheduler_builder(json){
 }
 
 function build_shift(b){
-	var a = $("<a>" , {href: "javascript:void(0);" , "data-shift_id" : b.date_id  , "data-published" : b.published , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+b.block_color , text : b.start_time+" - "+b.end_time});
+	var a = $("<a>" , {href: "javascript:void(0);" , "data-total_hours" : b.total_hours , "data-shift_id" : b.date_id  , "data-published" : b.published , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+b.block_color , text : b.start_time+" - "+b.end_time});
 	var span = $("<span>").html(b.group_name);
 	a.append(span);
 	var div = $("<div>" , { class : "shift_container " , style : "display:block;width:100%;margin:0px;padding:0px;border-radius:10px;"});
@@ -176,6 +177,78 @@ function build_shift(b){
 	div.append($("<div>" , {class : b.published}));
 	return div;
 }
+
+function load_total_hours(){
+	var table = $(".scheduler-table");
+	var tr = table.find("tbody").find("tr:not(.td_open_shift)");
+
+	var monday    = 0;
+	var tuesday   = 0;
+	var wednesday = 0;
+	var thursday  = 0;
+	var friday    = 0;
+	var saturday  = 0;
+	var sunday    = 0;
+
+	$.each(tr , function(k , v){
+
+	    var a = $(v).find("td:eq(1)").find("a.tdShift").data("total_hours");
+
+	    if(a != undefined){
+	    	monday    += parseFloat(a);
+	    }
+
+	    var a = $(v).find("td:eq(2)").find("a.tdShift").data("total_hours");
+
+	    if(a != undefined){
+	    	tuesday    += parseFloat(a);
+	    }
+
+	    var a = $(v).find("td:eq(3)").find("a.tdShift").data("total_hours");
+
+	    if(a != undefined){
+	    	wednesday    += parseFloat(a);
+	    }
+
+	    var a = $(v).find("td:eq(4)").find("a.tdShift").data("total_hours");
+
+	    if(a != undefined){
+	    	thursday    += parseFloat(a);
+	    }
+
+	    var a = $(v).find("td:eq(5)").find("a.tdShift").data("total_hours");
+
+	    if(a != undefined){
+	    	friday    += parseFloat(a);
+	    }
+
+	    var a = $(v).find("td:eq(6)").find("a.tdShift").data("total_hours");
+
+	    if(a != undefined){
+	    	saturday    += parseFloat(a);
+	    }
+
+	    var a = $(v).find("td:eq(7)").find("a.tdShift").data("total_hours");
+
+	    if(a != undefined){
+	    	sunday    += parseFloat(a);
+	    }
+
+	});
+
+	$('#td_total_2').html(monday+" Hrs");
+	$('#td_total_3').html(tuesday+" Hrs");
+	$('#td_total_4').html(wednesday+" Hrs");
+	$('#td_total_5').html(thursday+" Hrs");
+	$('#td_total_6').html(friday+" Hrs");
+	$('#td_total_7').html(saturday+" Hrs");
+	$('#td_total_8').html(sunday+" Hrs");
+
+	var total = monday + tuesday + wednesday + thursday + friday + saturday + sunday;
+
+	$("#td_total_1").html(total+" Hrs");
+}
+
 
 $(document).on("click" , ".scheduler-table tbody > tr > td:not(:first-child)" , function(e){
 	var dateid = $(this).data("dateid");
@@ -255,6 +328,7 @@ $(document).on("click" , ".modal .shift-list-a" , function(){
 			if(json.status){
 				clone.data("shift_id" , json.id);
 				clone.addClass("tdShift");
+				clone.data("total_hours" , json.total_hours);
 				clone.data("published" , "unpublished");
 
 				var div = $("<div>" , { class : "shift_container " , style : "display:block;width:100%;margin:0px;padding:0px;border-radius:10px;"});
@@ -266,6 +340,7 @@ $(document).on("click" , ".modal .shift-list-a" , function(){
 
 				var btn = $(".btn-publish");
 				btn.data("submit" , true).removeClass("btn-default").addClass("btn-success").html('Publish & Notify <br><small>Entire Schedule</small>');
+				load_total_hours();
 			}
 
 		}
@@ -352,7 +427,7 @@ $(document).on("click" , ".btn-create-shift" , function(){
 			var json = jQuery.parseJSON(response);
 			var group_name = modal.find('select[name="position"] option[value="'+json.data.position+'"]').text();
 			
-			var a = $("<a>" , { href: "javascript:void(0);" , "data-shift_id" : json.id , "data-published" : json.published , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+json.data.group_color , text : json.data.pre_time_start+" - "+json.data.pre_time_end});
+			var a = $("<a>" , { href: "javascript:void(0);" , "data-total_hours" : json.total_hours , "data-shift_id" : json.id , "data-published" : json.published , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+json.data.group_color , text : json.data.pre_time_start+" - "+json.data.pre_time_end});
 			var span = $("<span>").html(group_name);
 			a.append(span);
 
@@ -365,6 +440,8 @@ $(document).on("click" , ".btn-create-shift" , function(){
 			td.append(div);
 
 			modal.modal("hide");
+
+			load_total_hours();
 		}
 	});
 });
@@ -384,7 +461,7 @@ $(document).on("click" , ".btn-update-shift" , function(){
 			var json = jQuery.parseJSON(response);
 			var group_name = modal.find('select[name="position"] option[value="'+json.data.position+'"]').text();
 			
-			var a = $("<a>" , { href: "javascript:void(0);" , "data-shift_id" : json.id , "data-published" : json.published , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+json.data.group_color , text : json.data.pre_time_start+" - "+json.data.pre_time_end});
+			var a = $("<a>" , { href: "javascript:void(0);" , "data-total_hours" : json.total_hours , "data-shift_id" : json.id , "data-published" : json.published , class: "tdShift shift-list-a btn btn-block " , style : "background-color : "+json.data.group_color , text : json.data.pre_time_start+" - "+json.data.pre_time_end});
 			var span = $("<span>").html(group_name);
 			a.append(span);
 
@@ -399,6 +476,8 @@ $(document).on("click" , ".btn-update-shift" , function(){
 			td.append(div);
 
 			modal.modal("hide");
+
+			load_total_hours();
 		}
 	});
 });
@@ -447,6 +526,8 @@ $(document).on("click" , ".btn-proceed" , function(){
 
 			a_click.closest(".shift_container").remove();
 			current_modal.data("noshow" , true).modal("hide");
+
+			load_total_hours();
 		}
 	});
 });
