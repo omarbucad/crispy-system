@@ -701,6 +701,150 @@ class Timetracker_model extends CI_Model {
         return $result;
     }
 
+    public function get_attendance_list(){
+        $staff_id = $this->hash->decrypt($this->input->post("staff_id"));
+        $pay_period_id = $this->hash->decrypt($this->input->post("pay_period_id"));
+
+        $pay_information = $this->db->where("pay_id" , $pay_period_id)->get("timetracker_pay")->row();
+
+        $loop_date = loop_date($pay_information->from_date , $pay_information->to_date , true);
+
+        $attendance_list = array();
+
+        $published_information = $this->db->where("staff_id" , $staff_id)->where_in("date_schedule" , $loop_date)->get('timetracker_shift_schedule_published')->result();
+
+        foreach($published_information as $row){
+
+            $schedule = compute_time_hours($row->start_time , $row->end_time);
+            $worked   = 0;
+
+            $attendance_list[ strtotime($row->date_schedule) ] = array(
+                "day"       => date("D , M j" , strtotime($row->date_schedule)) ,
+                "time_in"   => '-' ,
+                "time_out"  => '-' ,
+                "total"     => '-' ,
+                "worked"    => $worked ,
+                "schedule"  => round($schedule ,2 ) ,
+                "diff"      => round($worked - $schedule  , 2)
+            ); 
+        }
+
+        $timeclock = $this->db->where("staff_id" , $staff_id)->where_in("shift_date" , $loop_date)->get("timetracker_timeclock")->result();
+
+        foreach($timeclock as $row){
+            
+            $attendance_list[ strtotime($row->shift_date) ] = array(
+                "day"       => date("D , M j" , strtotime($row->shift_date)) ,
+                "time_in"   => $row->time_in ,
+                "time_out"  => $row->time_out ,
+                "total"     => $row->worked_hrs ,
+                "worked"    => $row->worked_hrs ,
+                "schedule"  => $row->scheduled_hrs ,
+                "diff"      => round($row->worked_hrs - $row->scheduled_hrs   , 2)
+            ); 
+        }
+
+        ksort($attendance_list);
+
+        return $attendance_list;
+    }
+
+    public function insert_clock_time(){
+        $staff_id = $this->hash->decrypt($this->input->post("staff_id"));
+        $clock_in = $this->input->post("clock_in");
+        
+        $location = array(
+            $this->input->post("longitude") , $this->input->post("latitude")
+        );
+
+        $this->db->trans_start();
+
+        //GETTING TIMEZONE OF THE STAFF
+        $this->db->select("sa1.timezone as timezone , ts.store_id , ts.outlet_id");
+        $this->db->join("store_outlet so" , "so.outlet_id = ts.outlet_id");
+        $this->db->join("store_address sa1" , "sa1.store_address_id = so.physical_address");
+        $staff_information = $this->db->where("ts.staff_id" , $staff_id)->get("timetracker_staff ts")->row();
+
+        $timezone = $staff_information->timezone;
+
+        //GET THE CURRENT DATE USING THE TIMEZONE
+        $date = new DateTime("now", new DateTimeZone($timezone) );
+        $clock_date = $date->format('F j Y');
+
+
+        //GET SHIFT INFORMATION
+        $this->db->select("start_time , end_time , id");
+        $shift_information = $this->db->where("staff_id" , $staff_id)->where("date_schedule" , $clock_date)->get("timetracker_shift_schedule_published")->row();
+
+
+        //CHECK IF THE STAFF ALREADY CLOCK IN
+        $check = $this->db->where("staff_id" , $staff_id)->where("shift_date" , $clock_date)->get("timetracker_timeclock")->row();
+
+        if($check){
+            //ALREADY CLOCK . MEANS YOU NEED TO UPDATE THE TIMECLOCK AS OUT
+
+            //COMPUTE FOR WORKED HOURS
+
+            $worked_hrs = compute_time_hours($check->time_in , $clock_in);
+            $worked_hrs = round( $worked_hrs , 2);
+
+            $this->db->where("timeclock_id" , $check->timeclock_id)->update("timetracker_timeclock" , [
+                "worked_hrs"    => $worked_hrs ,
+                "time_out"      => $clock_in,
+                "status"        => 1 ,
+                "out_location"  => implode(",", $location)
+            ]);
+
+            $last_id = $check->timeclock_id;  
+        }else{
+            //NO DATA YET . INSERT IT AS TIME IN
+
+            //COMPUTE FOR LATE
+
+            $time_in = strtotime($clock_date.' '.$clock_in);
+            $shift_time_in = strtotime($clock_date.' '.$shift_information->start_time);
+
+            $late = 0;
+
+            if($time_in > $shift_time_in){
+                $late = compute_time_hours($time_in , $shift_time_in);
+                $late = round( $late , 2);
+            }
+
+            $start_time = strtotime($shift_information->start_time);
+            $end_time = strtotime($shift_information->end_time);
+
+            if($start_time > $end_time){
+                $end_time = $end_time + 86400;
+            }
+
+            $scheduled_hrs = compute_time_hours($end_time , $start_time);;
+            $scheduled_hrs = round( $scheduled_hrs , 2 );
+
+            $this->db->insert("timetracker_timeclock" , [
+                "published_id"      =>      $shift_information->id ,
+                "staff_id"          =>      $staff_id ,
+                "time_in"           =>      $clock_in ,
+                "late"              =>      $late ,
+                "scheduled_hrs"     =>      $scheduled_hrs ,
+                "shift_date"        =>      $clock_date    ,
+                "outlet_id"         =>      $staff_information->outlet_id ,
+                "created"           =>      time() ,
+                "in_location"       =>      implode(",", $location)
+            ]);
+
+            $last_id = $this->db->insert_id();
+        }
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            return false;
+        }else{
+            return $last_id;
+        }
+    }
+
     private function get_only_date($data){
         $tmp = array();
 

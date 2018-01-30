@@ -250,7 +250,7 @@ function load_total_hours(){
 }
 
 
-$(document).on("click" , ".scheduler-table tbody > tr > td:not(:first-child)" , function(e){
+$(document).on("click" , ".scheduler-table tbody > tr:not(.td_open_shift) > td:not(:first-child)" , function(e){
 	var dateid = $(this).data("dateid");
 	var datename = $(dateid).data("date");
 	var staff_id = $(this).parent().find("td").first().data("staff");

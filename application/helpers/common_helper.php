@@ -357,3 +357,29 @@ if ( ! function_exists('check_number'))
     }   
 }
 
+if ( ! function_exists('loop_date'))
+{
+    function loop_date($start , $end , $date_only = false)
+    {
+        $begin = new DateTime( $start );
+        $end = new DateTime( $end .'+1 day');
+        $tmp = array();
+
+        $interval = DateInterval::createFromDateString('1 day');
+        $period = new DatePeriod($begin, $interval, $end);
+
+        foreach ( $period as $dt ){
+            if($date_only){
+                $tmp[] = strtoupper($dt->format("F j Y"));
+            }else{
+                 $tmp[$dt->format( "D" )] = [
+                    "value" => strtoupper($dt->format("D j")) ,
+                    "date"  => strtoupper($dt->format("F j Y"))
+                ];
+            }
+        }
+
+        return $tmp;
+    }   
+}
+

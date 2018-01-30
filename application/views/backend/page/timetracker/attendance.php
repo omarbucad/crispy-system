@@ -28,6 +28,12 @@
                     $.each(json.result , function(k , v){
 
                         var li = $("<li>" , {"data-staffid" : v.staff_id , class : "list-group-item"});
+                        
+                        if(k == 0){
+                            li.addClass("active");
+                        }
+
+                       
                         var img = $("<img>" , {src : site_url+v.image_path+"/60/60/"+v.image_name , alt : v.first_name+' '+v.last_name });
                         var span = $("<span>" , {class : "staff_name"}).html(v.first_name+' '+v.last_name);
                         var span2 = $("<span>" , {class : "badge"}).html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>');
@@ -68,6 +74,12 @@
         $(this).addClass("active");
        
     });
+
+    $(document).on("change" , '#pay_period_id' , function(){
+        var staff_id = $("#div_timesheets nav > ul > li.active").data("staffid");
+        load_summary(staff_id);
+    });
+
     function load_summary(staff_id){
         var pay_id = $('#pay_period_id').val();
         var url = "<?php echo site_url('app/timetracker/get_staff_summary'); ?>";
@@ -82,6 +94,7 @@
             }
         });
     }
+
     function init_summary(json){
         var data = json.summary_result;
         var summary_div = $('#summary_div');
@@ -93,119 +106,71 @@
         summary_div.find('.timesheet_summary #_double_ot').html(data.field_3);
         summary_div.find('.timesheet_summary #_sick').html(data.field_4);
         summary_div.find('.timesheet_summary #_vacation').html(data.field_5);
+
+        var attendance = json.attendance_result;
+
+        var table = $("#timesheet_table");
+        table.find("tbody").html(" ");
+
+        $.each(attendance , function(k , v){
+            var tr = $("<tr>");
+
+            var td = $("<td>").append($("<span>" , {class : "edittable"}).html(v.day));
+            tr.append(td);
+            var td = $("<td>").append($("<span>" , {class : "edittable"}).html(v.time_in));
+            tr.append(td);
+            var td = $("<td>").append($("<span>" , {class : "edittable"}).html(v.time_out));
+            tr.append(td);
+            var td = $("<td>").append($("<span>", {id : "_total"}).html(v.total));
+            tr.append(td);
+            var td = $("<td>");
+
+            var edittext = $("<textarea>" , {rows : 5 , class : "form-control putnote"});
+            var btn = $("<button>" , {text : "Save" , class : "btn btn-success"});
+            var div = $("<div>" , { class : "notecontainer"});
+            div.append(edittext);
+            div.append(btn);
+
+            var a = $("<a>" , { href : "javascript:void(0)" , class : "pull-right" , title : "Put a Note" , "data-content" : div[0].outerHTML , "data-original-title" : "Put a Note" , "data-html" : true , "data-placement" : "left" }).html('<i class="fa fa-plus" aria-hidden="true"></i> Add Note');
+            a.popover();
+
+            td.append(a);
+            tr.append(td);
+            var td = $("<td>").append($("<span>" , {id : "_worked"}).html(v.worked));
+            tr.append(td);
+            var td = $("<td>").append($("<span>" , {id : "_schedule"}).html(v.schedule));
+            tr.append(td);
+            var td = $("<td>").append($("<span>" , {id : "_diff"}).html(v.diff));
+            tr.append(td);
+
+            table.find("tbody").append(tr);
+        });
+
     }
 </script>
 <style type="text/css">
-    #attendance_side_menu > div{
-        margin-bottom: 15px;
-    }
-    #attendance_side_menu section:not(:last-child){
-        margin: 2px;
-        border-bottom: 1px solid rgba(0,0,0,0.2);
-    }
-    #attendance_side_menu section.s_header , #attendance_side_menu section.ac-btn-group{
-        overflow: hidden;
-    }
-    #attendance_side_menu section.s_header > * {
-        float: left;
-    }
-    #attendance_side_menu section.s_header > span{
-        width: 85%;
-        font-weight: bold;
-        padding: 10px;
-        color: rgba(0,0,0,0.5);
-    }
-    #attendance_side_menu section.s_header > button{
-        width: 15%;
-        display: block;
-        height: 38px;
-        border-color: transparent;
-        background-color: transparent;
-        border-left-color: rgba(0,0,0,0.2);
-        border-width: 0.01em;
-    }
-    #attendance_side_menu section.ac-btn-group > button{
-        float: left;
-        width: 50% !important;
-        border:1px solid transparent;
-        background: transparent;
-        font-weight: bold;
-        padding: 10px;
-        color: rgba(0,0,0,0.5);
-    }
-    #attendance_side_menu section > select{
-        border:none;
-    }
-    #attendance_side_menu section.ac-btn-group > button:last-child{
-        border-left-color: rgba(0,0,0,0.2);
-    }
-    #attendance_side_menu #div_timesheets > *{
-        padding: 5px;
-    }
-    #attendance_side_menu #div_timesheets > label{
-        font-size: 17px;
-        padding: 10px;
-        padding-bottom: 0px;
-    }
-    #attendance_side_menu #div_timesheets nav{
-        max-height:700px;
-        overflow: auto;
-    }
-    #attendance_side_menu #div_timesheets nav > ul{
-        padding: 0px;
-        list-style-type: none;
-        margin-bottom: 0px;
-    }
-    #attendance_side_menu #div_timesheets nav > ul > li{
-        display: block;
-        overflow: hidden;
-        padding: 5px;
-        cursor: pointer;
-    }
-    #attendance_side_menu #div_timesheets nav > ul > li > img , 
-    #attendance_side_menu #div_timesheets nav > ul > li > span.staff_name{
-        float: left;
-    }
-    #attendance_side_menu #div_timesheets nav > ul > li > span.badge{
-        position:absolute;
-        right: 5px;
-        top: 11px;
-        background-color: transparent;
-        color:black;
-    }
-    #attendance_side_menu #div_timesheets nav > ul > li > img{
-        width: 20px;
-    }
-    #attendance_side_menu #div_timesheets nav > ul > li > span.staff_name{
-        width: calc(100% - 20px);
-        font-weight: bold;
-        padding: 5px 10px;
-    }
-    #attendance_side_menu #div_timesheets nav > ul > li.missing-out{
-        background-color: #fdefef;
-        color: #ff4826;
-    }
-
-    .timesheet_summary > ul{
-        list-style-type: none;
-        padding: 0px;
-    }
-    .timesheet_summary > ul > li{
-        display: inline-block;
-        padding-right: 5px;
-    }
-    .timesheet_summary > ul > li > span.staff_name{
-        font-weight: bold;
-    }
-    #timesheet_table > thead , #timesheet_table > tfoot{
-        background-color: #F1f1f1;
-        font-size: 11px;
-    }
-    #timesheet_table > tbody{
-        font-size: 12px;
-    }
     .daterangepicker.dropdown-menu {
         z-index: 100001 !important;
+    }
+
+    .notecontainer{
+        overflow: hidden;
+    }
+    .notecontainer > *{
+        float: left;
+    }
+
+    .notecontainer > textarea{
+        width:140px;
+        height:80px;
+        resize:none;
+        display: block;
+        border-right: none;
+    }
+    .notecontainer > button{
+        height: 80px;
+        border: none;
+        margin: 0px;
     }
 </style>
 <div class="container-fluid margin-bottom">

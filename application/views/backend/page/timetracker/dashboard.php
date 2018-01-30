@@ -45,49 +45,7 @@
         return tr;
     }
 </script>
-<style type="text/css">
-    #dashboard_timetracker_div {
-        max-height: 500px;
-        overflow: auto;
-    }
-    #dashboard_timetracker_div table{
-        margin-bottom: 0px;
-    }
-    #dashboard_timetracker_table tbody > tr > td{
-        overflow: hidden;
-    }
-    #dashboard_timetracker_table tbody > tr > td > div{
-        float: left;
-    }
-    #dashboard_timetracker_table tbody > tr > td > div:first-child{
-        width: 30px;
-    }
-    #dashboard_timetracker_table tbody > tr > td > div:last-child{
-        width: calc(100% - 30px);
-        padding: 3px;
-    }
-    #dashboard_timetracker_table tbody > tr > td > div:last-child > span{
-        font-weight: bold;
-        font-size: 11px;
-    }
-    #dashboard_timetracker_table tbody > tr > td > a{
-        display: block;
-        padding: 7px;
-        text-decoration: none;
-        font-weight: bold;
-        color:white;
-        font-size: 11px;
-        font-family: 'Roboto Condensed', sans-serif;
-    }
-    #dashboard_timetracker_table tbody > tr > td > a > span{
-        padding: 3px 5px;
-        margin-left: 10px;
-        background-color: rgba(0,0,0,0.3);
-        color:white;
-        font-size: 9px;
-        font-family: 'Roboto Condensed', sans-serif;
-    }
-</style>
+
 <div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
         <div class="panel panel-default">

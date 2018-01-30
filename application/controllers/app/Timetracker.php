@@ -214,7 +214,7 @@ class Timetracker extends MY_Controller {
 
 			$data['scheduler_name'] = $from .' - '.$to;
 			$data['scheduler_name_date'] = $from;
-			$data['loop_date'] = $this->loop_date($from , $to);
+			$data['loop_date'] = loop_date($from , $to);
 			$data['staff_list'] = $this->timetracker->get_staff_by_outlet($data['loop_date']);
 
 
@@ -370,27 +370,17 @@ class Timetracker extends MY_Controller {
 
 
 	public function get_staff_summary(){
+		$data['attendance_result'] = $this->timetracker->get_attendance_list();
 		$data['summary_result'] = $this->timetracker->get_summary_by_id();
 
 		echo json_encode($data);
 	}
 
-
-	private function loop_date($start , $end){
-		$begin = new DateTime( $start );
-		$end = new DateTime( $end .'+1 day');
-		$tmp = array();
-
-		$interval = DateInterval::createFromDateString('1 day');
-		$period = new DatePeriod($begin, $interval, $end);
-
-		foreach ( $period as $dt ){
-			$tmp[$dt->format( "D" )] = [
-				"value" => strtoupper($dt->format("D j")) ,
-				"date"  => strtoupper($dt->format("F j Y"))
-			];
+	public function timeclock(){
+		if($id = $this->timetracker->insert_clock_time()){
+			echo $id;
+		}else{
+			echo "FALSE";
 		}
-
-		return $tmp;
 	}
 }
