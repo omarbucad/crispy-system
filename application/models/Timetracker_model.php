@@ -369,7 +369,27 @@ class Timetracker_model extends CI_Model {
     public function get_shift_information_today(){
         $store_id = $this->data['session_data']->store_id;
         $outlet_id = $this->hash->decrypt($this->input->post("outlet_id"));
-        $today = date("F d Y");
+
+        if($this->input->post("outlet_id") == "ALL_OUTLET"){
+
+            // TEMPORARY DATE 
+            //TODO:: MUST CHECK IF THE TIMEZONE OF STORE OR TIMEZONE OF FIRST OUTLET
+            $today = date("F d Y");
+
+        }else{
+
+            //GETTING TIMEZONE OF THE STAFF
+            $this->db->select("sa1.timezone as timezone");
+            $this->db->join("store_address sa1" , "sa1.store_address_id = so.physical_address");
+            $outlet_information = $this->db->where("so.outlet_id" , $outlet_id)->get("store_outlet so")->row();
+
+            $timezone = $outlet_information->timezone;
+
+            //GET THE CURRENT DATE USING THE TIMEZONE
+            $date = new DateTime("now", new DateTimeZone($timezone) );
+            $today = $date->format('F d Y');
+
+        }
 
         $this->db->select("ts.max_hours , ts.image_path , ts.image_name , sc.first_name , sc.last_name , ts.staff_id");
         $this->db->join("store_contact sc" , "sc.store_contact_id = ts.contact_id");
@@ -719,12 +739,14 @@ class Timetracker_model extends CI_Model {
             $worked   = 0;
 
             $attendance_list[ strtotime($row->date_schedule) ] = array(
+                "tc_id"     => "NO_TIMECLOCK",
+                "d"         => date("D" , strtotime($row->date_schedule)) ,
                 "day"       => date("D , M j" , strtotime($row->date_schedule)) ,
                 "time_in"   => '-' ,
                 "time_out"  => '-' ,
-                "total"     => '-' ,
+                "late"      => '-' ,
                 "worked"    => $worked ,
-                "schedule"  => round($schedule ,2 ) ,
+                "schedule"  => round($schedule , 2 ) ,
                 "diff"      => round($worked - $schedule  , 2)
             ); 
         }
@@ -734,10 +756,12 @@ class Timetracker_model extends CI_Model {
         foreach($timeclock as $row){
             
             $attendance_list[ strtotime($row->shift_date) ] = array(
+                "tc_id"     => $this->hash->encrypt($row->timeclock_id), 
+                "d"         => date("D" , strtotime($row->shift_date)) ,
                 "day"       => date("D , M j" , strtotime($row->shift_date)) ,
-                "time_in"   => $row->time_in ,
-                "time_out"  => $row->time_out ,
-                "total"     => $row->worked_hrs ,
+                "time_in"   => date("h:ia" , strtotime($row->time_in)),
+                "time_out"  => ($row->time_out) ? date("h:ia" , strtotime($row->time_out)) : "-",
+                "late"      => $row->late ,
                 "worked"    => $row->worked_hrs ,
                 "schedule"  => $row->scheduled_hrs ,
                 "diff"      => round($row->worked_hrs - $row->scheduled_hrs   , 2)
@@ -771,6 +795,8 @@ class Timetracker_model extends CI_Model {
         $date = new DateTime("now", new DateTimeZone($timezone) );
         $clock_date = $date->format('F j Y');
 
+        //TEMPORARY REMOVE IT AFTER TEST
+        $clock_date = $this->input->post("date");
 
         //GET SHIFT INFORMATION
         $this->db->select("start_time , end_time , id");
@@ -796,6 +822,7 @@ class Timetracker_model extends CI_Model {
             ]);
 
             $last_id = $check->timeclock_id;  
+
         }else{
             //NO DATA YET . INSERT IT AS TIME IN
 
@@ -807,18 +834,13 @@ class Timetracker_model extends CI_Model {
             $late = 0;
 
             if($time_in > $shift_time_in){
-                $late = compute_time_hours($time_in , $shift_time_in);
+                $late = compute_time_hours($shift_information->start_time , $clock_in);
                 $late = round( $late , 2);
             }
 
-            $start_time = strtotime($shift_information->start_time);
-            $end_time = strtotime($shift_information->end_time);
+            //COMPUTE THE TOTAL HOURS OF SHIFT
 
-            if($start_time > $end_time){
-                $end_time = $end_time + 86400;
-            }
-
-            $scheduled_hrs = compute_time_hours($end_time , $start_time);;
+            $scheduled_hrs = compute_time_hours($shift_information->start_time, $shift_information->end_time);
             $scheduled_hrs = round( $scheduled_hrs , 2 );
 
             $this->db->insert("timetracker_timeclock" , [

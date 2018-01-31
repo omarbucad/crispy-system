@@ -48,7 +48,7 @@
                     load_summary(staff_id);
 
                 }else{
-                     $('#summary_div').addClass("hide");
+                    $('#summary_div').addClass("hide");
                     var li = $("<li>");
                     var a = $("<a>" , {href : "javascript:void(0);" , "data-toggle" : "modal" , "data-target" : "#add_pay_modal" , text : "Click Here to new Pay Period"});
                     li.append(a);
@@ -113,7 +113,12 @@
         table.find("tbody").html(" ");
 
         $.each(attendance , function(k , v){
-            var tr = $("<tr>");
+            
+            if(v.d == "Sun" || v.d == "Sat"){
+                var tr = $("<tr>" , {class : "active " , "data-tcid" : v.tc_id});
+            }else{
+                var tr = $("<tr>" , {"data-tcid" : v.tc_id});
+            }
 
             var td = $("<td>").append($("<span>" , {class : "edittable"}).html(v.day));
             tr.append(td);
@@ -121,7 +126,7 @@
             tr.append(td);
             var td = $("<td>").append($("<span>" , {class : "edittable"}).html(v.time_out));
             tr.append(td);
-            var td = $("<td>").append($("<span>", {id : "_total"}).html(v.total));
+            var td = $("<td>").append($("<span>", {id : "_total"}).html(v.late));
             tr.append(td);
             var td = $("<td>");
 
@@ -131,10 +136,45 @@
             div.append(edittext);
             div.append(btn);
 
-            var a = $("<a>" , { href : "javascript:void(0)" , class : "pull-right" , title : "Put a Note" , "data-content" : div[0].outerHTML , "data-original-title" : "Put a Note" , "data-html" : true , "data-placement" : "left" }).html('<i class="fa fa-plus" aria-hidden="true"></i> Add Note');
-            a.popover();
+            var a = $("<a>" , {
+                href : "javascript:void(0)" , 
+                class : "pull-right" , 
+                title : "Put a Note" , 
+                "data-content" : div[0].outerHTML , 
+                "data-original-title" : "Put a Note" , 
+                "data-html" : true , 
+                "data-placement" : "left" 
+            }).html('<i class="fa fa-plus" aria-hidden="true"></i> Add Note').popover();
 
             td.append(a);
+
+            var a = $("<a>" , {
+                href : "javascript:void(0)" , 
+                class : "pull-left" , 
+                title : "View Employee Login/Logout Location" , 
+                "data-content" : "<div style='width:250px;height:100px;'></div>" , 
+                "data-original-title" : "Location" , 
+                "data-html" : true , 
+                "data-placement" : "left" 
+            }).html('<i class="fa fa-globe" aria-hidden="true"></i>').popover();
+
+            td.append(a);
+
+            var a = $("<a>" , {
+                href : "javascript:void(0)" , 
+                class : "pull-left view-notes" , 
+                title : "View Notes" , 
+                style : "margin-left:10px",
+                "data-content" : "<div style='width:250px;height:100px;overflow:auto;'></div>" , 
+                "data-original-title" : "Notes" , 
+                "data-html" : true , 
+                "data-placement" : "left" ,
+                "data-trigger" : "focus"
+            }).html('<i class="fa fa-sticky-note-o" aria-hidden="true"></i>').popover();
+
+            td.append(a);
+
+
             tr.append(td);
             var td = $("<td>").append($("<span>" , {id : "_worked"}).html(v.worked));
             tr.append(td);
@@ -146,7 +186,65 @@
             table.find("tbody").append(tr);
         });
 
+        table.find(".edittable").prop("contenteditable" , true);
     }
+
+    $(document).on("click" , "#show_shift_btn" , function(){
+        var modal = $("#show_shift_modal").modal("show");
+        var staff_id = $("#div_timesheets nav > ul > li.active").data("staffid");
+        var pay_period_id = $('#pay_period_id').val();
+        var url = '<?php echo site_url("app/timetracker/get_staff_shift"); ?>';
+
+        $.ajax({
+            url : url ,
+            data : { pay_id : pay_period_id , staff_id : staff_id} ,
+            method : "POST" ,
+            success : function(response){
+                var json = jQuery.parseJSON(response);
+                var data = json.result;
+                var staff_name = $("#div_timesheets nav > ul > li.active > span.staff_name").html();
+
+                modal.find('.modal-title').html("Shift of "+staff_name+" from "+json.pay_name);
+                
+                var tbody = modal.find("table > tbody");
+                tbody.html("");
+
+                $.each(data , function(k , v){
+                    if(v.day == "Sun" || v.day == "Sat"){
+                        var tr = $("<tr>" , {class : "active"});
+                    }else{
+                        var tr = $("<tr>");
+                    }
+                    tr.append($("<td>").append(v.date_schedule));
+                    tr.append($("<td>").append(v.start_time));
+                    tr.append($("<td>").append(v.end_time));
+
+                    tbody.append(tr);
+                });
+
+            }
+        });
+
+    });
+
+    $(document).on("click" , "#timesheet_table .view-notes" , function(){
+        var timeclock_id = $(this).closest("tr").data("tcid");
+        var pop_content = $(this).closest("td").find(".popover-content > div");
+        
+        var url = '<?php echo site_url("app/timetracker/get_notes_by_timeclock"); ?>';
+
+        $.ajax({
+            url : url ,
+            method : "POST" ,
+            data : {timeclock_id : timeclock_id },
+            success : function(response){   
+
+                var json = jQuery.parseJSON(response);
+                pop_content.html(json.notes);
+
+            }
+        });
+    });
 </script>
 <style type="text/css">
     .daterangepicker.dropdown-menu {
@@ -172,6 +270,10 @@
         border: none;
         margin: 0px;
     }
+    #timesheet_table tbody > tr{
+        cursor: pointer;
+    }
+
 </style>
 <div class="container-fluid margin-bottom">
     <div class="side-body padding-top">
@@ -225,7 +327,7 @@
                                 <h2 style="margin-top: 5px;" id="summary_header"></h2>
                             </div>
                             <div class="col-lg-6 no-margin-bottom text-right">
-                                <button class="btn btn-default">SHOW SHIFTS</button>
+                                <button class="btn btn-default" id="show_shift_btn">SHOW SHIFTS</button>
                                 <button class="btn btn-default">EXPORT</button>
                                 <button class="btn btn-default"><i class="fa fa-print" aria-hidden="true"></i></button>
                                 <button class="btn btn-success">APPROVE</button>
@@ -247,7 +349,7 @@
                                     <th width="15%">DAY</th>
                                     <th width="10%">IN</th>
                                     <th width="10%">OUT</th>
-                                    <th width="10%">TOTAL</th>
+                                    <th width="10%">LATE</th>
                                     <th width="25%">DETAILS</th>
                                     <th width="10%">WORKED</th>
                                     <th width="10%">SCHEDULED</th>
@@ -265,54 +367,7 @@
                                 </tr>
                             </tfoot>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <span>Mon , Jan 1</span>
-                                    </td>
-                                    <td>
-                                        <span>7:00a</span>
-                                    </td>
-                                    <td>
-                                        <span>4:00p</span>
-                                    </td>
-                                    <td>
-                                        <span>9.00</span>
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        <span>9.00</span>
-                                    </td>
-                                    <td>
-                                        <span>9.00</span>
-                                    </td>
-                                    <td>
-                                        -
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span>Tue , Jan 2</span>
-                                    </td>
-                                    <td>
-                                        <span>TIME </span>
-                                    </td>
-                                    <td>
-                                        <span>OFF</span>
-                                    </td>
-                                    <td>
-                                        <span>9.00</span>
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        <span>9.00</span>
-                                    </td>
-                                    <td>
-                                        <span>9.00</span>
-                                    </td>
-                                    <td>
-                                        -
-                                    </td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -342,6 +397,36 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" id="save">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="show_shift_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Shift Of [Name] From [Date from - to]</h4>
+      </div>
+      <div class="modal-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time in</th>
+                        <th>Time Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

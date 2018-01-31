@@ -8,7 +8,7 @@ $(document).on("click" , ".btn-click" , function(){
 });
 
 $(document).on("change" , "#select_locations" , function(){
-	load_data("TODAY");
+	load_data("LOCATION");
 });
 
 function load_data(btn_click){

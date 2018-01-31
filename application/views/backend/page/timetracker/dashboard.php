@@ -93,6 +93,35 @@
                             <th style="width: calc(90% / 24);" class="text-center">5A</th>
                         </tr>
                     </thead>
+                    <tfoot>
+                        <tr>
+                            <th width="10%">STAFF</th>
+                            <th style="width: calc(90% / 24);" class="text-center">6A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">7A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">8A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">9A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">10A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">11A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">12P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">1P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">2P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">3P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">4P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">5P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">6P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">7P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">8P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">9P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">10P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">11P</th>
+                            <th style="width: calc(90% / 24);" class="text-center">12A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">1A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">2A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">3A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">4A</th>
+                            <th style="width: calc(90% / 24);" class="text-center">5A</th>
+                        </tr>
+                    </tfoot>
                     <tbody>
                         
                     </tbody>

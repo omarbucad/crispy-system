@@ -206,8 +206,12 @@ class Timetracker extends MY_Controller {
 					$from =  strtoupper(date('F j Y', strtotime('monday last week 12:00:00 '.  $today)));
 					$to =  strtoupper(date('F j Y', strtotime('+7 days - 1 seconds'.  $from)));
 					break;
-				default:
+				case 'TODAY':
 					$from =  strtoupper(date('F j Y', strtotime('monday this week 12:00:00')));
+					$to =  strtoupper(date('F j Y', strtotime('+7 days - 1 seconds ' . $from)));
+					break;
+				default:
+					$from =  strtoupper(date('F j Y', strtotime('monday this week 12:00:00' .$today)));
 					$to =  strtoupper(date('F j Y', strtotime('+7 days - 1 seconds ' . $from)));
 					break;
 			}
@@ -368,6 +372,39 @@ class Timetracker extends MY_Controller {
 
 	}
 
+	public function get_staff_shift(){
+		if($this->input->post()){
+			$staff_id = $this->hash->decrypt($this->input->post("staff_id"));
+	        $pay_id = $this->hash->decrypt($this->input->post("pay_id"));
+
+	        $pay_information = $this->db->select("from_date , to_date , pay_name")->where("pay_id" , $pay_id)->get("timetracker_pay")->row();
+	        $date_range = loop_date($pay_information->from_date , $pay_information->to_date , true);
+
+	        
+	        $result = $this->db->where("staff_id" , $staff_id)->where_in("date_schedule" , $date_range)->get("timetracker_shift_schedule_published")->result();
+	        
+	        $shift_information = array();
+
+	        foreach($result as $row){
+	            $shift_information[strtotime($row->date_schedule)] = array(
+	            	"day"			=> date("D" , strtotime($row->date_schedule)),
+	                "date_schedule" => date("D , M j" , strtotime($row->date_schedule)) ,
+	                "start_time"    => substr(date("h:ia" , strtotime($row->start_time)) , 0, -1),
+	                "end_time"      => substr(date("h:ia" , strtotime($row->end_time)) , 0, -1),
+	                "block_color"   => $row->block_color ,
+	                "unpaid_break"  => $row->unpaid_break
+	            );
+	        }
+	       
+
+	        ksort($shift_information);
+
+	        echo json_encode([
+	        	"result" => $shift_information ,
+	        	"pay_name" => $pay_information->pay_name
+	        ]);
+		}
+	}
 
 	public function get_staff_summary(){
 		$data['attendance_result'] = $this->timetracker->get_attendance_list();
@@ -376,11 +413,59 @@ class Timetracker extends MY_Controller {
 		echo json_encode($data);
 	}
 
-	public function timeclock(){
-		if($id = $this->timetracker->insert_clock_time()){
-			echo $id;
-		}else{
-			echo "FALSE";
+	public function get_notes_by_timeclock(){
+		if($this->input->post("timeclock_id")){
+
+			if($this->input->post("timeclock_id") == "NO_TIMECLOCK"){
+				echo json_encode(['status' => false , "notes" => "<p class='text-center'>NO NOTES</p>"]);
+			}else{
+				$id = $this->hash->decrypt($this->input->post("timeclock_id"));
+
+				$this->db->select("notes");
+				$info = $this->db->where("timeclock_id" , $id)->get("timetracker_timeclock")->row();
+
+				if($info->notes){
+
+					$a = json_decode($info->notes);
+					$c = "";
+					
+					foreach($a as $b){
+						$c .= "<p>".$b->notes."</p>";
+					}
+
+					echo json_encode(['status' => true , "notes" => $c]);
+				}else{
+					echo json_encode(['status' => false , "notes" => "<p class='text-center'>NO NOTES</p>"]);
+				}
+			}
 		}
+	}
+
+	public function timeclock(){
+		if($this->input->post()){
+			$this->timetracker->insert_clock_time();
+		}
+
+		?>
+				<form action="http://192.168.1.147/crispy-system/app/timetracker/timeclock" method="POST">
+					<input type="time" name="clock_in">
+					<input type="hidden" name="staff_id" value="M-KFHwByqm7sQhTd-PVaCA">
+					<select name="date">
+						<option value="January 16 2018">January 16</option>
+						<option value="January 17 2018">January 17</option>
+						<option value="January 18 2018">January 18</option>
+						<option value="January 19 2018">January 19</option>
+						<option value="January 20 2018">January 20</option>
+						<option value="January 21 2018">January 21</option>
+						<option value="January 22 2018">January 22</option>
+						<option value="January 23 2018">January 23</option>
+						<option value="January 24 2018">January 24</option>
+						<option value="January 25 2018">January 25</option>
+						<option value="January 26 2018">January 26</option>
+					</select>
+					<input type="submit" value="submit" name="submit">
+				</form>	
+
+			<?php
 	}
 }

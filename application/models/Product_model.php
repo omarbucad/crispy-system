@@ -585,10 +585,10 @@ class Product_model extends CI_Model {
 
         $this->db->select("p.product_id , p.description , p.product_name , p.product_handle");
         $this->db->select("pt.type_name , pb.brand_name , s.supplier_name , pv.supply_price , pv.retail_price_wot , pv.sku");
-        $this->db->join("product_types pt" , "pt.product_type_id = p.product_type_id");
-        $this->db->join("product_brands pb" , "pb.product_brand_id = p.brand_id" );
-        $this->db->join("supplier s" , "s.supplier_id = p.supplier_id");
-        $this->db->join("product_variants pv" , "pv.product_id = p.product_id");
+        $this->db->join("product_types pt" , "pt.product_type_id = p.product_type_id" , "LEFT");
+        $this->db->join("product_brands pb" , "pb.product_brand_id = p.brand_id" , "LEFT");
+        $this->db->join("supplier s" , "s.supplier_id = p.supplier_id" , "LEFT");
+        $this->db->join("product_variants pv" , "pv.product_id = p.product_id" , "LEFT");
         $product = $this->db->where("p.product_id" , $product_id)->group_by("product_id" , "ASC")->get("product p")->row();
 
         $product->supply_price = number_format($product->supply_price , 2);

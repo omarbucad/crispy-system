@@ -143,6 +143,9 @@ class Register_model extends CI_Model {
             "updated" => time()
         ]);
 
+
+        //TODO: Insert the main position of timetracker must be "All Staff"
+
         /* UPDATE USER */
         $this->db->where("user_id" , $user_id)->update("user" , [
             "outlet_id" => 0 , /* 0 - All outlet */ 

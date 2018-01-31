@@ -67,6 +67,7 @@ class Product extends MY_Controller {
 	public function view($product_id){
 		$product_id = $this->hash->decrypt($product_id);
 
+
 		$this->data['outlet_list'] = $this->store->get_outlet();
 		$this->data['product_information'] = $this->product->get_product_by_id($product_id);
 		$this->data['website_title'] = "View Product | Accounts Package";
