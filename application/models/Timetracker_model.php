@@ -374,7 +374,7 @@ class Timetracker_model extends CI_Model {
 
             // TEMPORARY DATE 
             //TODO:: MUST CHECK IF THE TIMEZONE OF STORE OR TIMEZONE OF FIRST OUTLET
-            $today = date("F d Y");
+            $today = date("F n Y");
 
         }else{
 
@@ -387,7 +387,7 @@ class Timetracker_model extends CI_Model {
 
             //GET THE CURRENT DATE USING THE TIMEZONE
             $date = new DateTime("now", new DateTimeZone($timezone) );
-            $today = $date->format('F d Y');
+            $today = $date->format('F n Y');
 
         }
 

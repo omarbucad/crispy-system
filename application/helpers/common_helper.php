@@ -301,7 +301,7 @@ if ( ! function_exists('build_today_td'))
             }
 
             $td .= "<td colspan='".$arr['shift'][0]['colspan']."'>";
-                $td .= '<a href="javascript:void(0);" style="background-color: '.$data->shift_information->block_color.'" data-shiftcolor="'.$data->shift_information->block_color.'" data-positioncolor="'.$data->shift_information->block_color.'">'.$start_time.' - '.$end_time.'<small> @ '.$data->shift_information->outlet_name.'</small> <span> '.$data->shift_information->group_name.'</span></a>';
+                $td .= '<a href="javascript:void(0);"  style="background-color: '.$data->shift_information->block_color.'" data-shiftcolor="'.$data->shift_information->block_color.'" data-positioncolor="'.$data->shift_information->block_color.'">'.$start_time.' - '.$end_time.'<small> @ '.$data->shift_information->outlet_name.'</small> <span> '.$data->shift_information->group_name.'</span></a>';
             $td .= "</td>";
 
             $each =  $arr['shift'][0]['colspan'] + ($arr['shift'][0]['start'] - 1 ) ;
