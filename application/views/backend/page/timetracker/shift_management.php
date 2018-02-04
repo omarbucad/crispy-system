@@ -13,7 +13,7 @@
     	<div class="row">
     		<!-- SIDE MENU -->
     		<div class="col-lg-2 ">
-    			<a href="javascript:void(0);" class="btn btn-success btn-block btn-publish" style="text-align: left;line-height: 20px;font-size: 20px;"></a>
+    			<a href="javascript:void(0);" class="btn btn-success btn-block btn-publish text-uppercase" style="text-align: left;line-height: 20px;font-size: 15px;"></a>
     			<nav class="card scheduler-nav">
     				<ul>
     					<li class="bglabel">COLOR</li>

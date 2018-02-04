@@ -275,7 +275,7 @@ class Register_model extends CI_Model {
             create_index_html($folder);
         }
     
-        $image_name = $_FILES['file']['name'];
+        $image_name = md5($user_id).'_'.time().'_'.$_FILES['file']['name'];
         $image_name = str_replace("^", "_", $image_name);
        
         $config['upload_path']          = $folder;

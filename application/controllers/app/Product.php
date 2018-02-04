@@ -10,7 +10,7 @@ class Product extends MY_Controller {
     }
 
 	public function index(){
-		$this->data['website_title'] = "Products | Accounts Package";
+		$this->data['website_title'] = "Products | ".$this->data['application_name'];
 		$this->data['page_name'] = "Product";
 		$this->data['main_page'] = "backend/page/product/product";
 		$this->data['product_type_list'] = $this->product->get_type();
@@ -29,7 +29,7 @@ class Product extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){ 
 
-			$this->data['website_title'] = "Products - Add | Accounts Package";
+			$this->data['website_title'] = "Products - Add | ".$this->data['application_name'];
 			$this->data['page_name'] = "Product";
 			$this->data['main_page'] = "backend/page/product/add_product";
 			$this->data['product_type_list'] = $this->product->get_type();
@@ -70,7 +70,7 @@ class Product extends MY_Controller {
 
 		$this->data['outlet_list'] = $this->store->get_outlet();
 		$this->data['product_information'] = $this->product->get_product_by_id($product_id);
-		$this->data['website_title'] = "View Product | Accounts Package";
+		$this->data['website_title'] = "View Product | ".$this->data['application_name'];
 		$this->data['page_name'] = "Product";
 		$this->data['main_page'] = "backend/page/product/view_product";
 
@@ -82,7 +82,7 @@ class Product extends MY_Controller {
 	public function consignment($inventory_order = false){
 		if($inventory_order){
 
-			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 			$this->data['page_name'] = "View Stock Information";
 			$this->data['main_page'] = "backend/page/product/view_stock";
 			$this->data['result'] = $this->product->get_consignment_by_id($inventory_order);
@@ -90,7 +90,7 @@ class Product extends MY_Controller {
 			$this->load->view('backend/master' , $this->data);
 
 		}else{
-			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 			$this->data['page_name'] = "Stock Control";
 			$this->data['main_page'] = "backend/page/product/consignment";
 			$this->data['result'] = $this->product->get_consignment();
@@ -107,7 +107,7 @@ class Product extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){ 
 
-			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 			$this->data['page_name'] = "Update Order";
 			$this->data['main_page'] = "backend/page/product/edit_consignment";
 			$this->data['result'] = $this->product->get_consignment_by_id($id);
@@ -139,7 +139,7 @@ class Product extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){ 
 
-			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 			$this->data['page_name'] = "Order Stock";
 			$this->data['main_page'] = "backend/page/product/order_stock";
 			$this->data['outlet_list'] = $this->store->get_outlet();
@@ -173,7 +173,7 @@ class Product extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){ 
 
-			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 			$this->data['page_name'] = "Return Stock";
 			$this->data['main_page'] = "backend/page/product/return_stock";
 			$this->data['outlet_list'] = $this->store->get_outlet();
@@ -204,7 +204,7 @@ class Product extends MY_Controller {
 	}
 
 	public function inventory_count(){
-		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_count";
 		$this->data['no_result_found'] = "You have no due inventory counts";
@@ -218,7 +218,7 @@ class Product extends MY_Controller {
 	public function inventory_count_view($count_id){
 		$count_id = $this->hash->decrypt($count_id);
 
-		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_view";
 		$this->data['inventory_information'] = $this->product->get_stock_count_by_id_review($count_id , true);
@@ -228,7 +228,7 @@ class Product extends MY_Controller {
 	}
 
 	public function inventory_count_upcoming(){
-		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_count";
 		$this->data['result'] = $this->product->get_stock_control_list("UPCOMING");
@@ -240,7 +240,7 @@ class Product extends MY_Controller {
 	}
 
 	public function inventory_count_completed(){
-		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_count";
 		$this->data['no_result_found'] = "You have no upcoming inventory counts";
@@ -252,7 +252,7 @@ class Product extends MY_Controller {
 	}
 
 	public function inventory_count_cancelled(){
-		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_count";
 		$this->data['no_result_found'] = "You have no upcoming inventory counts";
@@ -268,7 +268,7 @@ class Product extends MY_Controller {
 
 
 		if ($this->form_validation->run() == FALSE){ 
-			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 			$this->data['page_name'] = "Inventory Count";
 			$this->data['main_page'] = "backend/page/product/inventory_create";
 			$this->data['outlet_list'] = $this->store->get_outlet();
@@ -298,7 +298,7 @@ class Product extends MY_Controller {
 	public function inventory_count_start($count_id){
 		$count_id = $this->hash->decrypt($count_id);
 
-		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_start";
 		$this->data['inventory_information'] = $this->product->get_stock_count_by_id($count_id );
@@ -316,7 +316,7 @@ class Product extends MY_Controller {
 		//SAVE COUNT
 		$this->inventory_stock_save(false);
 
-		$this->data['website_title'] = "Stock Control | Accounts Package";
+		$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 		$this->data['page_name'] = "Inventory Count";
 		$this->data['main_page'] = "backend/page/product/inventory_review";
 		$this->data['inventory_information'] = $this->product->get_stock_count_by_id_review($count_id);
@@ -381,7 +381,7 @@ class Product extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){ 
 
-			$this->data['website_title'] = "Stock Control | Accounts Package";
+			$this->data['website_title'] = "Stock Control | ".$this->data['application_name'];
 			$this->data['page_name'] = "Edit Stock";
 			$this->data['main_page'] = "backend/page/product/edit_stock";
 			$this->data['result'] = $this->product->get_consignment_by_id($id);
@@ -424,7 +424,7 @@ class Product extends MY_Controller {
 
 	// PRODUCT TAGS
 	public function tags(){
-		$this->data['website_title'] = "Product - Tags | Accounts Package";
+		$this->data['website_title'] = "Product - Tags | ".$this->data['application_name'];
 		$this->data['page_name'] = "Product Tags";
 		$this->data['main_page'] = "backend/page/product/tags";
 		$this->data['product_tag_list'] = $this->product->get_tag();
@@ -455,7 +455,7 @@ class Product extends MY_Controller {
 
 	// PRODUCT BRANDS
 	public function brands(){
-		$this->data['website_title'] = "Product - Brands | Accounts Package";
+		$this->data['website_title'] = "Product - Brands | ".$this->data['application_name'];
 		$this->data['page_name'] = "Brands";
 		$this->data['main_page'] = "backend/page/product/brands";
 		$this->data['product_brand_list'] = $this->product->get_brand();
@@ -480,7 +480,7 @@ class Product extends MY_Controller {
 
 	// SUPPLIERS
 	public function supplier(){
-		$this->data['website_title'] = "Product - Supplier | Accounts Package";
+		$this->data['website_title'] = "Product - Supplier | ".$this->data['application_name'];
 		$this->data['page_name'] = "Product Supplier";
 		$this->data['main_page'] = "backend/page/product/supplier";
 		$this->data['supplier_list'] = $this->product->get_supplier();
@@ -490,7 +490,7 @@ class Product extends MY_Controller {
 	public function view_supplier($id){
 		$supplier_id = $this->hash->decrypt($id);
 
-		$this->data['website_title'] = "Product - Supplier | Accounts Package";
+		$this->data['website_title'] = "Product - Supplier | ".$this->data['application_name'];
 		$this->data['page_name'] = "Product Supplier";
 		$this->data['main_page'] = "backend/page/product/view_supplier";
 		$this->data['supplier_information'] = $this->product->getSupplierById($supplier_id);
@@ -508,7 +508,7 @@ class Product extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){ 
 
-			$this->data['website_title'] = "Product - Add Supplier | Accounts Package";
+			$this->data['website_title'] = "Product - Add Supplier | ".$this->data['application_name'];
 			$this->data['page_name'] = "Product Supplier";
 			$this->data['main_page'] = "backend/page/product/add_supplier";
 			$this->data['countries_list'] = $this->countries_list();
@@ -535,7 +535,7 @@ class Product extends MY_Controller {
 	// TYPES
 
 	public function type(){
-		$this->data['website_title'] = "Product - Types | Accounts Package";
+		$this->data['website_title'] = "Product - Types | ".$this->data['application_name'];
 		$this->data['page_name'] = "Product Types";
 		$this->data['main_page'] = "backend/page/product/types";
 		$this->data['product_type_list'] = $this->product->get_type();

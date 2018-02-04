@@ -11,7 +11,7 @@ class Setup extends MY_Controller {
 
 
 	public function general(){
-		$this->data['website_title'] = "Setup - General Information | Accounts Package";
+		$this->data['website_title'] = "Setup - General Information | ".$this->data['application_name'];
 		$this->data['page_name'] = "General Setup";
 		$this->data['main_page'] = "backend/page/setup/general";
 		$this->data['world_currency'] = $this->world_currency();
@@ -42,7 +42,7 @@ class Setup extends MY_Controller {
 			redirect('/app/setup/account/manage', 'refresh');
 		}
 
-		$this->data['website_title'] = "Setup - Account | Accounts Package";
+		$this->data['website_title'] = "Setup - Account | ".$this->data['application_name'];
 		$this->data['page_name'] = "Account";
 		$this->data['main_page'] = "backend/page/setup/account";
 		$this->data['setup_page'] = $type; 
@@ -62,7 +62,7 @@ class Setup extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){
 
-			$this->data['website_title'] = "Setup - Add Users | Accounts Package";
+			$this->data['website_title'] = "Setup - Add Users | ".$this->data['application_name'];
 			$this->data['page_name'] = "Users";
 			$this->data['main_page'] = "backend/page/setup/add_users";
 			$this->load->view('backend/master' , $this->data);
@@ -87,7 +87,7 @@ class Setup extends MY_Controller {
 	}
 
 	public function users(){
-		$this->data['website_title'] = "Setup - Users | Accounts Package";
+		$this->data['website_title'] = "Setup - Users | ".$this->data['application_name'];
 		$this->data['page_name'] = "Users";
 		$this->data['main_page'] = "backend/page/setup/users";
 		$this->data['user_list'] = $this->register->get_user();
@@ -122,14 +122,14 @@ class Setup extends MY_Controller {
 	}
 
 	public function roles(){
-		$this->data['website_title'] = "Setup - Users | Accounts Package";
+		$this->data['website_title'] = "Setup - Users | ".$this->data['application_name'];
 		$this->data['page_name'] = "Users";
 		$this->data['main_page'] = "backend/page/setup/roles";
 		$this->load->view('backend/master' , $this->data);
 	}
 
 	public function sales_tax(){
-		$this->data['website_title'] = "Setup - Sales Tax | Accounts Package";
+		$this->data['website_title'] = "Setup - Sales Tax | ".$this->data['application_name'];
 		$this->data['page_name'] = "Sales Tax";
 		$this->data['main_page'] = "backend/page/setup/sales_tax";
 		$this->data['sales_tax_list'] = $this->store->get_sales_tax();
@@ -178,7 +178,7 @@ class Setup extends MY_Controller {
 
 		if($this->form_validation->run() == FALSE){
 
-			$this->data['website_title'] = "Setup - Add Outlet | Accounts Package";
+			$this->data['website_title'] = "Setup - Add Outlet | ".$this->data['application_name'];
 			$this->data['page_name'] = "Add Outlet";
 			$this->data['main_page'] = "backend/page/setup/add_outlet";
 			$this->data['timezone_list'] = $this->timezone_list();
@@ -209,7 +209,7 @@ class Setup extends MY_Controller {
 		$this->form_validation->set_rules('register_name'		, 'Register Name'			, 'trim|required');
 
 		if($this->form_validation->run() == FALSE){ 
-			$this->data['website_title'] = "Setup - Add Register | Accounts Package";
+			$this->data['website_title'] = "Setup - Add Register | ".$this->data['application_name'];
 			$this->data['page_name'] = "Cash Register";
 			$this->data['main_page'] = "backend/page/setup/add_register";
 			$this->data['outlet_name']	= $this->store->get_outlet_by_id($outlet_id , "outlet_name")->outlet_name;
@@ -236,7 +236,7 @@ class Setup extends MY_Controller {
 		
 	}
 	public function outlets_and_registers(){
-		$this->data['website_title'] = "Setup - Outlets And Registers | Accounts Package";
+		$this->data['website_title'] = "Setup - Outlets And Registers | ".$this->data['application_name'];
 		$this->data['page_name'] = "Outlets and Registers";
 		$this->data['main_page'] = "backend/page/setup/outlet_and_registers";
 		$this->data['outlet_list'] = $this->store->get_outlet_and_registers();

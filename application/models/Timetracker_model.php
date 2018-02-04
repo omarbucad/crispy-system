@@ -130,7 +130,7 @@ class Timetracker_model extends CI_Model {
         		$_FILES['other_file']['error'] = $data['error'][$i];
         		$_FILES['other_file']['size'] = $data['size'][$i];
 
-        		$config['file_name'] = $staff_id.'_'.time().'_'.$data['name'][$i];
+        		$config['file_name'] = md5($staff_id).'_'.time().'_'.$data['name'][$i];
 
         		$this->upload->initialize($config);
 
@@ -165,7 +165,7 @@ class Timetracker_model extends CI_Model {
             create_index_html($folder);
         }
     
-        $image_name = $_FILES['file']['name'];
+        $image_name = md5($staff_id).'_'.time().'_'.$_FILES['file']['name'];
         $image_name = str_replace("^", "_", $image_name);
        
         $config['upload_path']          = $folder;
@@ -639,7 +639,7 @@ class Timetracker_model extends CI_Model {
             "account_id"        => $user_id ,
             "from_date"         => date("F j Y" , strtotime($daterange[0])),
             "to_date"           => date("F j Y" , strtotime($daterange[1])),
-            "pay_name"          => date("F j" , strtotime($daterange[0])).' - '.date("F j, Y" , strtotime($daterange[1])),
+            "pay_name"          => date("M j" , strtotime($daterange[0])).' - '.date("M j, Y" , strtotime($daterange[1])),
             "created"           => time()
         ]);
 

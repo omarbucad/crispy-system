@@ -10,7 +10,7 @@ class Timetracker extends MY_Controller {
     }
 
 	public function index(){
-		$this->data['website_title'] = "Timetracker | Accounts Package";
+		$this->data['website_title'] = "Timetracker | ".$this->data['application_name'];
 		$this->data['page_name'] = "Dashboard";
 		$this->data['main_page'] = "backend/page/timetracker/dashboard";
 		$this->data['outlet_list'] = $this->store->get_outlet();
@@ -19,7 +19,7 @@ class Timetracker extends MY_Controller {
 	}
 
 	public function shift_management(){
-		$this->data['website_title'] = "Timetracker | Accounts Package";
+		$this->data['website_title'] = "Timetracker | ".$this->data['application_name'];
 		$this->data['page_name'] = "Scheduler";
 		$this->data['main_page'] = "backend/page/timetracker/shift_management";
 		$this->data['outlet_list'] = $this->store->get_outlet();
@@ -29,7 +29,7 @@ class Timetracker extends MY_Controller {
 	}
 
 	public function staff(){
-		$this->data['website_title'] = "Timetracker | Accounts Package";
+		$this->data['website_title'] = "Timetracker | ".$this->data['application_name'];
 		$this->data['page_name'] = "Staff";
 		$this->data['main_page'] = "backend/page/timetracker/staff";
 		$this->data['countries_list'] = $this->countries_list();
@@ -74,7 +74,7 @@ class Timetracker extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){ 
 
-			$this->data['website_title'] = "Timetracker | Accounts Package";
+			$this->data['website_title'] = "Timetracker | ".$this->data['application_name'];
 			$this->data['page_name'] = "Add Staff";
 			$this->data['main_page'] = "backend/page/timetracker/add_staff";
 			$this->data['staff_group_list']	= $this->timetracker->get_group();
@@ -110,7 +110,7 @@ class Timetracker extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){  
 
-			$this->data['website_title'] = "Timetracker | Accounts Package";
+			$this->data['website_title'] = "Timetracker | ".$this->data['application_name'];
 			$this->data['page_name'] = "Staff Position";
 			$this->data['main_page'] = "backend/page/timetracker/group";
 			$this->data['staff_group_list']	= $this->timetracker->get_group();
@@ -138,7 +138,7 @@ class Timetracker extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){  
 
-			$this->data['website_title'] = "Timetracker | Accounts Package";
+			$this->data['website_title'] = "Timetracker | ".$this->data['application_name'];
 			$this->data['page_name'] = "Shift Templates";
 			$this->data['main_page'] = "backend/page/timetracker/shift_blocks";
 			$this->data['staff_group_list']	= $this->timetracker->get_group();
@@ -331,7 +331,7 @@ class Timetracker extends MY_Controller {
 
 		if ($this->form_validation->run() == FALSE){  
 
-			$this->data['website_title'] = "Timetracker | Accounts Package";
+			$this->data['website_title'] = "Timetracker | ".$this->data['application_name'];
 			$this->data['page_name'] = "Staff Attendance";
 			$this->data['main_page'] = "backend/page/timetracker/attendance";
 			$this->data['outlet_list'] = $this->store->get_outlet();
