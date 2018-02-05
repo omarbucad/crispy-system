@@ -146,6 +146,13 @@ class Register_model extends CI_Model {
 
         //TODO: Insert the main position of timetracker must be "All Staff"
 
+        $this->db->insert("timetracker_staff_group" , [
+            "store_id"      => $store_id ,
+            "group_name"    => "All Staff" ,
+            "deletable"     => "NO" ,
+            "created"       => time()
+        ]);
+
         /* UPDATE USER */
         $this->db->where("user_id" , $user_id)->update("user" , [
             "outlet_id" => 0 , /* 0 - All outlet */ 

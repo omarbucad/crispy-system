@@ -57,7 +57,7 @@ class Timetracker_model extends CI_Model {
 
         $staff_id = $this->db->insert_id();
 
-        $this->do_upload($staff_id);
+        $this->do_upload($staff_id); 
         $this->multiple_upload($staff_id);
 
 
