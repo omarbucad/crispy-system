@@ -11,9 +11,9 @@ class Pos extends MY_Controller {
 
     public function sell(){
     	$this->data['website_title'] = "Sell | ".$this->data['application_name'];
-		$this->data['page_name'] = "Sell";
-		$this->data['main_page'] = "backend/page/pos/sell";
+  		$this->data['page_name'] = "Sell";
+  		$this->data['main_page'] = "backend/page/pos/sell";
 
-		$this->load->view('backend/master' , $this->data);
+  		$this->load->view('backend/master' , $this->data);
     }
 }

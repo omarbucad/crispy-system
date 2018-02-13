@@ -75,6 +75,10 @@
         border-bottom: 1px solid rgba(0,0,0,0.1);
         padding-bottom: 5px;
     }
+
+    #pos_area .card-body{
+        padding: 10px !important;
+    }
 </style>
 <div class="container" style="height: calc(100vh - 60px)">
     <div class="side-body padding-top">
@@ -222,7 +226,10 @@
                             </div>
                         </section>
                         <section class="register_body" style="height: 83%;">
-                            
+                            <div></div>
+                            <div class="summary_">
+                                
+                            </div>
                         </section>
                         <section class="register_footer" style="height: 6%;">
                             <a href="javascript:void(0);" class="btn btn-success btn-block" style="overflow: hidden;">
